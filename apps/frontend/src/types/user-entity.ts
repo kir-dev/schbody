@@ -1,4 +1,4 @@
-enum Role {
+export enum Role {
   BODY_ADMIN = 'BODY_ADMIN',
   BODY_MEMBER = 'BODY_MEMBER',
   USER = 'USER',

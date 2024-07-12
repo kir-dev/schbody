@@ -1,7 +1,7 @@
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
 
-enum ApplicationStatus {
+export enum ApplicationStatus {
   SUBMITTED,
   ACCEPTED,
   REJECTED,
