@@ -29,7 +29,7 @@ enum ApplicationStatus {
 
 model User {
   id                 Int                 @id @default(autoincrement())
-  authSchId          String
+  authSchId          String              @unique
   fullName           String
   nickName           String
   role               Role                @default(USER)
@@ -38,7 +38,7 @@ model User {
   isSchResident      Boolean
   roomNumber         Int?
   profileImage       Bytes?
-  canHelpNoobs       Boolean
+  canHelpNoobs       Boolean             @default(false)
   publicDesc         String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -58,7 +58,9 @@ model ApplicationPeriod {
   ticketsAreValid          Boolean       @default(false)
   author                   User          @relation(fields: [authorId], references: [id])
   authorId                 Int
-  application              Application[]
+  applications             Application[]
+
+  @@index([authorId])
 }
 
 model Application {
@@ -84,4 +86,6 @@ model Post {
   authorId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([authorId])
 }
