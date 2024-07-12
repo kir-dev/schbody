@@ -13,15 +13,21 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from '@/components/ui/menubar';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -54,37 +60,65 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center justify-between py-4 gap-4'>
+        <Menubar>
+          <MenubarMenu>
+            <MenubarTrigger>Kijelölés</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>Összes kijelölése</MenubarItem>
+              <MenubarItem>Kiválogatottak kijelölése</MenubarItem>
+              <MenubarItem>Kijelölés megszüntetése</MenubarItem>
+              <MenubarSeparator />
+              <MenubarSub>
+                <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
+                <MenubarSubContent>
+                  {(Object.keys(ApplicationStatus) as Array<keyof typeof ApplicationStatus>).map((key) => {
+                    return <MenubarItem key={key}>{key}</MenubarItem>;
+                  })}
+                </MenubarSubContent>
+              </MenubarSub>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Szűrés</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>Listás szűrés indítása</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Exportálás</MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>Kijelöltek exportálása</MenubarItem>
+              <MenubarItem>Minden exportálása</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger>Nézet</MenubarTrigger>
+            <MenubarContent>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <MenubarCheckboxItem
+                      key={column.id}
+                      className='capitalize'
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
+                    >
+                      {column.id}
+                    </MenubarCheckboxItem>
+                  );
+                })}
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
         <Input
           placeholder='Keresés név alapján'
           value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('Név')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='outline' className='ml-auto'>
-              Oszlopok láthatósága
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className='capitalize'
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       <div className='rounded-md border'>
         <Table className='w-full'>
