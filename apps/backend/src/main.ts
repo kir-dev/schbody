@@ -12,7 +12,6 @@ async function bootstrap() {
   });
   const config = new DocumentBuilder().setTitle('SCHBody WEB').setVersion('1.0').addBearerAuth().build();
   const document = SwaggerModule.createDocument(app, config);
-  // fs.writeFileSync('./openapi.yaml', yaml.stringify(document, {}))
   SwaggerModule.setup('api', app, document);
   await app.listen(process.env.PORT || 3300);
 }
