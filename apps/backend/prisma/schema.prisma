@@ -35,6 +35,7 @@ model User {
   neptun             String?             @unique
   email              String?
   isSchResident      Boolean
+  isActiveVikStudent Boolean
   roomNumber         Int?
   profileImage       Bytes?
   canHelpNoobs       Boolean             @default(false)

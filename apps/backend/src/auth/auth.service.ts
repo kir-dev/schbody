@@ -20,8 +20,9 @@ export class AuthService {
         fullName: userProfile.displayName,
         nickName: userProfile.firstName,
         email: userProfile.email,
-        isSchResident: userProfile.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
-        //TODO: Find a solution for only dorm residents. The userProfile.bmeStatus is undefined. Is it an admin enabled info?
+        isSchResident: true,
+        //TODO: Find a solution for only dorm residents.
+        isActiveVikStudent: userProfile.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
       },
     });
   }
