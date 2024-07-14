@@ -11,7 +11,13 @@ export class AuthSchStrategy extends PassportStrategy(Strategy) {
     super({
       clientId: process.env.AUTHSCH_CLIENT_ID,
       clientSecret: process.env.AUTHSCH_CLIENT_SECRET,
-      scopes: [AuthSchScope.BASIC, AuthSchScope.FIRST_NAME, AuthSchScope.LAST_NAME, AuthSchScope.EMAIL],
+      scopes: [
+        AuthSchScope.BASIC,
+        AuthSchScope.FIRST_NAME,
+        AuthSchScope.EMAIL,
+        AuthSchScope.BME_STATUS,
+        AuthSchScope.DISPLAY_NAME,
+      ],
     });
   }
 

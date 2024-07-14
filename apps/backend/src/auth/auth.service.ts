@@ -1,4 +1,4 @@
-import { AuthSchProfile } from '@kir-dev/passport-authsch';
+import { AuthSchProfile, BmeUnitScope } from '@kir-dev/passport-authsch';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
@@ -17,10 +17,10 @@ export class AuthService {
     return await this.prisma.user.create({
       data: {
         authSchId: userProfile.authSchId,
-        fullName: `${userProfile.lastName} ${userProfile.firstName}`, //this is kinda cring...
+        fullName: userProfile.displayName,
         nickName: userProfile.firstName,
         email: userProfile.email,
-        isSchResident: true,
+        isSchResident: userProfile.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
         //TODO: Find a solution for only dorm residents. The userProfile.bmeStatus is undefined. Is it an admin enabled info?
       },
     });
