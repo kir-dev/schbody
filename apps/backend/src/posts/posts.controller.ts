@@ -32,17 +32,17 @@ export class PostsController {
   async findOne(@Param('id') id: string) {
     return this.postsService.findOne(Number(id));
   }
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto, @CurrentUser() user: User) {
-    return this.postsService.update(Number(id), updatePostDto, user);
+  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+    return this.postsService.update(Number(id), updatePostDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Delete(':id')
-  remove(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.postsService.remove(Number(id), user);
+  remove(@Param('id') id: string) {
+    return this.postsService.remove(Number(id));
   }
 }

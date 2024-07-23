@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
@@ -41,15 +41,7 @@ export class PostsService {
     });
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto, user: User) {
-    const currentPost = await this.prisma.post.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (currentPost.authorId !== user.authSchId && user.role !== 'BODY_ADMIN') {
-      throw new UnauthorizedException('You cannot edit this post!');
-    }
+  async update(id: number, updatePostDto: UpdatePostDto) {
     return this.prisma.post.update({
       where: {
         id,
@@ -58,15 +50,7 @@ export class PostsService {
     });
   }
 
-  async remove(id: number, user: User) {
-    const currentPost = await this.prisma.post.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (currentPost.authorId !== user.authSchId && user.role !== 'BODY_ADMIN') {
-      throw new UnauthorizedException('You cannot delete this post!');
-    }
+  async remove(id: number) {
     return this.prisma.post.delete({
       where: {
         id,
