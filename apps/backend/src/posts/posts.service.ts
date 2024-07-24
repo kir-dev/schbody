@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreatePostDto } from './dto/create-post.dto';
@@ -31,30 +31,63 @@ export class PostsService {
   }
 
   findOne(id: number) {
-    return this.prisma.post.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        author: true,
-      },
-    });
+    try {
+      return this.prisma.post.findUniqueOrThrow({
+        where: {
+          id,
+        },
+        include: {
+          author: true,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new NotFoundException('This post does not exist.');
+        }
+        throw new InternalServerErrorException('An error occurred.');
+      }
+    }
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
-    return this.prisma.post.update({
-      where: {
-        id,
-      },
-      data: updatePostDto,
-    });
+    try {
+      return await this.prisma.post.update({
+        where: {
+          id,
+        },
+        data: updatePostDto,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (e.code) {
+          case 'P2000':
+            throw new BadRequestException('The content is too long.');
+          case 'P2025':
+            throw new NotFoundException('This post does not exist.');
+        }
+      }
+      throw new InternalServerErrorException('An error occurred.');
+    }
   }
 
   async remove(id: number) {
-    return this.prisma.post.delete({
-      where: {
-        id,
-      },
-    });
+    try {
+      return this.prisma.post.delete({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (e.code) {
+          case 'P2000':
+            throw new BadRequestException('The content is too long.');
+          case 'P2025':
+            throw new NotFoundException('This post does not exist.');
+        }
+      }
+      throw new InternalServerErrorException('An error occurred.');
+    }
   }
 }
