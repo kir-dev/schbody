@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ApplicationPeriod } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
@@ -28,7 +28,7 @@ export class ApplicationPeriodService {
       },
     });
     if (!period) {
-      throw new Error('No current application period found');
+      throw new NotFoundException('No current application period found');
     }
     return period;
   }
@@ -40,22 +40,31 @@ export class ApplicationPeriodService {
       },
     });
     if (!period) {
-      throw new BadRequestException('Application period not found');
+      throw new NotFoundException('Application period not found');
     }
     return period;
   }
 
   async create(createApplicationPeriodDto: CreateApplicationPeriodDto, user): Promise<ApplicationPeriod> {
-    const periods = await this.prisma.applicationPeriod.findMany();
-    const newPeriodStart = new Date(createApplicationPeriodDto.applicationPeriodStartAt);
-    const newPeriodEnd = new Date(createApplicationPeriodDto.applicationPeriodEndAt);
-    periods.forEach((period) => {
-      const start = new Date(period.applicationPeriodStartAt);
-      const end = new Date(period.applicationPeriodEndAt);
-      if (start <= newPeriodEnd && end >= newPeriodStart) {
-        throw new BadRequestException('Application period overlaps with another period');
-      }
+    const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
+      where: {
+        AND: [
+          {
+            applicationPeriodStartAt: {
+              lte: createApplicationPeriodDto.applicationPeriodEndAt,
+            },
+          },
+          {
+            applicationPeriodEndAt: {
+              gte: createApplicationPeriodDto.applicationPeriodStartAt,
+            },
+          },
+        ],
+      },
     });
+    if (conflictingPeriod) {
+      throw new BadRequestException('Application period overlaps with another period');
+    }
     return this.prisma.applicationPeriod.create({
       data: {
         ...createApplicationPeriodDto,
@@ -76,25 +85,34 @@ export class ApplicationPeriodService {
         },
       });
     } catch (e) {
-      throw new BadRequestException('Application does not exist');
+      throw new NotFoundException('Application period not found');
     }
   }
 
   async update(updateApplicationPeriodDto: UpdateApplicationPeriodDto, id: number): Promise<ApplicationPeriod> {
-    const periods = await this.prisma.applicationPeriod.findMany();
     if (
       Boolean(updateApplicationPeriodDto.applicationPeriodStartAt) ||
       Boolean(updateApplicationPeriodDto.applicationPeriodEndAt)
     ) {
-      const newPeriodStart = new Date(updateApplicationPeriodDto.applicationPeriodStartAt);
-      const newPeriodEnd = new Date(updateApplicationPeriodDto.applicationPeriodEndAt);
-      periods.forEach((period) => {
-        const start = new Date(period.applicationPeriodStartAt);
-        const end = new Date(period.applicationPeriodEndAt);
-        if (period.id !== id && start <= newPeriodEnd && end >= newPeriodStart) {
-          throw new BadRequestException('Application period overlaps with another period');
-        }
+      const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
+        where: {
+          AND: [
+            {
+              applicationPeriodStartAt: {
+                lte: updateApplicationPeriodDto.applicationPeriodEndAt,
+              },
+            },
+            {
+              applicationPeriodEndAt: {
+                gte: updateApplicationPeriodDto.applicationPeriodStartAt,
+              },
+            },
+          ],
+        },
       });
+      if (conflictingPeriod) {
+        throw new BadRequestException('Application period overlaps with another period');
+      }
     }
     try {
       return this.prisma.applicationPeriod.update({
@@ -104,7 +122,7 @@ export class ApplicationPeriodService {
         data: updateApplicationPeriodDto,
       });
     } catch (e) {
-      throw new BadRequestException('Application does not exist');
+      throw new BadRequestException('Application period not found');
     }
   }
 }
