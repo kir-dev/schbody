@@ -30,9 +30,9 @@ export class PostsService {
     });
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     try {
-      return this.prisma.post.findUniqueOrThrow({
+      return await this.prisma.post.findUniqueOrThrow({
         where: {
           id,
         },
@@ -73,7 +73,7 @@ export class PostsService {
 
   async remove(id: number) {
     try {
-      return this.prisma.post.delete({
+      return await this.prisma.post.delete({
         where: {
           id,
         },
