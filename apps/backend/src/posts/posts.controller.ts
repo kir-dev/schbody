@@ -23,6 +23,7 @@ export class PostsController {
   create(@Body() createPostDto: CreatePostDto, @CurrentUser() user: User) {
     return this.postsService.create(createPostDto, user);
   }
+
   @Get()
   async findAll(@Query() getPostsDto: GetPostsDto): Promise<SimplePostDto[]> {
     return this.postsService.findAll(getPostsDto);
@@ -32,6 +33,8 @@ export class PostsController {
   async findOne(@Param('id') id: string) {
     return this.postsService.findOne(Number(id));
   }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Patch(':id')
@@ -39,6 +42,7 @@ export class PostsController {
     return this.postsService.update(Number(id), updatePostDto);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Delete(':id')
