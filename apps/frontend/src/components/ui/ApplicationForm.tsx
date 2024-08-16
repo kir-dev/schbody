@@ -31,9 +31,28 @@ export default function ApplicationForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const a = values;
-    values = a;
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Form submitted successfully:', data);
+
+      // Handle success (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+      console.error('There was a problem with the submission:', error);
+      // Handle error (e.g., show an error message)
+    }
   }
 
   return (
@@ -44,7 +63,7 @@ export default function ApplicationForm() {
             <CardTitle>Személyes adatok</CardTitle>
             <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
           </CardHeader>
-          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+          <CardContent className='md:grid-cols-4 md:grid gap-4'>
             <FormField
               control={form.control}
               name='name'
@@ -121,13 +140,15 @@ export default function ApplicationForm() {
               control={form.control}
               name='room_number'
               render={(field: object) => (
-                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                <FormItem
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
+                >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
                     <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
                   </div>
                   <FormControl>
-                    <InputOTP maxLength={4} disabled={!form.watch('is_sch_resident')}>
+                    <InputOTP maxLength={4} disabled={!form.watch('is_sch_resident')} {...field}>
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
