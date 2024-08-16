@@ -1,3 +1,11 @@
+import { TTitle } from '@/components/typography/typography';
+
 export default function Header() {
-  return <div className='flex w-full h-4 bg-amber-200' />;
+  return (
+    <header>
+      <div className='flex w-full h-16 bg-amber-200'>
+        <TTitle>SchBody</TTitle>
+      </div>
+    </header>
+  );
 }

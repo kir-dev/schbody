@@ -13,7 +13,7 @@ export default function Page() {
 
   return (
     <>
-      <Th1 text='Jelentkezési időszak kezelése' />
+      <Th1>Jelentkezési időszak kezelése</Th1>
       <Card className='m-8'>
         <CardHeader>
           <CardTitle>{applications[0].period.name}</CardTitle>
@@ -30,7 +30,7 @@ export default function Page() {
         </CardContent>
       </Card>
       <div className='m-8'>
-        <Th2 text='Jelentkezők' />
+        <Th2>Jelentkezők</Th2>
         <DataTable columns={columns} data={applications} />
       </div>
     </>
