@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function TTitle({ children }: { children: React.ReactNode }) {
   return <h1 className='text-4xl font-bold mx-8 my-3'>{children}</h1>;
 }
