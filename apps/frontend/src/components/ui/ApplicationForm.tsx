@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -13,26 +13,45 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   name: z.string(),
-  neptun: z.string(),
-  nickname: z.string({ message: 'Nem lehet üres' }),
-  contact_email: z.string().email({ message: 'Nem érvényes email cím' }),
-  is_sch_resident: z.boolean(),
+  neptun: z.string().optional(),
+  nickname: z.string({
+    required_error: 'Ez a mező kötelező',
+    invalid_type_error: 'String, tesó!',
+  }),
+  contact_email: z.string().email(),
+  is_sch_resident: z.boolean().optional(),
   room_number: z.number().int().gte(201).lte(1816).optional(),
   terms: z.boolean(),
 });
 export default function ApplicationForm() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      neptun: 'NEPTUN',
+      nickname: 'Bujdi Bohoc',
+      contact_email: 'email@gmail.com',
+      is_sch_resident: false,
+      room_number: 0,
+      terms: false,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    toast({
+      title: 'You submitted the following values:',
+      description: (
+        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+          <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
+        </pre>
+      ),
+    });
+    /*try {
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
@@ -52,7 +71,7 @@ export default function ApplicationForm() {
     } catch (error) {
       console.error('There was a problem with the submission:', error);
       // Handle error (e.g., show an error message)
-    }
+    }*/
   }
 
   return (
@@ -85,6 +104,7 @@ export default function ApplicationForm() {
                   <FormControl>
                     <Input disabled {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -97,18 +117,20 @@ export default function ApplicationForm() {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name='contact_email'
-              render={(field: object) => (
+              render={({ field }: { field: ControllerRenderProps<z.infer<typeof formSchema>, 'contact_email'> }) => (
                 <FormItem>
                   <FormLabel>Kapcsolattartási email cím</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -129,6 +151,7 @@ export default function ApplicationForm() {
                   <div className='space-y-0.5'>
                     <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
                     <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
+                    <FormMessage />
                   </div>
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -183,12 +206,15 @@ export default function ApplicationForm() {
                       <Link href='/rules'>A szabályzatot ide kattintva tudod elolvasni</Link>
                     </FormDescription>
                   </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
         </Card>
-        <Button className='float-right w-60 h-16 m-8'>Jelentkezés leadása</Button>
+        <Button className='float-right w-60 h-16 m-8' type='submit'>
+          Jelentkezés leadása
+        </Button>
       </form>
     </Form>
   );
