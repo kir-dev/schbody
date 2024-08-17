@@ -104,7 +104,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                       key={column.id}
                       className='capitalize'
                       checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
+                      onCheckedChange={(value: boolean) => column.toggleVisibility(Boolean(value))}
                     >
                       {column.id}
                     </MenubarCheckboxItem>
