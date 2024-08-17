@@ -39,6 +39,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -57,6 +58,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
       rowSelection,
     },
   });
+  const invertSelection = () => {
+    table.getRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
+  };
+  const selectAllFiltered = () => {
+    const visibles = table.getFilteredRowModel().rows;
+    table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
+  };
 
   return (
     <div>
@@ -65,10 +73,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           <MenubarMenu>
             <MenubarTrigger>Kijelölés</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>Összes kijelölése</MenubarItem>
-              <MenubarItem>Kiválogatottak kijelölése</MenubarItem>
-              <MenubarItem>Kijelölés megszüntetése</MenubarItem>
+              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(true)}>Összes kijelölése</MenubarItem>
+              <MenubarItem onClick={selectAllFiltered}>Kiszűrtek kijelölése</MenubarItem>
+              <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
+              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
+
               <MenubarSub>
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
@@ -77,6 +87,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   })}
                 </MenubarSubContent>
               </MenubarSub>
+              <MenubarSeparator />
+              <MenubarCheckboxItem
+                checked={automaticSelectionWhenRowClicked}
+                onCheckedChange={(value: boolean) => setAutomaticSelectionWhenRowClicked(value)}
+              >
+                Kattintáskor instant kijelölés
+              </MenubarCheckboxItem>
             </MenubarContent>
           </MenubarMenu>
           <MenubarMenu>
@@ -140,7 +157,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => automaticSelectionWhenRowClicked && row.toggleSelected(!row.getIsSelected())}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
@@ -159,7 +180,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <TableCell colSpan={columns.length}>
                 <div className='flex gap-8 justify-center'>
                   <span>
-                    {table.getFilteredRowModel().rows.length} / {data.length} jelentkezés kiválogatva
+                    {table.getFilteredRowModel().rows.length} / {data.length} jelentkezés kiszűrve
                   </span>
                   <span>
                     {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length}{' '}

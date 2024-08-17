@@ -2,6 +2,7 @@
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ApplicationEntity } from '@/types/application-entity';
@@ -55,12 +56,18 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
     header: ({ column }) => {
       return SortableHeader(column, 'Leadva');
     },
+    cell: ({ row }) => {
+      return <span>{row.original.createdAt.toString().slice(0, 16)}</span>;
+    },
   },
   {
     id: 'Státusz',
     accessorKey: 'status',
     header: ({ column }) => {
       return SortableHeader(column, 'Státusz');
+    },
+    cell: ({ row }) => {
+      return <Badge>{row.original.status}</Badge>;
     },
   },
 ];
