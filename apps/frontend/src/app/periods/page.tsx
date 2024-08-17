@@ -10,13 +10,13 @@ export default function Page() {
   const applications = mockApplications;
 
   return (
-    <>
+    <div className='h-fit'>
       <Th1>Jelentkezési időszak kezelése</Th1>
       <AdminApplicationPeriodCard period={applications[0].period} />
-      <div className='m-8'>
+      <div className='m-8 h-min overflow-scroll'>
         <Th2>Jelentkezők</Th2>
         <DataTable columns={columns} data={applications} />
       </div>
-    </>
+    </div>
   );
 }
