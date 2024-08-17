@@ -2,8 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import { ControllerRenderProps, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,25 +16,53 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
 
-const formSchema = z.object({
-  name: z.string(),
-  neptun: z.string().optional(),
-  nickname: z.string({
-    required_error: 'Ez a mező kötelező',
-    invalid_type_error: 'String, tesó!',
-  }),
-  contact_email: z.string().email(),
-  is_sch_resident: z.boolean().optional(),
-  room_number: z.number().int().gte(201).lte(1816).optional(),
-  terms: z.boolean(),
-});
+const formSchema = z
+  .object({
+    nickname: z.string({
+      required_error: 'Ez a mező kötelező',
+      invalid_type_error: 'String, tesó!',
+    }),
+    contact_email: z.string().email(),
+    is_sch_resident: z.boolean().optional(),
+    room_number: z
+      .union([
+        z.literal(0 && NaN),
+        z
+          .number()
+          .int()
+          .gte(201, { message: 'Ilyen szoba nem létezik' })
+          .lte(1816, { message: 'Ilyen szoba nem létezik' }),
+      ])
+      .optional()
+      .nullable()
+      .refine(
+        (data) => {
+          if (data === 0 || data === null || data === undefined) return true;
+          const lastTwoDigits = data! % 100;
+          return lastTwoDigits >= 1 && lastTwoDigits <= 16;
+        },
+        { message: 'Cseles, de ilyen szoba nem létezik' }
+      ),
+    terms: z.boolean().refine((data) => data, { message: 'A szabályzatot el kell fogadnod' }),
+  })
+  .refine(
+    (data) => {
+      if (data.is_sch_resident) {
+        return data.room_number !== 0 && data.room_number !== undefined;
+      }
+      return true;
+    },
+    {
+      path: ['room_number'],
+      message: 'A szoba szám megadása kötelező, ha kolis vagy.',
+    }
+  );
 export default function ApplicationForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      neptun: 'NEPTUN',
       nickname: 'Bujdi Bohoc',
       contact_email: 'email@gmail.com',
       is_sch_resident: false,
@@ -42,16 +71,16 @@ export default function ApplicationForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    toast({
-      title: 'You submitted the following values:',
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    /*    toast({
+      title: 'a POST request has been sent:',
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
         </pre>
       ),
-    });
-    /*try {
+    });*/
+    try {
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: {
@@ -59,59 +88,46 @@ export default function ApplicationForm() {
         },
         body: JSON.stringify(values),
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      //await response.json();
+      if (response.ok) {
+        toast({
+          title: 'Sikeres jelentkezés!',
+          description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
+        });
+        router.push('/');
+      } else {
+        toast({
+          title: 'Hiba történt!',
+          description: 'Valami nem stimmel a szerverrel, próbáld újra később!',
+          variant: 'destructive',
+        });
       }
-
-      const data = await response.json();
-      console.log('Form submitted successfully:', data);
-
-      // Handle success (e.g., show a success message, redirect, etc.)
     } catch (error) {
-      console.error('There was a problem with the submission:', error);
-      // Handle error (e.g., show an error message)
-    }*/
+      console.error('There was an error!', error);
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 mx-32'>
         <Card className='m-8 my-4'>
           <CardHeader>
             <CardTitle>Személyes adatok</CardTitle>
             <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
           </CardHeader>
           <CardContent className='md:grid-cols-4 md:grid gap-4'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={(field: object) => (
-                <FormItem>
-                  <FormLabel>Név</FormLabel>
-                  <FormControl>
-                    <Input disabled {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='neptun'
-              render={(field: object) => (
-                <FormItem>
-                  <FormLabel>Neptun</FormLabel>
-                  <FormControl>
-                    <Input disabled {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>Név</FormLabel>
+              <Input disabled value='Minta Pista' />
+            </FormItem>
+            <FormItem>
+              <FormLabel>Neptun</FormLabel>
+              <Input disabled value='NEPTUN' />
+            </FormItem>
             <FormField
               control={form.control}
               name='nickname'
-              render={(field: object) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Becenév</FormLabel>
                   <FormControl>
@@ -124,7 +140,7 @@ export default function ApplicationForm() {
             <FormField
               control={form.control}
               name='contact_email'
-              render={({ field }: { field: ControllerRenderProps<z.infer<typeof formSchema>, 'contact_email'> }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kapcsolattartási email cím</FormLabel>
                   <FormControl>
@@ -162,25 +178,36 @@ export default function ApplicationForm() {
             <FormField
               control={form.control}
               name='room_number'
-              render={(field: object) => (
+              render={({ field }) => (
                 <FormItem
                   className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
                     <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
+                    <FormMessage />
                   </div>
                   <FormControl>
-                    <InputOTP maxLength={4} disabled={!form.watch('is_sch_resident')} {...field}>
+                    <InputOTP
+                      maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
+                      disabled={!form.watch('is_sch_resident')}
+                      value={field.value ? `${field.value}` : ''}
+                      onChange={(value: string) => {
+                        let numericValue = parseInt(value, 10);
+                        if (isNaN(numericValue)) {
+                          numericValue = 0;
+                        }
+                        field.onChange(numericValue);
+                      }}
+                    >
                       <InputOTPGroup>
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
+                        {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -205,8 +232,8 @@ export default function ApplicationForm() {
                     <FormDescription>
                       <Link href='/rules'>A szabályzatot ide kattintva tudod elolvasni</Link>
                     </FormDescription>
+                    <FormMessage />
                   </div>
-                  <FormMessage />
                 </FormItem>
               )}
             />
