@@ -37,7 +37,7 @@ const formSchema = z
       .nullable()
       .refine(
         (data) => {
-          if (data === 0 || data === null || data === undefined) return true;
+          if (!data) return true;
           const lastTwoDigits = data! % 100;
           return lastTwoDigits >= 1 && lastTwoDigits <= 16;
         },
