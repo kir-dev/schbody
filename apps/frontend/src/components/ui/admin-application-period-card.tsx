@@ -34,20 +34,20 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
 
   return (
     <Card className='m-8'>
-      <CardHeader className='flex flex-row w-full justify-between items-center'>
-        <div>
+      <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
+        <div className='max-md:w-full'>
           <CardTitle>{period.name}</CardTitle>
           <CardDescription>
             {period.applicationStart.toString().slice(0, 16)} - {period.applicationEnd.toString().slice(0, 16)}
           </CardDescription>
         </div>
-        <div className='flex items-center gap-4'>
-          <div className='flex flex-row items-center justify-between rounded-lg border py-2 px-4 shadow-sm gap-4'>
+        <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-4'>
+          <div className='flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4'>
             <Label htmlFor='tickets-are-valid-now'>Az itt kiosztott belépők jelenleg érvényesek</Label>
             <Switch id='tickets-are-valid-now' />
           </div>
           <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className='max-md:w-full'>
               <Button>Szerkesztés</Button>
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
@@ -92,7 +92,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
             </DialogContent>
           </Dialog>
           <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger asChild className='max-md:w-full'>
               <Button variant='destructive'> Törlés </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
