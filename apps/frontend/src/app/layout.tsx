@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='hu'>
-      <body className={`${inter.className} h-100 flex-col justify-start overflow-hidden`}>
+      <body className={`${inter.className} h-100 flex-col justify-between`}>
         <Header />
         {children}
       </body>
