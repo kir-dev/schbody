@@ -4,7 +4,7 @@ import ApplicationForm from '@/components/ui/ApplicationForm';
 export default function Page() {
   return (
     <>
-      <Th1>Jelentkezés</Th1>
+      <Th1>Jelentkezés xxxx/yy/z időszakra</Th1>
       <ApplicationForm />
     </>
   );

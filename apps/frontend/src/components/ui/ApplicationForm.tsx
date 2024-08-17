@@ -170,7 +170,13 @@ export default function ApplicationForm() {
                     <FormMessage />
                   </div>
                   <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={(data) => {
+                        field.onChange(data);
+                        form.resetField('room_number');
+                      }}
+                    />
                   </FormControl>
                 </FormItem>
               )}
