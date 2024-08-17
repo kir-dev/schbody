@@ -65,6 +65,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     const visibles = table.getFilteredRowModel().rows;
     table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
   };
+  function setSelectedToStatus2(value: ApplicationStatus) {
+    table.getSelectedRowModel().rows.forEach((row) => {
+      row.original = { ...row.original, status: value };
+      //todo data manipulation
+    });
+  }
 
   return (
     <div>
@@ -83,7 +89,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
                   {(Object.keys(ApplicationStatus) as Array<keyof typeof ApplicationStatus>).map((key) => {
-                    return <MenubarItem key={key}>{key}</MenubarItem>;
+                    return (
+                      <MenubarItem key={key} onClick={() => setSelectedToStatus2(ApplicationStatus[key])}>
+                        {key}
+                      </MenubarItem>
+                    );
                   })}
                 </MenubarSubContent>
               </MenubarSub>
