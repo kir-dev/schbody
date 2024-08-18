@@ -1,25 +1,20 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { FiEdit2, FiUser, FiUserCheck } from 'react-icons/fi';
 import { z } from 'zod';
 
-import { Th2, TTitle } from '@/components/typography/typography';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
+import { useToast } from '@/lib/use-toast';
 
 const formSchema = z
   .object({
@@ -129,70 +124,13 @@ export default function ProfileForm() {
   if (error) return <p>Error loading profile.</p>;
 
   return (
-    <div className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
-      <Card className='mx-8 my-4 flex max-md:flex-col md:flex-row'>
-        <div className='min-w-44 min-h-44 w-1/5 h-full aspect-square relative'>
-          <Image
-            src='https://mozsarmate.me/marci.jpg'
-            placeholder='blur'
-            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
-            alt='PROFIL KEP'
-            fill
-            className='rounded-l-xl'
-          />
-          <div className='w-full absolute flex bottom-2'>
-            <Button variant='secondary' className='block m-auto'>
-              Profilkép módosítása
-            </Button>
-          </div>
-        </div>
-        <div className='w-full relative'>
-          <CardContent>
-            <div className='flex mt-10 justify-between'>
-              <div className='flex items-start'>
-                <div>
-                  <TTitle className='mt-0'>{user?.fullName}</TTitle>
-                  <Th2 className='ml-8'>{user?.neptun}</Th2>
-                </div>
-                {/*{user?.role !== Role.USER && (*/}
-                <Badge className='text-md px-4 py-2 rounded-xl' variant='secondary'>
-                  {user?.role}
-                </Badge>
-                {/*)}*/}
-              </div>
-              <div className='flex gap-4'>
-                {!editingIsOn && (
-                  <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
-                    Adatok szerkesztése
-                  </Button>
-                )}
-                {editingIsOn && (
-                  <Button type='submit' onClick={form.handleSubmit(onSubmit)}>
-                    Mentés
-                  </Button>
-                )}
-                <Link href='/auth/logout'>
-                  <Button variant='destructive'>Kijelenkezés</Button>
-                </Link>
-              </div>
-            </div>
-            <div className='flex gap-16 m-8 font-mono mb-0'>
-              <span title='Első bejelentkezés'>
-                <FiUser size={24} />
-                {user?.createdAt?.slice(0, 10)}
-              </span>
-              <span title='Utolsó változtatás'>
-                <FiEdit2 size={24} />
-                {user?.updatedAt?.slice(0, 10)}
-              </span>
-              <span title='Utolsó változtatás'>
-                <FiUserCheck size={24} />
-                {user?.profileSeenAt?.slice(0, 10)}
-              </span>
-            </div>
-          </CardContent>
-        </div>
-      </Card>
+    <div className='space-y-4 pb-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
+      <UserProfileBanner
+        user={user}
+        editingIsOn={editingIsOn}
+        onClick={() => setEditingIsOn(true)}
+        onSubmit={() => onSubmit(form.getValues())}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card className='mx-8 my-4'>

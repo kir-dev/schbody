@@ -14,7 +14,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/lib/use-toast';
 
 const formSchema = z
   .object({
