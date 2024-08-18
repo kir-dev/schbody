@@ -69,8 +69,10 @@ export default function ProfileForm() {
       terms: false,
     },
   });
+  const [editingIsOn, setEditingIsOn] = React.useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setEditingIsOn(false);
     try {
       const response = await fetch('/api/submit', {
         method: 'POST',
@@ -100,24 +102,34 @@ export default function ProfileForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
-        <Card className='m-8 my-4 flex'>
-          <div className='min-w-1/4 max-w-1/2 h-full aspect-square relative'>
+        <Card className='m-8 my-4 flex max-md:flex-col md:flex-row'>
+          <div className='min-w-72 w-1/4 h-full aspect-square relative'>
             <Image
               src='https://mozsarmate.me/marci.jpg'
               placeholder='blur'
               blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
               alt='PROFIL KEP'
               fill
-              className='h-full aspect-square rounded-l-xl'
+              className='rounded-l-xl'
             />
-            <Button className='z-10 absolute bottom-2 self-center' src='/set'>
-              Valami
-            </Button>
+            <div className='w-full absolute flex bottom-2'>
+              <Button variant='secondary' className='block m-auto'>
+                Profilkép módosítása
+              </Button>
+            </div>
           </div>
-          <div className=''>
-            <CardHeader>
-              <CardTitle>Személyes adatok</CardTitle>
-              <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
+          <div className='w-full'>
+            <CardHeader className='flex items-start flex-row justify-between'>
+              <div>
+                <CardTitle>Személyes adatok</CardTitle>
+                <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
+              </div>
+              {!editingIsOn && (
+                <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
+                  Adatok szerkesztése
+                </Button>
+              )}
+              {editingIsOn && <Button type='submit'>Mentés</Button>}
             </CardHeader>
             <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
               <FormItem>
@@ -135,7 +147,7 @@ export default function ProfileForm() {
                   <FormItem>
                     <FormLabel>Becenév</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={!editingIsOn} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,7 +160,7 @@ export default function ProfileForm() {
                   <FormItem>
                     <FormLabel>Kapcsolattartási email cím</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={!editingIsOn} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
