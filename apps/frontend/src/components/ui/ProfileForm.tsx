@@ -3,12 +3,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiEdit2, FiUser, FiUserCheck } from 'react-icons/fi';
 import { z } from 'zod';
 
-import { mockUser } from '@/app/mockdata/mock-data';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,7 +18,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Role, UserEntity } from '@/types/user-entity';
+import useProfile from '@/hooks/useProfile';
 
 const formSchema = z
   .object({
@@ -50,7 +49,6 @@ const formSchema = z
       ),
     can_help_noobs: z.boolean(),
     public_desc: z.string().optional(),
-    terms: z.boolean().refine((data) => data, { message: 'A szabályzatot el kell fogadnod' }),
   })
   .refine(
     (data) => {
@@ -64,23 +62,24 @@ const formSchema = z
       message: 'A szoba szám megadása kötelező, ha kolis vagy.',
     }
   );
+
 export default function ProfileForm() {
   const { toast } = useToast();
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickname: 'Bujdi Bohoc',
-      contact_email: 'email@gmail.com',
+      nickname: 'aaa',
+      contact_email: 'aaa',
       is_sch_resident: false,
       room_number: 0,
-      terms: false,
       can_help_noobs: false,
       public_desc: '',
     },
   });
-  const [editingIsOn, setEditingIsOn] = React.useState(false);
-  const user: UserEntity = mockUser;
+
+  const { data: user, error, isLoading } = useProfile();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
@@ -110,6 +109,24 @@ export default function ProfileForm() {
     }
   }
 
+  const { reset } = form;
+  useEffect(() => {
+    if (user) {
+      reset({
+        nickname: user.nickName || '',
+        contact_email: user.email || '',
+        is_sch_resident: user.isSchResident || false,
+        room_number: user.roomNumber || 0,
+        can_help_noobs: user.canHelpNoobs || false,
+        public_desc: user.publicDesc || '',
+      });
+    }
+  }, [user, reset]);
+
+  const [editingIsOn, setEditingIsOn] = React.useState(false);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading profile.</p>;
+
   return (
     <div className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
       <Card className='mx-8 my-4 flex max-md:flex-col md:flex-row'>
@@ -133,14 +150,14 @@ export default function ProfileForm() {
             <div className='flex mt-10 justify-between'>
               <div className='flex items-start'>
                 <div>
-                  <TTitle className='mt-0'>{user.fullName}</TTitle>
-                  <Th2 className='ml-8'>{user.neptun}</Th2>
+                  <TTitle className='mt-0'>{user?.fullName}</TTitle>
+                  <Th2 className='ml-8'>{user?.neptun}</Th2>
                 </div>
-                {user.role !== Role.USER && (
-                  <Badge className='text-md px-4 py-2 rounded-xl' variant='secondary'>
-                    {user.role}
-                  </Badge>
-                )}
+                {/*{user?.role !== Role.USER && (*/}
+                <Badge className='text-md px-4 py-2 rounded-xl' variant='secondary'>
+                  {user?.role}
+                </Badge>
+                {/*)}*/}
               </div>
               <div className='flex gap-4'>
                 {!editingIsOn && (
@@ -149,7 +166,7 @@ export default function ProfileForm() {
                   </Button>
                 )}
                 {editingIsOn && (
-                  <Button type='submit' onClick={() => setEditingIsOn(false)}>
+                  <Button type='submit' onClick={form.handleSubmit(onSubmit)}>
                     Mentés
                   </Button>
                 )}
@@ -161,15 +178,15 @@ export default function ProfileForm() {
             <div className='flex gap-16 m-8 font-mono mb-0'>
               <span title='Első bejelentkezés'>
                 <FiUser size={24} />
-                {user.createdAt.toISOString().slice(0, 10)}
+                {user?.createdAt?.slice(0, 10)}
               </span>
               <span title='Utolsó változtatás'>
                 <FiEdit2 size={24} />
-                {user.updatedAt.toISOString().slice(0, 10)}
+                {user?.updatedAt?.slice(0, 10)}
               </span>
               <span title='Utolsó változtatás'>
                 <FiUserCheck size={24} />
-                {user.updatedAt.toISOString().slice(0, 10)}
+                {user?.profileSeenAt?.slice(0, 10)}
               </span>
             </div>
           </CardContent>
@@ -230,6 +247,7 @@ export default function ProfileForm() {
                     <FormControl>
                       <Switch
                         checked={field.value}
+                        disabled={!editingIsOn}
                         onCheckedChange={(data) => {
                           field.onChange(data);
                           form.resetField('room_number');
@@ -254,7 +272,7 @@ export default function ProfileForm() {
                     <FormControl>
                       <InputOTP
                         maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
-                        disabled={!form.watch('is_sch_resident')}
+                        disabled={!form.watch('is_sch_resident') || !editingIsOn}
                         value={field.value ? `${field.value}` : ''}
                         onChange={(value: string) => {
                           let numericValue = parseInt(value, 10);
@@ -279,7 +297,7 @@ export default function ProfileForm() {
           </Card>
           <Card className='mx-8 my-4'>
             <CardHeader>
-              <CardTitle>Admin beállítások</CardTitle>
+              <CardTitle>Admin beállítások - ezt majd vegyuk ki usereknel</CardTitle>
             </CardHeader>
             <CardContent className='md:grid-cols-2 md:grid gap-4'>
               <FormField
@@ -294,6 +312,7 @@ export default function ProfileForm() {
                     </div>
                     <FormControl>
                       <Switch
+                        disabled={!editingIsOn}
                         checked={field.value}
                         onCheckedChange={(data) => {
                           field.onChange(data);
@@ -318,7 +337,12 @@ export default function ProfileForm() {
                       <FormMessage />
                     </div>
                     <FormControl>
-                      <Textarea placeholder='...' className='resize-none' {...field} disabled={!editingIsOn} />
+                      <Textarea
+                        placeholder='...'
+                        className='resize-none'
+                        {...field}
+                        disabled={!editingIsOn || !form.watch('can_help_noobs')}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
