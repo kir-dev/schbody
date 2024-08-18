@@ -16,7 +16,7 @@ export type UserEntity = {
   roomNumber: number | null;
   canHelpNoobs: boolean;
   publicDesc: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  profileSeenAt: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  profileSeenAt: string | null;
 };
