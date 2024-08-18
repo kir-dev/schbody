@@ -2,6 +2,23 @@ import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { Role, UserEntity } from '@/types/user-entity';
 
+export const mockUser: UserEntity = {
+  fullName: 'Minta Pista',
+  neptun: 'NEPTUN',
+  nickName: 'Bujdi Bohoc',
+  email: 'email@kir-dev.hu',
+  canHelpNoobs: false,
+  role: Role.USER,
+  isSchResident: true,
+  roomNumber: 1211,
+  id: 1,
+  authSchId: '1',
+  createdAt: new Date(423433),
+  updatedAt: new Date(2431123),
+  profileSeenAt: new Date(2431123),
+  publicDesc: null,
+};
+
 export const mockUsers: UserEntity[] = [
   {
     id: 1,
