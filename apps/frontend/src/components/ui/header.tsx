@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 import { THeaderLink, TTitle } from '@/components/typography/typography';
-
-import { Button } from './button';
+import LoginButton from '@/components/ui/LoginButton';
 
 export default function Header() {
   return (
@@ -24,9 +23,7 @@ export default function Header() {
           <THeaderLink>
             <Link href='/faq'>GYIK</Link>
           </THeaderLink>
-          <Link href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}>
-            <Button className='m-8 ml-0'>Bejelentkezés</Button>
-          </Link>
+          <LoginButton />
         </div>
       </div>
     </header>
