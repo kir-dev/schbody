@@ -13,9 +13,9 @@ export const mockUser: UserEntity = {
   roomNumber: 1211,
   id: 1,
   authSchId: '1',
-  createdAt: new Date(423433),
-  updatedAt: new Date(2431123),
-  profileSeenAt: new Date(2431123),
+  createdAt: '1970-01-01T00:00:00.000Z',
+  updatedAt: '1970-01-01T00:00:00.000Z',
+  profileSeenAt: '1970-01-01T00:00:00.000Z',
   publicDesc: null,
 };
 
@@ -32,9 +32,9 @@ export const mockUsers: UserEntity[] = [
     roomNumber: 1319,
     canHelpNoobs: true,
     publicDesc: 'semmi',
-    createdAt: new Date(634534),
-    updatedAt: new Date(313123122),
-    profileSeenAt: new Date(313123122),
+    createdAt: '1970-01-01T00:00:00.000Z',
+    updatedAt: '1970-01-01T00:00:00.000Z',
+    profileSeenAt: '1970-01-01T00:00:00.000Z',
   },
   {
     id: 1,
@@ -48,9 +48,9 @@ export const mockUsers: UserEntity[] = [
     roomNumber: 420,
     canHelpNoobs: false,
     publicDesc: '',
-    createdAt: new Date(342),
-    updatedAt: new Date(5345),
-    profileSeenAt: new Date(313123122),
+    createdAt: '1970-01-01T00:00:00.000Z',
+    updatedAt: '1970-01-01T00:00:00.000Z',
+    profileSeenAt: '1970-01-01T00:00:00.000Z',
   },
 ];
 
