@@ -1,16 +1,16 @@
-import axios from 'axios';
+import api from '@/components/network/apiSetup';
 
 export async function axiosGetFetcher<T>(url: string): Promise<T> {
-  const response = await axios.get(url);
+  const response = await api.get(url);
   return response.data;
 }
 
 export async function axiosPostFetcher<T, U>(url: string, { arg }: { arg: U }): Promise<T> {
-  const response = await axios.post(url, arg);
+  const response = await api.post(url, arg);
   return response.data;
 }
 
 export async function axiosPatchFetcher<T, U>(url: string, { arg }: { arg: U }): Promise<T> {
-  const response = await axios.patch(url, arg);
+  const response = await api.patch(url, arg);
   return response.data;
 }
