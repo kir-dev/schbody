@@ -24,7 +24,9 @@ export default function Header() {
           <THeaderLink>
             <Link href='/faq'>GYIK</Link>
           </THeaderLink>
-          <Button className='m-8 ml-0'>Bejelentkezés</Button>
+          <Link href={`${process.env.NEXT_PUBLIC_API_URL}/auth/login`}>
+            <Button className='m-8 ml-0'>Bejelentkezés</Button>
+          </Link>
         </div>
       </div>
     </header>
