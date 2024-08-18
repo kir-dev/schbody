@@ -15,7 +15,7 @@ export type UserEntity = {
   isSchResident: boolean;
   roomNumber: number | null;
   canHelpNoobs: boolean;
-  publicDesc: string;
+  publicDesc: string | null;
   createdAt: Date;
   updatedAt: Date;
   profileSeenAt: Date | null;

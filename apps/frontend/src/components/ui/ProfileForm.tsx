@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { FiEdit2, FiUser, FiUserCheck } from 'react-icons/fi';
 import { z } from 'zod';
 
+import { mockUser } from '@/app/mockdata/mock-data';
+import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -14,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
+import { UserEntity } from '@/types/user-entity';
 
 const formSchema = z
   .object({
@@ -70,6 +74,7 @@ export default function ProfileForm() {
     },
   });
   const [editingIsOn, setEditingIsOn] = React.useState(false);
+  const user: UserEntity = mockUser;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
@@ -100,10 +105,47 @@ export default function ProfileForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
-        <Card className='m-8 my-4 flex max-md:flex-col md:flex-row'>
-          <div className='w-full'>
+    <div className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
+      <Card className='mx-8 my-4 flex max-md:flex-col md:flex-row'>
+        <div className='min-w-40 w-1/4 h-full aspect-square relative'>
+          <Image
+            src='https://mozsarmate.me/marci.jpg'
+            placeholder='blur'
+            blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+            alt='PROFIL KEP'
+            fill
+            className='rounded-l-xl'
+          />
+          <div className='w-full absolute flex bottom-2'>
+            <Button variant='secondary' className='block m-auto'>
+              Profilkép módosítása
+            </Button>
+          </div>
+        </div>
+        <div className='w-full'>
+          <CardContent>
+            <TTitle className='mt-10'>{user.fullName}</TTitle>
+            <Th2 className='ml-8'>{user.neptun}</Th2>
+            <div className='flex gap-16 m-8 font-mono'>
+              <span title='Első bejelentkezés'>
+                <FiUser size={24} />
+                {user.createdAt.toISOString().slice(0, 10)}
+              </span>
+              <span title='Utolsó változtatás'>
+                <FiEdit2 size={24} />
+                {user.updatedAt.toISOString().slice(0, 10)}
+              </span>
+              <span title='Utolsó változtatás'>
+                <FiUserCheck size={24} />
+                {user.updatedAt.toISOString().slice(0, 10)}
+              </span>
+            </div>
+          </CardContent>
+        </div>
+      </Card>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Card className='mx-8 my-4'>
             <CardHeader className='flex items-start flex-row justify-between'>
               <div>
                 <CardTitle>Személyes adatok</CardTitle>
@@ -116,14 +158,6 @@ export default function ProfileForm() {
               {editingIsOn && <Button type='submit'>Mentés</Button>}
             </CardHeader>
             <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
-              <FormItem>
-                <FormLabel>Név</FormLabel>
-                <Input disabled value='Minta Pista' />
-              </FormItem>
-              <FormItem>
-                <FormLabel>Neptun</FormLabel>
-                <Input disabled value='NEPTUN' />
-              </FormItem>
               <FormField
                 control={form.control}
                 name='nickname'
@@ -151,90 +185,74 @@ export default function ProfileForm() {
                 )}
               />
             </CardContent>
-          </div>
-          <div className='min-w-72 w-1/4 h-full aspect-square relative'>
-            <Image
-              src='https://mozsarmate.me/marci.jpg'
-              placeholder='blur'
-              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
-              alt='PROFIL KEP'
-              fill
-              className='rounded-r-xl'
-            />
-            <div className='w-full absolute flex bottom-2'>
-              <Button variant='secondary' className='block m-auto'>
-                Profilkép módosítása
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        <Card className='m-8'>
-          <CardHeader>
-            <CardTitle>Kollégiumi bentlakás</CardTitle>
-          </CardHeader>
-          <CardContent className='md:grid-cols-2 md:grid gap-4'>
-            <FormField
-              control={form.control}
-              name='is_sch_resident'
-              render={({ field }) => (
-                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
-                  <div className='space-y-0.5'>
-                    <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
-                    <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
-                    <FormMessage />
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={(data) => {
-                        field.onChange(data);
-                        form.resetField('room_number');
-                      }}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='room_number'
-              render={({ field }) => (
-                <FormItem
-                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
-                >
-                  <div className='space-y-0.5'>
-                    <FormLabel>Szoba szám</FormLabel>
-                    <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
-                    <FormMessage />
-                  </div>
-                  <FormControl>
-                    <InputOTP
-                      maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
-                      disabled={!form.watch('is_sch_resident')}
-                      value={field.value ? `${field.value}` : ''}
-                      onChange={(value: string) => {
-                        let numericValue = parseInt(value, 10);
-                        if (isNaN(numericValue)) {
-                          numericValue = 0;
-                        }
-                        field.onChange(numericValue);
-                      }}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-      </form>
-    </Form>
+          </Card>
+          <Card className='mx-8 my-4'>
+            <CardHeader>
+              <CardTitle>Kollégiumi bentlakás</CardTitle>
+            </CardHeader>
+            <CardContent className='md:grid-cols-2 md:grid gap-4'>
+              <FormField
+                control={form.control}
+                name='is_sch_resident'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                    <div className='space-y-0.5'>
+                      <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
+                      <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(data) => {
+                          field.onChange(data);
+                          form.resetField('room_number');
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='room_number'
+                render={({ field }) => (
+                  <FormItem
+                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    <div className='space-y-0.5'>
+                      <FormLabel>Szoba szám</FormLabel>
+                      <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <InputOTP
+                        maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
+                        disabled={!form.watch('is_sch_resident')}
+                        value={field.value ? `${field.value}` : ''}
+                        onChange={(value: string) => {
+                          let numericValue = parseInt(value, 10);
+                          if (isNaN(numericValue)) {
+                            numericValue = 0;
+                          }
+                          field.onChange(numericValue);
+                        }}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+        </form>
+      </Form>
+    </div>
   );
 }
