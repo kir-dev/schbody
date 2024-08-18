@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -103,26 +103,10 @@ export default function ProfileForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
         <Card className='m-8 my-4 flex max-md:flex-col md:flex-row'>
-          <div className='min-w-72 w-1/4 h-full aspect-square relative'>
-            <Image
-              src='https://mozsarmate.me/marci.jpg'
-              placeholder='blur'
-              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
-              alt='PROFIL KEP'
-              fill
-              className='rounded-l-xl'
-            />
-            <div className='w-full absolute flex bottom-2'>
-              <Button variant='secondary' className='block m-auto'>
-                Profilkép módosítása
-              </Button>
-            </div>
-          </div>
           <div className='w-full'>
             <CardHeader className='flex items-start flex-row justify-between'>
               <div>
                 <CardTitle>Személyes adatok</CardTitle>
-                <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
               </div>
               {!editingIsOn && (
                 <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
@@ -168,12 +152,26 @@ export default function ProfileForm() {
               />
             </CardContent>
           </div>
+          <div className='min-w-72 w-1/4 h-full aspect-square relative'>
+            <Image
+              src='https://mozsarmate.me/marci.jpg'
+              placeholder='blur'
+              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+              alt='PROFIL KEP'
+              fill
+              className='rounded-r-xl'
+            />
+            <div className='w-full absolute flex bottom-2'>
+              <Button variant='secondary' className='block m-auto'>
+                Profilkép módosítása
+              </Button>
+            </div>
+          </div>
         </Card>
 
         <Card className='m-8'>
           <CardHeader>
             <CardTitle>Kollégiumi bentlakás</CardTitle>
-            <CardDescription>Ellenőrízd régebben megadott viszonyod, szükség esetén módosíts rajta!</CardDescription>
           </CardHeader>
           <CardContent className='md:grid-cols-2 md:grid gap-4'>
             <FormField
