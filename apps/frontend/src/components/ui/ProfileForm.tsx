@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,6 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -57,7 +56,7 @@ const formSchema = z
       message: 'A szoba szám megadása kötelező, ha kolis vagy.',
     }
   );
-export default function ApplicationForm() {
+export default function ProfileForm() {
   const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,14 +71,6 @@ export default function ApplicationForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    /*    toast({
-      title: 'a POST request has been sent:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
-    });*/
     try {
       const response = await fetch('/api/submit', {
         method: 'POST',
@@ -91,8 +82,7 @@ export default function ApplicationForm() {
       //await response.json();
       if (response.ok) {
         toast({
-          title: 'Sikeres jelentkezés!',
-          description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
+          title: 'Sikeres módosítás!',
         });
         router.push('/');
       } else {
@@ -109,48 +99,63 @@ export default function ApplicationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-64 max-md:mx-8'>
-        <Card className='m-8 my-4'>
-          <CardHeader>
-            <CardTitle>Személyes adatok</CardTitle>
-            <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
-          </CardHeader>
-          <CardContent className='md:grid-cols-4 md:grid gap-4'>
-            <FormItem>
-              <FormLabel>Név</FormLabel>
-              <Input disabled value='Minta Pista' />
-            </FormItem>
-            <FormItem>
-              <FormLabel>Neptun</FormLabel>
-              <Input disabled value='NEPTUN' />
-            </FormItem>
-            <FormField
-              control={form.control}
-              name='nickname'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Becenév</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
+        <Card className='m-8 my-4 flex'>
+          <div className='min-w-1/4 max-w-1/2 h-full aspect-square relative'>
+            <Image
+              src='https://mozsarmate.me/marci.jpg'
+              placeholder='blur'
+              blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+              alt='PROFIL KEP'
+              fill
+              className='h-full aspect-square rounded-l-xl'
             />
-            <FormField
-              control={form.control}
-              name='contact_email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kapcsolattartási email cím</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
+            <Button className='z-10 absolute bottom-2 self-center' src='/set'>
+              Valami
+            </Button>
+          </div>
+          <div className=''>
+            <CardHeader>
+              <CardTitle>Személyes adatok</CardTitle>
+              <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
+            </CardHeader>
+            <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+              <FormItem>
+                <FormLabel>Név</FormLabel>
+                <Input disabled value='Minta Pista' />
+              </FormItem>
+              <FormItem>
+                <FormLabel>Neptun</FormLabel>
+                <Input disabled value='NEPTUN' />
+              </FormItem>
+              <FormField
+                control={form.control}
+                name='nickname'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Becenév</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='contact_email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kapcsolattartási email cím</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </div>
         </Card>
 
         <Card className='m-8'>
@@ -219,35 +224,6 @@ export default function ApplicationForm() {
             />
           </CardContent>
         </Card>
-        <Card className='m-8'>
-          <CardHeader>
-            <CardTitle>Kondi szabályzat</CardTitle>
-            <CardDescription>Már csak egy dolog van hátra!</CardDescription>
-          </CardHeader>
-          <CardContent className='md:grid md:grid-cols-2'>
-            <FormField
-              control={form.control}
-              name='terms'
-              render={({ field }) => (
-                <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm'>
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className='space-y-1 leading-none'>
-                    <FormLabel>Elfogadom a konditerem használati szabályzatát</FormLabel>
-                    <FormDescription>
-                      <Link href='/rules'>A szabályzatot ide kattintva tudod elolvasni</Link>
-                    </FormDescription>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-        <Button className='float-right w-60 h-16 m-8' type='submit'>
-          Jelentkezés leadása
-        </Button>
       </form>
     </Form>
   );
