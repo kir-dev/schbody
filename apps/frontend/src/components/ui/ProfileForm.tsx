@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -170,9 +171,9 @@ export default function ProfileForm() {
                     Mentés
                   </Button>
                 )}
-                <Button variant='destructive' onClick={() => {}}>
-                  Kijelenkezés
-                </Button>
+                <Link href='/auth/logout'>
+                  <Button variant='destructive'>Kijelenkezés</Button>
+                </Link>
               </div>
             </div>
             <div className='flex gap-16 m-8 font-mono mb-0'>
