@@ -10,14 +10,16 @@ import { z } from 'zod';
 
 import { mockUser } from '@/app/mockdata/mock-data';
 import { Th2, TTitle } from '@/components/typography/typography';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { UserEntity } from '@/types/user-entity';
+import { Role, UserEntity } from '@/types/user-entity';
 
 const formSchema = z
   .object({
@@ -46,6 +48,8 @@ const formSchema = z
         },
         { message: 'Cseles, de ilyen szoba nem létezik' }
       ),
+    can_help_noobs: z.boolean(),
+    public_desc: z.string().optional(),
     terms: z.boolean().refine((data) => data, { message: 'A szabályzatot el kell fogadnod' }),
   })
   .refine(
@@ -71,6 +75,8 @@ export default function ProfileForm() {
       is_sch_resident: false,
       room_number: 0,
       terms: false,
+      can_help_noobs: false,
+      public_desc: '',
     },
   });
   const [editingIsOn, setEditingIsOn] = React.useState(false);
@@ -107,7 +113,7 @@ export default function ProfileForm() {
   return (
     <div className='space-y-4 pb-16 md:mx-32 max-md:mx-8'>
       <Card className='mx-8 my-4 flex max-md:flex-col md:flex-row'>
-        <div className='min-w-40 w-1/4 h-full aspect-square relative'>
+        <div className='min-w-44 min-h-44 w-1/5 h-full aspect-square relative'>
           <Image
             src='https://mozsarmate.me/marci.jpg'
             placeholder='blur'
@@ -122,11 +128,37 @@ export default function ProfileForm() {
             </Button>
           </div>
         </div>
-        <div className='w-full'>
+        <div className='w-full relative'>
           <CardContent>
-            <TTitle className='mt-10'>{user.fullName}</TTitle>
-            <Th2 className='ml-8'>{user.neptun}</Th2>
-            <div className='flex gap-16 m-8 font-mono'>
+            <div className='flex mt-10 justify-between'>
+              <div className='flex items-start'>
+                <div>
+                  <TTitle className='mt-0'>{user.fullName}</TTitle>
+                  <Th2 className='ml-8'>{user.neptun}</Th2>
+                </div>
+                {user.role !== Role.USER && (
+                  <Badge className='text-md px-4 py-2 rounded-xl' variant='secondary'>
+                    {user.role}
+                  </Badge>
+                )}
+              </div>
+              <div className='flex gap-4'>
+                {!editingIsOn && (
+                  <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
+                    Adatok szerkesztése
+                  </Button>
+                )}
+                {editingIsOn && (
+                  <Button type='submit' onClick={() => setEditingIsOn(false)}>
+                    Mentés
+                  </Button>
+                )}
+                <Button variant='destructive' onClick={() => {}}>
+                  Kijelenkezés
+                </Button>
+              </div>
+            </div>
+            <div className='flex gap-16 m-8 font-mono mb-0'>
               <span title='Első bejelentkezés'>
                 <FiUser size={24} />
                 {user.createdAt.toISOString().slice(0, 10)}
@@ -150,12 +182,6 @@ export default function ProfileForm() {
               <div>
                 <CardTitle>Személyes adatok</CardTitle>
               </div>
-              {!editingIsOn && (
-                <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
-                  Adatok szerkesztése
-                </Button>
-              )}
-              {editingIsOn && <Button type='submit'>Mentés</Button>}
             </CardHeader>
             <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
               <FormField
@@ -245,6 +271,54 @@ export default function ProfileForm() {
                           {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
                         </InputOTPGroup>
                       </InputOTP>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+          <Card className='mx-8 my-4'>
+            <CardHeader>
+              <CardTitle>Admin beállítások</CardTitle>
+            </CardHeader>
+            <CardContent className='md:grid-cols-2 md:grid gap-4'>
+              <FormField
+                control={form.control}
+                name='can_help_noobs'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                    <div className='space-y-0.5'>
+                      <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
+                      <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(data) => {
+                          field.onChange(data);
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name='public_desc'
+                render={({ field }) => (
+                  <FormItem
+                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('can_help_noobs') ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    <div className='space-y-0.5'>
+                      <FormLabel>Leírás</FormLabel>
+                      <FormDescription>
+                        A tagokat listázó oldalon ez a szöveg fog megjelenni a neved alatt
+                      </FormDescription>
+                      <FormMessage />
+                    </div>
+                    <FormControl>
+                      <Textarea placeholder='...' className='resize-none' {...field} disabled={!editingIsOn} />
                     </FormControl>
                   </FormItem>
                 )}
