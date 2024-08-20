@@ -6,9 +6,9 @@ import LoginButton from '@/components/ui/LoginButton';
 export default function Header() {
   return (
     <header>
-      <div className='flex flex-row w-full h-16 bg-amber-200 items-center justify-between'>
+      <div className='flex flex-row w-full h-16 bg-pink-200 items-center justify-between'>
         <TTitle>
-          <Link href='/'>SchBody</Link>
+          <Link href='/'>SCHBody</Link>
         </TTitle>
         <div className='flex items-center max-md:hidden gap-8 h-full'>
           <THeaderLink>
