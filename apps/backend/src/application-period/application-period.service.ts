@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { ApplicationPeriod } from '@prisma/client';
+import { ApplicationPeriod, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
@@ -46,24 +46,30 @@ export class ApplicationPeriodService {
   }
 
   async create(createApplicationPeriodDto: CreateApplicationPeriodDto, user): Promise<ApplicationPeriod> {
-    const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
-      where: {
-        AND: [
-          {
-            applicationPeriodStartAt: {
-              lte: createApplicationPeriodDto.applicationPeriodEndAt,
+    try {
+      const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
+        where: {
+          AND: [
+            {
+              applicationPeriodStartAt: {
+                lte: createApplicationPeriodDto.applicationPeriodEndAt,
+              },
             },
-          },
-          {
-            applicationPeriodEndAt: {
-              gte: createApplicationPeriodDto.applicationPeriodStartAt,
+            {
+              applicationPeriodEndAt: {
+                gte: createApplicationPeriodDto.applicationPeriodStartAt,
+              },
             },
-          },
-        ],
-      },
-    });
-    if (conflictingPeriod) {
-      throw new BadRequestException('Application period overlaps with another period');
+          ],
+        },
+      });
+      if (conflictingPeriod) {
+        throw new BadRequestException('Application period overlaps with another period');
+      }
+    } catch (e: any) {
+      if (e instanceof Prisma.PrismaClientValidationError) {
+        throw new BadRequestException('Invalid date format');
+      }
     }
     return this.prisma.applicationPeriod.create({
       data: {
@@ -94,26 +100,33 @@ export class ApplicationPeriodService {
       Boolean(updateApplicationPeriodDto.applicationPeriodStartAt) ||
       Boolean(updateApplicationPeriodDto.applicationPeriodEndAt)
     ) {
-      const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
-        where: {
-          AND: [
-            {
-              applicationPeriodStartAt: {
-                lte: updateApplicationPeriodDto.applicationPeriodEndAt,
+      try {
+        const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
+          where: {
+            AND: [
+              {
+                applicationPeriodStartAt: {
+                  lte: updateApplicationPeriodDto.applicationPeriodEndAt,
+                },
               },
-            },
-            {
-              applicationPeriodEndAt: {
-                gte: updateApplicationPeriodDto.applicationPeriodStartAt,
+              {
+                applicationPeriodEndAt: {
+                  gte: updateApplicationPeriodDto.applicationPeriodStartAt,
+                },
               },
-            },
-          ],
-        },
-      });
-      if (conflictingPeriod) {
-        throw new BadRequestException('Application period overlaps with another period');
+            ],
+          },
+        });
+        if (conflictingPeriod) {
+          throw new BadRequestException('Application period overlaps with another period');
+        }
+      } catch (e: any) {
+        if (e instanceof Prisma.PrismaClientValidationError) {
+          throw new BadRequestException('Invalid date format');
+        }
       }
     }
+
     try {
       return this.prisma.applicationPeriod.update({
         where: {
@@ -122,6 +135,9 @@ export class ApplicationPeriodService {
         data: updateApplicationPeriodDto,
       });
     } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new BadRequestException('Invalid date format');
+      }
       throw new BadRequestException('Application period not found');
     }
   }
