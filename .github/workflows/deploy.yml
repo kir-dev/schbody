@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/dockerize
 
 jobs:
   build-and-push:
