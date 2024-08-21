@@ -9,8 +9,6 @@ services:
     env_file:
       - .env
     restart: always
-    volumes:
-      - schbody_images:/app/apps/backend/static
     networks:
       - schbody-network
     depends_on:
@@ -28,9 +26,6 @@ services:
 
 volumes:
   schbody_db_folder:
-    external: true
-
-  schbody_images:
     external: true
 
 networks:
