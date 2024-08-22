@@ -10,7 +10,7 @@ import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto'
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
   findAll(getApplicationPeriodsDto: GetApplicationPeriodsDto) {
-    const skip = getApplicationPeriodsDto.page * getApplicationPeriodsDto.page_size;
+    const skip = getApplicationPeriodsDto.page * Number(getApplicationPeriodsDto.page_size);
     return this.prisma.applicationPeriod.findMany({
       skip,
       take: Number(getApplicationPeriodsDto.page_size),
