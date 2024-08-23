@@ -1,6 +1,6 @@
 import { Role } from '@prisma/client';
 
-export class UserDto {
+export class UserEntity {
   authSchId: string;
   fullName: string;
   nickName: string;
