@@ -21,6 +21,7 @@ export class UserController {
   }
 
   @Get('me')
+  @UseGuards(AuthGuard('jwt'))
   getCurrentUser(@CurrentUser() user: UserEntity) {
     return user;
   }
