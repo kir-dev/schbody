@@ -15,6 +15,6 @@ async function bootstrap() {
   const config = new DocumentBuilder().setTitle('SCHBody WEB').setVersion('1.0').addBearerAuth().build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(process.env.PORT || 3300);
+  await app.listen(process.env.BACKEND_PORT || 3300);
 }
 bootstrap();

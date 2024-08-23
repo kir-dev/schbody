@@ -1,0 +1,32 @@
+name: schbody
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - '${BACKEND_PORT}:${BACKEND_PORT}'
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - schbody-network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.10
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - schbody_db_folder:/var/lib/postgresql/data
+    networks:
+      - schbody-network
+
+volumes:
+  schbody_db_folder:
+    external: true
+
+networks:
+  schbody-network:
