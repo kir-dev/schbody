@@ -1,7 +1,7 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApplicationPeriod, Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -12,6 +12,7 @@ import { GetApplicationPeriodsDto } from './dto/get-application-periods.dto';
 import { SimpleApplicationPeriodDto } from './dto/simple-application-period.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
 
+@ApiTags('application-periods')
 @Controller('application-periods')
 export class ApplicationPeriodController {
   constructor(private readonly applicationPeriodService: ApplicationPeriodService) {}
