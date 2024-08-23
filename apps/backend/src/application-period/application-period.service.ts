@@ -16,6 +16,7 @@ export class ApplicationPeriodService {
       take: Number(getApplicationPeriodsDto.page_size),
     });
   }
+
   async getCurrentPeriod(): Promise<ApplicationPeriod> {
     const period = await this.prisma.applicationPeriod.findFirst({
       where: {
@@ -28,7 +29,7 @@ export class ApplicationPeriodService {
       },
     });
     if (!period) {
-      throw new NotFoundException('No current application period found');
+      throw new NotFoundException('Nem található aktuális jelentkezési időszak');
     }
     return period;
   }
