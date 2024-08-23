@@ -20,7 +20,7 @@ import { UserModule } from './user/user.module';
     ApplicationPeriodModule,
     ApplicationModule,
   ],
-    
+
   controllers: [AppController],
   providers: [AppService],
 })
