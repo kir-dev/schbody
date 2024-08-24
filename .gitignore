@@ -6,5 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 yarn.lock
+/apps/backend/.env
+/apps/frontend/.env
 
 .env
