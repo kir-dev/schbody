@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import useProfile from '@/hooks/useProfile';
 
 export default function LoginButton({ version }: { version: number }) {
-  const { data: user, mutate } = useProfile();
+  const { data: user } = useProfile();
   const router = useRouter();
 
   const handleNavToProfile = () => {
