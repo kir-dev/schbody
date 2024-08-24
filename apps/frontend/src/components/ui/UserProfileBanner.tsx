@@ -27,7 +27,7 @@ export default function UserProfileBanner(props: {
   };
 
   return (
-    <Card className='mx-8 my-4 flex max-md:flex-col md:flex-row'>
+    <Card className='flex max-md:flex-col md:flex-row'>
       <div className='min-w-44 min-h-44 w-1/4 h-full aspect-square relative'>
         <Image
           src='https://mozsarmate.me/marci.jpg'
@@ -43,19 +43,17 @@ export default function UserProfileBanner(props: {
           </Button>
         </div>
       </div>
-      <div className='w-full relative'>
+      <div className='w-full'>
         <CardContent>
-          <div className='flex mt-10 justify-between'>
+          <div className='flex md:flex-row max-md:flex-col max-md:gap-4 mt-10 justify-between'>
             <div className='flex items-start'>
               <div>
                 <TTitle className='mt-0'>{props.user?.fullName}</TTitle>
                 <Th2 className='ml-8'>{props.user?.neptun}</Th2>
               </div>
-              {/*{user?.role !== Role.USER && (*/}
-              <Badge className='text-md px-4 py-2 rounded-xl' variant='secondary'>
+              <Badge className='text-sm px-4 py-2 rounded-xl' variant='secondary'>
                 {props.user?.role}
               </Badge>
-              {/*)}*/}
             </div>
             <div className='flex gap-4'>
               {!props.editingIsOn && (
