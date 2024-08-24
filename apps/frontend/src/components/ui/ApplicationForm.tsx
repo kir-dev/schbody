@@ -72,14 +72,6 @@ export default function ApplicationForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    /*    toast({
-      title: 'a POST request has been sent:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      ),
-    });*/
     try {
       const response = await fetch('/api/submit', {
         method: 'POST',
@@ -110,7 +102,7 @@ export default function ApplicationForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-64 max-md:mx-8'>
-        <Card className='m-8 my-4'>
+        <Card>
           <CardHeader>
             <CardTitle>Személyes adatok</CardTitle>
             <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
@@ -152,8 +144,7 @@ export default function ApplicationForm() {
             />
           </CardContent>
         </Card>
-
-        <Card className='m-8'>
+        <Card>
           <CardHeader>
             <CardTitle>Kollégiumi bentlakás</CardTitle>
             <CardDescription>Ellenőrízd régebben megadott viszonyod, szükség esetén módosíts rajta!</CardDescription>
@@ -219,7 +210,7 @@ export default function ApplicationForm() {
             />
           </CardContent>
         </Card>
-        <Card className='m-8'>
+        <Card>
           <CardHeader>
             <CardTitle>Kondi szabályzat</CardTitle>
             <CardDescription>Már csak egy dolog van hátra!</CardDescription>
@@ -245,7 +236,7 @@ export default function ApplicationForm() {
             />
           </CardContent>
         </Card>
-        <Button className='float-right w-60 h-16 m-8' type='submit'>
+        <Button className='float-right w-60 h-16' type='submit'>
           Jelentkezés leadása
         </Button>
       </form>

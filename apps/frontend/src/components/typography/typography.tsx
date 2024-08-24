@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function TTitle({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <h1 className={`${className} text-4xl font-bold md:mx-8 max-md:mx-2 my-3`}>{children}</h1>;
+  return <h1 className={`${className} text-4xl max-md:text-2xl font-bold md:mx-8 max-md:mx-2 my-3`}>{children}</h1>;
 }
 
 export function THeaderLink({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -9,7 +9,7 @@ export function THeaderLink({ children, className }: { children: React.ReactNode
 }
 
 export default function Th1({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <h1 className={`${className} text-3xl font-bold m-8`}>{children}</h1>;
+  return <h1 className={`${className} text-3xl max-md:text-xl font-bold m-8`}>{children}</h1>;
 }
 
 export function Th2({ children, className }: { children: React.ReactNode; className?: string }) {

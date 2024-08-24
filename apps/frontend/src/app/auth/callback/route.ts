@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const jwt = request.nextUrl.searchParams.get('jwt');
 
   if (!jwt) {
-    return new Response('Missing jwt query parameter', { status: 400 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   cookies().set('jwt', jwt, { path: '/' });
