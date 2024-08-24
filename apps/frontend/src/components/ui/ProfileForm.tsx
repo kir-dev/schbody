@@ -169,7 +169,7 @@ export default function ProfileForm() {
           <CardHeader>
             <CardTitle>Kollégiumi bentlakás</CardTitle>
           </CardHeader>
-          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+          <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
               name='is_sch_resident'
@@ -235,7 +235,7 @@ export default function ProfileForm() {
           <CardHeader>
             <CardTitle>Admin beállítások - ezt majd vegyuk ki usereknel</CardTitle>
           </CardHeader>
-          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+          <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
               name='can_help_noobs'
