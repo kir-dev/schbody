@@ -97,7 +97,7 @@ export default function ProfileForm() {
     } catch (error) {
       toast({
         title: 'Nem várt hiba történt!',
-        description: error.message,
+        description: error?.message ? error?.message : '',
         variant: 'destructive',
       });
     }
