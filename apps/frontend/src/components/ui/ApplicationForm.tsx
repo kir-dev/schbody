@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -73,15 +74,8 @@ export default function ApplicationForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      //await response.json();
-      if (response.ok) {
+      const response = await axios.post('/api/application', values);
+      if (response.status === 200) {
         toast({
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',

@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -80,15 +81,8 @@ export default function ProfileForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
     try {
-      const response = await fetch('/api/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      //await response.json();
-      if (response.ok) {
+      const response = await axios.post('/api/submit', JSON.stringify(values));
+      if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',
         });
@@ -101,7 +95,11 @@ export default function ProfileForm() {
         });
       }
     } catch (error) {
-      console.error('There was an error!', error);
+      toast({
+        title: 'Nem várt hiba történt!',
+        description: error.message,
+        variant: 'destructive',
+      });
     }
   }
 
@@ -124,172 +122,170 @@ export default function ProfileForm() {
   if (error) return <p>Error loading profile.</p>;
 
   return (
-    <div className='space-y-4 pb-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
-      <UserProfileBanner
-        user={user}
-        editingIsOn={editingIsOn}
-        onClick={() => setEditingIsOn(true)}
-        onSubmit={() => onSubmit(form.getValues())}
-      />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className='mx-8 my-4'>
-            <CardHeader className='flex items-start flex-row justify-between'>
-              <div>
-                <CardTitle>Személyes adatok</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
-              <FormField
-                control={form.control}
-                name='nickname'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Becenév</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={!editingIsOn} />
-                    </FormControl>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
+        <UserProfileBanner
+          user={user}
+          editingIsOn={editingIsOn}
+          onClick={() => setEditingIsOn(true)}
+          onSubmit={() => onSubmit(form.getValues())}
+        />
+        <Card>
+          <CardHeader className='flex items-start flex-row justify-between'>
+            <div>
+              <CardTitle>Személyes adatok</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+            <FormField
+              control={form.control}
+              name='nickname'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Becenév</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!editingIsOn} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='contact_email'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kapcsolattartási email cím</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!editingIsOn} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Kollégiumi bentlakás</CardTitle>
+          </CardHeader>
+          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+            <FormField
+              control={form.control}
+              name='is_sch_resident'
+              render={({ field }) => (
+                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='space-y-0.5'>
+                    <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
+                    <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='contact_email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kapcsolattartási email cím</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled={!editingIsOn} />
-                    </FormControl>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      disabled={!editingIsOn}
+                      onCheckedChange={(data) => {
+                        field.onChange(data);
+                        form.resetField('room_number');
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='room_number'
+              render={({ field }) => (
+                <FormItem
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  <div className='space-y-0.5'>
+                    <FormLabel>Szoba szám</FormLabel>
+                    <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-          <Card className='mx-8 my-4'>
-            <CardHeader>
-              <CardTitle>Kollégiumi bentlakás</CardTitle>
-            </CardHeader>
-            <CardContent className='md:grid-cols-2 md:grid gap-4'>
-              <FormField
-                control={form.control}
-                name='is_sch_resident'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
-                      <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        disabled={!editingIsOn}
-                        onCheckedChange={(data) => {
-                          field.onChange(data);
-                          form.resetField('room_number');
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='room_number'
-                render={({ field }) => (
-                  <FormItem
-                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    <div className='space-y-0.5'>
-                      <FormLabel>Szoba szám</FormLabel>
-                      <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <InputOTP
-                        maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
-                        disabled={!form.watch('is_sch_resident') || !editingIsOn}
-                        value={field.value ? `${field.value}` : ''}
-                        onChange={(value: string) => {
-                          let numericValue = parseInt(value, 10);
-                          if (isNaN(numericValue)) {
-                            numericValue = 0;
-                          }
-                          field.onChange(numericValue);
-                        }}
-                      >
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-          <Card className='mx-8 my-4'>
-            <CardHeader>
-              <CardTitle>Admin beállítások - ezt majd vegyuk ki usereknel</CardTitle>
-            </CardHeader>
-            <CardContent className='md:grid-cols-2 md:grid gap-4'>
-              <FormField
-                control={form.control}
-                name='can_help_noobs'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
-                      <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Switch
-                        disabled={!editingIsOn}
-                        checked={field.value}
-                        onCheckedChange={(data) => {
-                          field.onChange(data);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='public_desc'
-                render={({ field }) => (
-                  <FormItem
-                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('can_help_noobs') ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    <div className='space-y-0.5'>
-                      <FormLabel>Leírás</FormLabel>
-                      <FormDescription>
-                        A tagokat listázó oldalon ez a szöveg fog megjelenni a neved alatt
-                      </FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Textarea
-                        placeholder='...'
-                        className='resize-none'
-                        {...field}
-                        disabled={!editingIsOn || !form.watch('can_help_noobs')}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-        </form>
-      </Form>
-    </div>
+                  </div>
+                  <FormControl>
+                    <InputOTP
+                      maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
+                      disabled={!form.watch('is_sch_resident') || !editingIsOn}
+                      value={field.value ? `${field.value}` : ''}
+                      onChange={(value: string) => {
+                        let numericValue = parseInt(value, 10);
+                        if (isNaN(numericValue)) {
+                          numericValue = 0;
+                        }
+                        field.onChange(numericValue);
+                      }}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Admin beállítások - ezt majd vegyuk ki usereknel</CardTitle>
+          </CardHeader>
+          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+            <FormField
+              control={form.control}
+              name='can_help_noobs'
+              render={({ field }) => (
+                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='space-y-0.5'>
+                    <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
+                    <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Switch
+                      disabled={!editingIsOn}
+                      checked={field.value}
+                      onCheckedChange={(data) => {
+                        field.onChange(data);
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='public_desc'
+              render={({ field }) => (
+                <FormItem
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('can_help_noobs') ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  <div className='space-y-0.5'>
+                    <FormLabel>Leírás</FormLabel>
+                    <FormDescription>
+                      A tagokat listázó oldalon ez a szöveg fog megjelenni a neved alatt
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl>
+                    <Textarea
+                      placeholder='...'
+                      className='resize-none'
+                      {...field}
+                      disabled={!editingIsOn || !form.watch('can_help_noobs')}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+      </form>
+    </Form>
   );
 }
