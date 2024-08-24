@@ -6,8 +6,9 @@ import ApplicationBannerCard from '@/components/ui/ApplicationBannerCard';
 export default function Home() {
   return (
     <main>
-      <Th1>Hírek</Th1>
       <ApplicationBannerCard />
+      <Th1>Hírek</Th1>
+      ...
     </main>
   );
 }

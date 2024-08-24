@@ -115,7 +115,7 @@ export default function ApplicationForm() {
             <CardTitle>Személyes adatok</CardTitle>
             <CardDescription>Ellenőrízd személyes adataid, szükség esetén módosíts rajtuk!</CardDescription>
           </CardHeader>
-          <CardContent className='md:grid-cols-4 md:grid gap-4'>
+          <CardContent className='md:grid-cols-4 grid gap-4'>
             <FormItem>
               <FormLabel>Név</FormLabel>
               <Input disabled value='Minta Pista' />
@@ -158,7 +158,7 @@ export default function ApplicationForm() {
             <CardTitle>Kollégiumi bentlakás</CardTitle>
             <CardDescription>Ellenőrízd régebben megadott viszonyod, szükség esetén módosíts rajta!</CardDescription>
           </CardHeader>
-          <CardContent className='md:grid-cols-2 md:grid gap-4'>
+          <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
               name='is_sch_resident'
