@@ -6,7 +6,7 @@ import { UserEntity } from '@/types/user-entity';
 
 export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) {
   return (
-    <div className='flex max-md:w-full max-md:justify-between md:gap-16 mx-0 my-8 md:mx-8 font-mono mb-0'>
+    <div className='flex max-md:justify-center max-md:gap-8 md:gap-16 mx-0 my-8 md:mx-8 font-mono mb-0'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -33,19 +33,21 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <FiUserCheck size={24} />
-              {user?.profileSeenAt?.slice(0, 10)}
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className='font-sans'>Utolsó profil megtekintés</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      {user?.profileSeenAt && (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <FiUserCheck size={24} />
+                {user?.profileSeenAt?.slice(0, 10)}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className='font-sans'>Utolsó profil megtekintés</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
     </div>
   );
 }

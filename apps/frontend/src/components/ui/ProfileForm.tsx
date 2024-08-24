@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -94,10 +94,10 @@ export default function ProfileForm() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
+    } catch (error: AxiosError) {
       toast({
         title: 'Nem várt hiba történt!',
-        description: error?.message ? error?.message : '',
+        description: error!.message,
         variant: 'destructive',
       });
     }

@@ -27,7 +27,7 @@ export default function UserProfileBanner(props: {
   };
 
   return (
-    <Card className='flex max-md:flex-col md:flex-row'>
+    <Card className='flex max-md:flex-col md:flex-row max-md:items-center'>
       <div className='min-w-44 min-h-44 w-1/4 h-full aspect-square relative'>
         <Image
           src='https://mozsarmate.me/marci.jpg'
@@ -35,7 +35,7 @@ export default function UserProfileBanner(props: {
           blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
           alt='PROFIL KEP'
           fill
-          className='rounded-l-xl'
+          className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
         />
         <div className='w-full absolute flex bottom-2'>
           <Button variant='secondary' className='block m-auto'>
@@ -45,7 +45,7 @@ export default function UserProfileBanner(props: {
       </div>
       <div className='w-full'>
         <CardContent>
-          <div className='flex md:flex-row max-md:flex-col max-md:gap-4 mt-10 justify-between'>
+          <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
             <div className='flex items-start'>
               <div>
                 <TTitle className='mt-0'>{props.user?.fullName}</TTitle>
