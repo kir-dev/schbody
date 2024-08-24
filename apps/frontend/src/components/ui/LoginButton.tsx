@@ -20,7 +20,7 @@ export default function LoginButton({ version }: { version: number }) {
   return (
     <>
       {user && (
-        <Button className='m-8 ml-0' onClick={handleNavToProfile}>
+        <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
           {version === 1 && user.fullName}
           {version === 0 && (
             <>
@@ -31,7 +31,7 @@ export default function LoginButton({ version }: { version: number }) {
         </Button>
       )}
       {!user && (
-        <Button className='m-8 ml-0' onClick={handleLogin}>
+        <Button className='m-8 ml-0 max-md:m-2' onClick={handleLogin}>
           {version === 1 && 'Bejelentkezés'}
           {version === 0 && <FiLogIn />}
         </Button>
