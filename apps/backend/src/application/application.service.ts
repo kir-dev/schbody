@@ -19,6 +19,14 @@ export class ApplicationService {
 
   async create(createApplicationDto: CreateApplicationDto, user: User) {
     try {
+      const applicationPeriod = await this.prisma.applicationPeriod.findFirstOrThrow({
+        where: {
+          id: createApplicationDto.applicationPeriodId,
+        },
+      });
+      if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
+        throw new BadRequestException('A jelentkezési időszak lejárt');
+      }
       return await this.prisma.application.create({
         data: {
           user: {
@@ -34,6 +42,16 @@ export class ApplicationService {
         },
       });
     } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new BadRequestException('Ez a jelentkezés már létezik');
+        } else if (e.code === 'P2025') {
+          throw new NotFoundException('Nem található időszak');
+        }
+      }
+      if (e instanceof BadRequestException) {
+        throw e;
+      }
       throw new BadRequestException('Nem sikerült létrehozni');
     }
   }
