@@ -6,7 +6,6 @@ CREATE TYPE "ApplicationStatus" AS ENUM ('SUBMITTED', 'ACCEPTED', 'REJECTED', 'N
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
     "authSchId" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "nickName" TEXT NOT NULL,
@@ -14,16 +13,16 @@ CREATE TABLE "User" (
     "neptun" TEXT,
     "email" TEXT,
     "isSchResident" BOOLEAN NOT NULL,
+    "isActiveVikStudent" BOOLEAN NOT NULL,
     "roomNumber" INTEGER,
     "profileImage" BYTEA,
-    "canHelpNoobs" BOOLEAN NOT NULL,
+    "canHelpNoobs" BOOLEAN NOT NULL DEFAULT false,
     "publicDesc" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "profileSeenAt" TIMESTAMP(3),
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "User_publicDesc_canHelpNoobs_check" CHECK ("publicDesc" IS NOT NULL OR "canHelpNoobs" = FALSE)
+    CONSTRAINT "User_pkey" PRIMARY KEY ("authSchId")
 );
 
 -- CreateTable
@@ -35,7 +34,7 @@ CREATE TABLE "ApplicationPeriod" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "ticketsAreValid" BOOLEAN NOT NULL DEFAULT false,
-    "authorId" INTEGER NOT NULL,
+    "authorId" TEXT NOT NULL,
 
     CONSTRAINT "ApplicationPeriod_pkey" PRIMARY KEY ("id")
 );
@@ -43,7 +42,7 @@ CREATE TABLE "ApplicationPeriod" (
 -- CreateTable
 CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "applicationPeriodId" INTEGER NOT NULL,
     "status" "ApplicationStatus" NOT NULL DEFAULT 'SUBMITTED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,15 +58,12 @@ CREATE TABLE "Post" (
     "content" TEXT NOT NULL,
     "preview" TEXT NOT NULL,
     "visible" BOOLEAN NOT NULL DEFAULT true,
-    "authorId" INTEGER NOT NULL,
+    "authorId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_authSchId_key" ON "User"("authSchId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_neptun_key" ON "User"("neptun");
@@ -82,13 +78,13 @@ CREATE UNIQUE INDEX "Application_userId_applicationPeriodId_key" ON "Application
 CREATE INDEX "Post_authorId_idx" ON "Post"("authorId");
 
 -- AddForeignKey
-ALTER TABLE "ApplicationPeriod" ADD CONSTRAINT "ApplicationPeriod_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ApplicationPeriod" ADD CONSTRAINT "ApplicationPeriod_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("authSchId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Application" ADD CONSTRAINT "Application_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Application" ADD CONSTRAINT "Application_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("authSchId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Application" ADD CONSTRAINT "Application_applicationPeriodId_fkey" FOREIGN KEY ("applicationPeriodId") REFERENCES "ApplicationPeriod"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("authSchId") ON DELETE RESTRICT ON UPDATE CASCADE;
