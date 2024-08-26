@@ -34,10 +34,32 @@ export default function Forum() {
     return response.data;
   };
   return (
-    <div>
+    <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
       {posts.map((post) => (
         <NewsCard key={post.id} post={post} />
       ))}
+      <NewsCard
+        post={{
+          id: 1,
+          visible: true,
+          title: 'Title',
+          authorId: 'Author',
+          content: 'Content',
+          createdAt: '2021-10-10',
+          updatedAt: '2021-10-10',
+        }}
+      />
+      <NewsCard
+        post={{
+          id: 1,
+          visible: true,
+          title: 'Title',
+          authorId: 'Author',
+          content: 'Content',
+          createdAt: '2021-10-10',
+          updatedAt: '2021-10-10',
+        }}
+      />
       <Pagination>
         <PaginationContent>
           <PaginationItem>
