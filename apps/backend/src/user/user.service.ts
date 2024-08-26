@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -41,10 +41,23 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
+
+    if (user === null) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    } else if (user.isSchResident === false && updateUserDto.roomNumber) {
+      throw new BadRequestException('Non-resident users cannot have a room number');
+    }
+
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
   }
 
+  // TODO maybe remove it? currently not used (could be useful later)
   async delete(id: string): Promise<UserEntity> {
-    return this.prisma.user.delete({ where: { authSchId: id } });
+    try {
+      return this.prisma.user.delete({ where: { authSchId: id } });
+    } catch (error) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
   }
 }

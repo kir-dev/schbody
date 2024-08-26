@@ -1,6 +1,6 @@
 import { IsBoolean, IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class UpdateUserDto {
+export class UpdateUserAdminDto {
   @IsString()
   @IsOptional()
   nickName: string;
@@ -16,4 +16,12 @@ export class UpdateUserDto {
   @IsEmail()
   @IsOptional()
   email: string;
+
+  @IsBoolean()
+  @IsOptional()
+  canHelpNoobs: boolean;
+
+  @IsString()
+  @IsOptional()
+  publicDesc: string;
 }
