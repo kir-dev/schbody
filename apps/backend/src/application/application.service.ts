@@ -1,11 +1,7 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Application, Prisma, Role, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
-import { Roles } from 'src/auth/decorators/Roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -56,23 +52,28 @@ export class ApplicationService {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
-  async findAll() {
-    return await this.prisma.application.findMany();
+  async findAll(page: number, pageSize: number): Promise<Application[]> {
+    const skip = page * Number(pageSize);
+    return await this.prisma.application.findMany({
+      skip,
+      take: pageSize,
+    });
   }
 
   async findOne(id: number): Promise<Application> {
-    const application = this.prisma.application.findFirst({
-      where: {
-        id,
-      },
-    });
-    if (!application) {
-      throw new NotFoundException('A keresett jelentkezés nem található');
+    try {
+      return await this.prisma.application.findUniqueOrThrow({
+        where: {
+          id,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new NotFoundException('A keresett jelentkezés nem található');
+        }
+      }
     }
-    return application;
   }
 
   async getCurrentUserApplication(user: User): Promise<Application | null> {
@@ -128,6 +129,14 @@ export class ApplicationService {
       throw new NotFoundException('A keresett jelentkezés nem található');
     }
     if (application.userId === user.authSchId || user.role === Role.BODY_ADMIN || user.role === Role.BODY_MEMBER) {
+      const applicationPeriod = await this.prisma.applicationPeriod.findUnique({
+        where: {
+          id: application.applicationPeriodId,
+        },
+      });
+      if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
+        throw new BadRequestException('A jelentkezési időszak lejárt');
+      }
       return await this.prisma.application.delete({
         where: {
           id,

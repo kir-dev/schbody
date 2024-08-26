@@ -1,13 +1,7 @@
-import { OmitType } from '@nestjs/swagger';
+import { IsNumber, IsPositive } from 'class-validator';
 
-import { Application } from '../entities/application.entity';
-
-export class CreateApplicationDto extends OmitType(Application, [
-  'id',
-  'status',
-  'user',
-  'userId',
-  'applicationPeriod',
-  'createdAt',
-  'updatedAt',
-]) {}
+export class CreateApplicationDto {
+  @IsNumber()
+  @IsPositive()
+  applicationPeriodId: number;
+}

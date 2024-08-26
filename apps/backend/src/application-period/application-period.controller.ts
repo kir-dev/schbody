@@ -1,8 +1,8 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApplicationPeriod, Role, User } from '@prisma/client';
+import { Application, ApplicationPeriod, Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 
@@ -28,8 +28,12 @@ export class ApplicationPeriodController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.findOne(Number(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
+    return this.applicationPeriodService.findOne(id);
+  }
+  @Get(':id/applications')
+  async findApplications(@Param('id', ParseIntPipe) id: number): Promise<Application[]> {
+    return this.applicationPeriodService.findApplications(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -47,8 +51,8 @@ export class ApplicationPeriodController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.delete(Number(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
+    return this.applicationPeriodService.delete(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -57,8 +61,8 @@ export class ApplicationPeriodController {
   @Patch(':id')
   async update(
     @Body() updateApplicationPeriodDto: UpdateApplicationPeriodDto,
-    @Param() id: string
+    @Param('id', ParseIntPipe) id: number
   ): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.update(updateApplicationPeriodDto, Number(id));
+    return this.applicationPeriodService.update(updateApplicationPeriodDto, id);
   }
 }
