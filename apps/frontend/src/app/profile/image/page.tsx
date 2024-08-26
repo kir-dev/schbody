@@ -56,6 +56,7 @@ export default function Page() {
         <Input type='file' onChange={handleFileChange} accept='image/*' />
         <Button onClick={handleUpload}>Feltöltés</Button>
       </div>
+      {/*https://valentinh.github.io/react-easy-crop/*/}
       <div className='w-96 h-full'>
         {imageSrc && (
           <div className='relative'>

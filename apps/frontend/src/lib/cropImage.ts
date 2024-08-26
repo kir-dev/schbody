@@ -1,5 +1,6 @@
 export default async function getCroppedImg(imageSrc: string | ArrayBuffer, crop: any): Promise<unknown> {
   const image = await createImage(imageSrc);
+  // eslint-disable-next-line no-undef
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
@@ -38,6 +39,7 @@ export default async function getCroppedImg(imageSrc: string | ArrayBuffer, crop
 
 function createImage(url: string | ArrayBuffer): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
+    // eslint-disable-next-line no-undef
     const image = new Image();
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', (error) => reject(error));
