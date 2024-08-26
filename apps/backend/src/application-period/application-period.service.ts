@@ -16,6 +16,13 @@ export class ApplicationPeriodService {
       take: Number(getApplicationPeriodsDto.page_size),
     });
   }
+  findApplications(id: number) {
+    return this.prisma.application.findMany({
+      where: {
+        applicationPeriodId: id,
+      },
+    });
+  }
 
   async getCurrentPeriod(): Promise<ApplicationPeriod> {
     const period = await this.prisma.applicationPeriod.findFirst({
