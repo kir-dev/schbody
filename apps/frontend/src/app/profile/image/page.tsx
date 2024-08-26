@@ -57,11 +57,13 @@ export default function Page() {
         <Button onClick={handleUpload}>Feltöltés</Button>
       </div>
       {/*https://valentinh.github.io/react-easy-crop/*/}
-      <div className='w-96 h-full'>
+      <div className='h-full w-96'>
         {imageSrc && (
           <div className='relative'>
             <Cropper
-              classes={{ containerClassName: 'w-full h-80 rounded' }}
+              classes={{
+                containerClassName: 'w-full h-80 rounded ',
+              }}
               image={imageSrc.toString()}
               crop={crop}
               zoom={zoom}
