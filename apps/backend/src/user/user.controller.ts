@@ -1,5 +1,15 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from '@prisma/client';
 
@@ -35,8 +45,11 @@ export class UserController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.BODY_ADMIN)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() user: UserEntity) {
+    if (user.authSchId !== id) {
+      throw new ForbiddenException('You do not have permission to update this profile!');
+    }
     return this.userService.update(id, updateUserDto);
   }
 }
