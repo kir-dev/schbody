@@ -42,7 +42,7 @@ model User {
   publicDesc         String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
-  profileSeenAt      DateTime?
+  vikStatusUpdatedAt DateTime            @default(now())
   applicationPeriods ApplicationPeriod[]
   applications       Application[]
   posts              Post[]
