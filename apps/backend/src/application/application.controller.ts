@@ -1,5 +1,5 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Application, Role, User } from '@prisma/client';
@@ -26,8 +26,11 @@ export class ApplicationController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Get()
-  findAll(): Promise<Application[]> {
-    return this.applicationService.findAll();
+  findAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('pageSize', ParseIntPipe) pageSize: number = 10
+  ): Promise<Application[]> {
+    return this.applicationService.findAll(page, pageSize);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -49,8 +52,11 @@ export class ApplicationController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateApplicationDto: UpdateApplicationDto): Promise<Application> {
-    return this.applicationService.update(Number(id), updateApplicationDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateApplicationDto: UpdateApplicationDto
+  ): Promise<Application> {
+    return this.applicationService.update(id, updateApplicationDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
