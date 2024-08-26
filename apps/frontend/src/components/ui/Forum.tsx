@@ -1,66 +1,36 @@
 'use client';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import NewsCard from '@/components/ui/NewsCard';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-import { PostEntity } from '@/types/post-entity';
+import { Button } from '@/components/ui/button';
+
+import NewsCard from './NewsCard';
 
 export default function Forum() {
-  const postsPerPage = 10;
+  /*  const postsPerPage = 10;
   const currentPage = 1;
-  const numberOfPages = 3;
-  const [pageFrom, setPageFrom] = useState<number>(1);
-  const [pageTo, setPageTo] = useState<number>(3);
-  const [posts, setPosts] = useState<PostEntity[]>([]);
+  const numberOfPages = 3;*/
+  const [count, setCount] = useState(0);
+  const pages: React.JSX.Element[] = [];
+  for (let i = 0; i < count; i++) {
+    pages.push(<NewsCard index={i} />);
+  }
 
-  useEffect(() => {
-    setPageFrom(currentPage > 2 ? currentPage - 2 : 1);
-    setPageTo(currentPage < numberOfPages - 2 ? numberOfPages - 2 : numberOfPages);
-  }, [currentPage, numberOfPages]);
-  const getPosts = async (page: number) => {
+  /*  const getPosts = async (page: number) => {
     const response = await axios.get(`/posts?page=${page}&pageSize=${postsPerPage}`);
     if (response.status === 200) {
       setPosts([...posts, response.data]);
     }
     return response.data;
-  };
+  };*/
+
   return (
     <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
-      {posts.map((post) => (
-        <NewsCard key={post.id} post={post} />
-      ))}
-      <NewsCard
-        post={{
-          id: 1,
-          visible: true,
-          title: 'Title',
-          authorId: 'Author',
-          content: 'Content',
-          createdAt: '2021-10-10',
-          updatedAt: '2021-10-10',
-        }}
-      />
-      <NewsCard
-        post={{
-          id: 1,
-          visible: true,
-          title: 'Title',
-          authorId: 'Author',
-          content: 'Content',
-          createdAt: '2021-10-10',
-          updatedAt: '2021-10-10',
-        }}
-      />
-      <Pagination>
+      {pages}
+      <Button className='w-full' onClick={() => setCount(count + 5)}>
+        {' '}
+        Még több{' '}
+      </Button>
+      {/*      <Pagination>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious href='#' />
@@ -81,7 +51,7 @@ export default function Forum() {
             <PaginationNext href='#' />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>
+      </Pagination>*/}
     </div>
   );
 }
