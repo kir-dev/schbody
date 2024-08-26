@@ -24,12 +24,14 @@ export class UserService {
     page: number,
     pageSize: number
   ): Promise<{ users: UserEntity[]; pageNumber: number; totalUsers: number }> {
-    const totalUsers = await this.prisma.user.count();
-    const users = await this.prisma.user.findMany({
-      orderBy: { fullName: 'asc' },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
+    const [totalUsers, users] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.user.findMany({
+        orderBy: { fullName: 'asc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+    ]);
 
     return {
       users,
