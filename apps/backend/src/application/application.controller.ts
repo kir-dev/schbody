@@ -28,7 +28,7 @@ export class ApplicationController {
   @Get()
   findAll(
     @Query('page', ParseIntPipe) page: number = 1,
-    @Query('pageSize', ParseIntPipe) pageSize: number = 10
+    @Query('page_size', ParseIntPipe) pageSize: number = 10
   ): Promise<Application[]> {
     return this.applicationService.findAll(page, pageSize);
   }

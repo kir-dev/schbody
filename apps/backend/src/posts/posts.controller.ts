@@ -1,5 +1,5 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
@@ -7,7 +7,6 @@ import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 
 import { CreatePostDto } from './dto/create-post.dto';
-import { GetPostsDto } from './dto/get-posts.dto';
 import { SimplePostDto } from './dto/simple-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsService } from './posts.service';
@@ -26,8 +25,11 @@ export class PostsController {
   }
 
   @Get()
-  async findAll(@Query() getPostsDto: GetPostsDto): Promise<SimplePostDto[]> {
-    return this.postsService.findAll(getPostsDto);
+  async findAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('page_size', ParseIntPipe) pageSize: number = 10
+  ): Promise<SimplePostDto[]> {
+    return this.postsService.findAll(page, pageSize);
   }
 
   @Get(':id')

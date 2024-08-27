@@ -8,7 +8,6 @@ import { RolesGuard } from 'src/auth/roles.guard';
 
 import { ApplicationPeriodService } from './application-period.service';
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
-import { GetApplicationPeriodsDto } from './dto/get-application-periods.dto';
 import { SimpleApplicationPeriodDto } from './dto/simple-application-period.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
 
@@ -18,8 +17,11 @@ export class ApplicationPeriodController {
   constructor(private readonly applicationPeriodService: ApplicationPeriodService) {}
 
   @Get()
-  async findAll(@Query() getApplicationPeriodsDto: GetApplicationPeriodsDto): Promise<SimpleApplicationPeriodDto[]> {
-    return this.applicationPeriodService.findAll(getApplicationPeriodsDto);
+  async findAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('page_size', ParseIntPipe) pageSize: number = 10
+  ): Promise<SimpleApplicationPeriodDto[]> {
+    return this.applicationPeriodService.findAll(page, pageSize);
   }
 
   @Get('current')

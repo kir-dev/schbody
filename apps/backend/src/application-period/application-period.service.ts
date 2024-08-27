@@ -3,17 +3,16 @@ import { ApplicationPeriod, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
-import { GetApplicationPeriodsDto } from './dto/get-application-periods.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
 
 @Injectable()
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll(getApplicationPeriodsDto: GetApplicationPeriodsDto) {
-    const skip = getApplicationPeriodsDto.page * Number(getApplicationPeriodsDto.page_size);
+  findAll(page: number, pageSize: number) {
+    const skip = page * Number(pageSize);
     return this.prisma.applicationPeriod.findMany({
       skip,
-      take: Number(getApplicationPeriodsDto.page_size),
+      take: Number(pageSize),
     });
   }
   findApplications(id: number) {
