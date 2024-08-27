@@ -9,3 +9,10 @@ export type PostEntity = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type PostPaginationEntity = {
+  data: PostEntity[];
+  total: number;
+  page: number;
+  limit: number;
+};

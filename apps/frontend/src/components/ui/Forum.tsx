@@ -35,17 +35,21 @@ export default function Forum() {
 
   function onDelete(id: number) {
     api.delete(`/posts/${id}`);
-    mutate(
-      posts?.filter((post) => post.id !== id),
-      false
-    );
+    if (posts)
+      mutate({
+        data: posts!.data.filter((post) => post.id !== id)!,
+        total: posts?.total - 1,
+        page: posts?.page,
+        limit: posts?.limit,
+      });
+    else mutate();
   }
 
   async function onCreateOrEdit(id: number | undefined, title: string, content: string) {
     if (id) {
       await api.patch(`/posts/${id}`, { title, content });
-      const newPosts = posts?.map((post) => (post.id === id ? { ...post, title, content } : post));
-      await mutate(newPosts, false);
+      const newData = posts?.data.map((post) => (post.id === id ? { ...post, title, content } : post));
+      await mutate({ data: newData!, total: posts?.total || 0, page: posts?.page || 0, limit: posts?.limit || 0 });
     } else {
       await api.post('/posts', {
         title: title,
@@ -66,9 +70,11 @@ export default function Forum() {
         </Button>
       )}
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
-      {posts &&
-        posts.map((post: PostEntity) => <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />)}
-      {posts && posts.length > 0 && (
+      {posts?.data &&
+        posts.data.map((post: PostEntity) => (
+          <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />
+        ))}
+      {posts && posts.total > 0 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem
@@ -76,6 +82,8 @@ export default function Forum() {
                 if (pageIndex === 0) return;
                 setPageIndex(pageIndex - 1);
               }}
+              aria-disabled={pageIndex <= 0}
+              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : undefined}
             >
               <PaginationPrevious href='#' />
             </PaginationItem>
@@ -84,7 +92,11 @@ export default function Forum() {
                 {pageIndex + 1}
               </PaginationLink>
             </PaginationItem>
-            <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
+            <PaginationItem
+              onClick={() => setPageIndex(pageIndex + 1)}
+              aria-disabled={posts.limit >= pageIndex}
+              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : undefined}
+            >
               <PaginationNext href='#' />
             </PaginationItem>
           </PaginationContent>

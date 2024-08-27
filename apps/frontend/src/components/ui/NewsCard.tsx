@@ -23,8 +23,7 @@ export default function NewsCard({
             <CardDescription className='flex gap-8'>
               <p className='flex items-center gap-2'>
                 <FiUser />
-                {/*todo uncomment when the data arrives*/}
-                {/*{post.author.fullName}*/}
+                {post.author.fullName}
               </p>
               <p className='flex items-center gap-2'>
                 <FiType />
