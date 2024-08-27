@@ -67,8 +67,8 @@ export default function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickname: 'aaa',
-      contact_email: 'aaa',
+      nickname: '',
+      contact_email: '',
       is_sch_resident: false,
       room_number: 0,
       can_help_noobs: false,

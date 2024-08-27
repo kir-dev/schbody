@@ -1,19 +1,18 @@
 import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
 
-import api from '@/components/network/apiSetup';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
 import { PostEntity } from '@/types/post-entity';
 
-export default function NewsCard({ post }: { post: PostEntity }) {
-  async function onDelete() {
-    await api.delete(`/posts/${post.id}`);
-  }
-
-  const onEdit = async () => {
-    await api.patch(`/posts/${post.id}`);
-  };
-
+export default function NewsCard({
+  post,
+  onDelete,
+  onEdit,
+}: {
+  post: PostEntity;
+  onEdit: (Post: PostEntity) => void;
+  onDelete: (id: number) => void;
+}) {
   return (
     <>
       <div />
@@ -41,7 +40,7 @@ export default function NewsCard({ post }: { post: PostEntity }) {
             <p>{post.content}</p>
           </CardContent>
           <CardFooter>
-            <PostManagementButtons onDelete={onDelete} onEdit={onEdit} />
+            <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
           </CardFooter>
         </Card>
       )}
