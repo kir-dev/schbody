@@ -33,16 +33,9 @@ export default function Forum() {
     setIsEditing(null);
   }
 
-  function onDelete(id: number) {
-    api.delete(`/posts/${id}`);
-    if (posts)
-      mutate({
-        data: posts!.data.filter((post) => post.id !== id)!,
-        total: posts?.total - 1,
-        page: posts?.page,
-        limit: posts?.limit,
-      });
-    else mutate();
+  async function onDelete(id: number) {
+    await api.delete(`/posts/${id}`);
+    mutate();
   }
 
   async function onCreateOrEdit(id: number | undefined, title: string, content: string) {
