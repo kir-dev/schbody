@@ -1,20 +1,22 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 
-import { Button } from '@/components/ui/button';
-
-import NewsCard from './NewsCard';
+import NewsCard from '@/components/ui/NewsCard';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { axiosGetFetcher } from '@/lib/fetchers';
+import { PostEntity } from '@/types/post-entity';
 
 export default function Forum() {
-  /*  const postsPerPage = 10;
-  const currentPage = 1;
-  const numberOfPages = 3;*/
-  const [count, setCount] = useState(0);
-  const pages: React.JSX.Element[] = [];
-  for (let i = 0; i < count; i++) {
-    pages.push(<NewsCard index={i} />);
-  }
-
+  const [pageIndex, setPageIndex] = React.useState(0);
+  const { data } = useSWR<PostEntity[]>(`/posts/?page=${pageIndex}&page_size=10`, axiosGetFetcher);
   /*  const getPosts = async (page: number) => {
     const response = await axios.get(`/posts?page=${page}&pageSize=${postsPerPage}`);
     if (response.status === 200) {
@@ -25,33 +27,27 @@ export default function Forum() {
 
   return (
     <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
-      {pages}
-      <Button className='w-full' onClick={() => setCount(count + 5)}>
-        {' '}
-        Még több{' '}
-      </Button>
-      {/*      <Pagination>
+      {data && data.map((post: PostEntity) => <NewsCard post={post} key={post.id} />)}
+      <Pagination>
         <PaginationContent>
-          <PaginationItem>
+          <PaginationItem
+            onClick={() => {
+              if (pageIndex === 0) return;
+              setPageIndex(pageIndex - 1);
+            }}
+          >
             <PaginationPrevious href='#' />
           </PaginationItem>
-          {Array.from({ length: pageTo - pageFrom + 1 }, (_, i) => i + pageFrom).map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink href='#' isActive={currentPage === page}>
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          {numberOfPages > pageTo && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
           <PaginationItem>
+            <PaginationLink href='#' isActive>
+              {pageIndex + 1}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
             <PaginationNext href='#' />
           </PaginationItem>
         </PaginationContent>
-      </Pagination>*/}
+      </Pagination>
     </div>
   );
 }

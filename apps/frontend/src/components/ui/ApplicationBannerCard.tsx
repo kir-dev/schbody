@@ -23,7 +23,7 @@ export default function ApplicationBannerCard() {
               Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod.name}</span> jelentkezési időszak!
             </CardDescription>
           </div>
-          <Button onClick={() => router.push('/application-form')}> Jelentkezés </Button>
+          <Button onClick={() => router.push('/application-form')}> Jelentkezés leadása </Button>
         </CardHeader>
       </Card>
     </div>

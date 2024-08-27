@@ -1,18 +1,22 @@
 import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
+import useSWR from 'swr';
 
 import api from '@/components/network/apiSetup';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
+import { axiosGetFetcher } from '@/lib/fetchers';
 import { PostEntity } from '@/types/post-entity';
 
-export default function NewsCard({ post }: { post: PostEntity }) {
+export default function NewsCard({ index }: { index: number } /*{ post }: { post: PostEntity }*/) {
   async function onDelete() {
-    await api.delete(`/posts/${post.id}`);
+    await api.delete(`/posts/${index}`);
   }
 
   const onEdit = async () => {
-    await api.patch(`/posts/${post.id}`);
+    await api.patch(`/posts/${index}`);
   };
+
+  const { data: post } = useSWR<PostEntity>(`/posts/${index}`, axiosGetFetcher);
 
   return (
     <>
@@ -24,8 +28,7 @@ export default function NewsCard({ post }: { post: PostEntity }) {
             <CardDescription className='flex gap-8'>
               <p className='flex items-center gap-2'>
                 <FiUser />
-                {/*todo uncomment when the data arrives*/}
-                {/*{post.author.fullName}*/}
+                {post.author.fullName}
               </p>
               <p className='flex items-center gap-2'>
                 <FiType />
