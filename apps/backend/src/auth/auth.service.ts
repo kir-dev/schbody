@@ -1,7 +1,7 @@
 import { AuthSchProfile, BmeUnitScope } from '@kir-dev/passport-authsch';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 @Injectable()
@@ -11,20 +11,33 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async findOrCreateUser(userProfile: AuthSchProfile): Promise<User> {
-    const user = await this.prisma.user.findUnique({ where: { authSchId: userProfile.authSchId } });
-    if (user) return user;
-    return await this.prisma.user.create({
-      data: {
-        authSchId: userProfile.authSchId,
-        fullName: userProfile.displayName,
-        nickName: userProfile.firstName,
-        email: userProfile.email,
-        isSchResident: true,
-        //TODO: Find a solution for only dorm residents.
-        isActiveVikStudent: userProfile.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
-      },
-    });
+  async updateOrCreateUser(userProfile: AuthSchProfile): Promise<User> {
+    try {
+      return await this.prisma.user.update({
+        where: { authSchId: userProfile.authSchId },
+        data: {
+          isActiveVikStudent: userProfile.bme.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
+          vikStatusUpdatedAt: new Date(),
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          return await this.prisma.user.create({
+            data: {
+              authSchId: userProfile.authSchId,
+              fullName: userProfile.fullName,
+              nickName: userProfile.firstName,
+              email: userProfile.email,
+              isSchResident: true,
+              //TODO: Find a solution for only dorm residents.
+              isActiveVikStudent: userProfile.bme.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
+            },
+          });
+        }
+      }
+      throw e;
+    }
   }
 
   login(user: User): string {
