@@ -1,20 +1,61 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
 
+import { useState } from 'react';
+
+import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Switch } from '@/components/ui/switch';
 import useApplicationPeriods from '@/hooks/useApplicationPeriods';
 
 export default function Page() {
-  const searchParams = useSearchParams();
-  const page = searchParams.get('page') || '0';
-  const applications = useApplicationPeriods(page);
-
+  const [pageIndex, setPageIndex] = useState(0);
+  const applications = useApplicationPeriods(pageIndex);
+  const handleCheckedChange = (value: boolean, applicationId: number) => {
+    api.patch(`/application-periods/${applicationId}`, { ticketsAreValid: value }).then(() => applications.mutate());
+    // if (applications.data) {
+    //   applications.mutate(
+    //     applications.data.map((application) => {
+    //       if (application.id === applicationId) {
+    //         return { ...application, ticketsAreValid: value };
+    //       }
+    //       return application;
+    //     })
+    //   );
+    // }
+  };
   return (
     <>
       <Th1>Jelentkezési időszakok kezelése</Th1>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem
+            onClick={() => {
+              if (pageIndex === 0) return;
+              setPageIndex(pageIndex - 1);
+            }}
+          >
+            <PaginationPrevious href='#' />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href='#' isActive>
+              {pageIndex + 1}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
+            <PaginationNext href='#' />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
       {applications.isLoading && 'Loading...'}
       {applications.data &&
         applications.data.map((application) => (
@@ -22,14 +63,31 @@ export default function Page() {
             <CardHeader>
               <CardTitle>{application.name}</CardTitle>
               <CardDescription>
-                {application.applicationStart.toString().slice(0, 16)} -{' '}
-                {application.applicationEnd.toString().slice(0, 16)}
+                {new Date(application.applicationPeriodStartAt).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })}{' '}
+                -{' '}
+                {new Date(application.applicationPeriodEndAt).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className='flex items-center space-x-2'>
-                <Switch id='airplane-mode' />
-                <Label htmlFor='airplane-mode'>Az itt kiosztott belépők jelenleg érvényesek</Label>
+                <Switch
+                  id='is-valid'
+                  checked={application.ticketsAreValid}
+                  onCheckedChange={(value) => handleCheckedChange(value, application.id)}
+                />
+                <Label htmlFor='is-valid'>Az itt kiosztott belépők jelenleg érvényesek</Label>
               </div>
             </CardContent>
           </Card>

@@ -1,12 +1,10 @@
-import { UserEntity } from '@/types/user-entity';
-
 export type ApplicationPeriodEntity = {
   id: number;
   name: string;
-  applicationStart: Date;
-  applicationEnd: Date;
+  applicationPeriodStartAt: Date;
+  applicationPeriodEndAt: Date;
   ticketsAreValid: boolean;
-  author: UserEntity;
+  authorId: string;
   createdAt: Date;
   updatedAt: Date;
 };
