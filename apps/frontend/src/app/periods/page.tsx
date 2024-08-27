@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
@@ -59,7 +60,7 @@ export default function Page() {
       {applications.isLoading && 'Loading...'}
       {applications.data &&
         applications.data.map((application) => (
-          <Card className='m-8' key={application.id}>
+          <Card className='m-8 relative' key={application.id}>
             <CardHeader>
               <CardTitle>{application.name}</CardTitle>
               <CardDescription>
@@ -80,6 +81,12 @@ export default function Page() {
                 })}
               </CardDescription>
             </CardHeader>
+            {new Date(application.applicationPeriodStartAt) < new Date() &&
+              new Date(application.applicationPeriodEndAt) > new Date() && (
+                <Badge className='text-sm px-4 py-2 rounded-xl absolute right-2 top-2' variant='secondary'>
+                  Jelenleg zajlik
+                </Badge>
+              )}
             <CardContent>
               <div className='flex items-center space-x-2'>
                 <Switch
