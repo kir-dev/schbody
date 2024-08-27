@@ -1,10 +1,15 @@
-import { FiGlobe } from 'react-icons/fi';
+import { CgSandClock } from 'react-icons/cg';
+
+import { Th2 } from '@/components/typography/typography';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function LoadingCard() {
   return (
-    <div className='flex flex-col items-center w-full'>
-      <FiGlobe className='animate-spin' size={48} />
-      <p>Töltés...</p>
-    </div>
+    <Card className='w-full pt-8'>
+      <CardContent className='flex flex-col gap-4 w-full items-center'>
+        <CgSandClock className='animate-slow-spin' size={48} />
+        <Th2>Töltés</Th2>
+      </CardContent>
+    </Card>
   );
 }
