@@ -95,7 +95,7 @@ export default function ApplicationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 pb-16 md:mx-64 max-md:mx-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
         <Card>
           <CardHeader>
             <CardTitle>Személyes adatok</CardTitle>
