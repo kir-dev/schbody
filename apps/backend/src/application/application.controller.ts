@@ -62,7 +62,7 @@ export class ApplicationController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Delete(':id')
-  remove(@Param('id') id: string, @CurrentUser() user: User): Promise<Application> {
+  remove(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: User): Promise<Application> {
     return this.applicationService.remove(Number(id), user);
   }
 }
