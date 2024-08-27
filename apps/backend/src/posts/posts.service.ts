@@ -26,6 +26,17 @@ export class PostsService {
     return this.prisma.post.findMany({
       skip,
       take: Number(pageSize),
+      where: {
+        visible: true,
+      },
+      include: {
+        author: {
+          select: {
+            fullName: true,
+            nickName: true,
+          },
+        },
+      },
     });
   }
 
@@ -36,7 +47,12 @@ export class PostsService {
           id,
         },
         include: {
-          author: true,
+          author: {
+            select: {
+              fullName: true,
+              nickName: true,
+            },
+          },
         },
       });
     } catch (e) {

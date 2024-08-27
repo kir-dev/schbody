@@ -13,6 +13,17 @@ export class ApplicationPeriodService {
     return this.prisma.applicationPeriod.findMany({
       skip,
       take: Number(pageSize),
+      orderBy: {
+        applicationPeriodStartAt: 'desc',
+      },
+      include: {
+        author: {
+          select: {
+            fullName: true,
+            nickName: true,
+          },
+        },
+      },
     });
   }
   findApplications(id: number) {
