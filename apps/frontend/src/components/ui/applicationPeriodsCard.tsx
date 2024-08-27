@@ -37,7 +37,8 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
         <div className='max-md:w-full'>
           <CardTitle>{period.name}</CardTitle>
           <CardDescription>
-            {period.applicationStart.toString().slice(0, 16)} - {period.applicationEnd.toString().slice(0, 16)}
+            {period.applicationPeriodStartAt.toString().slice(0, 16)} -{' '}
+            {period.applicationPeriodEndAt.toString().slice(0, 16)}
           </CardDescription>
         </div>
         <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-4'>
@@ -67,7 +68,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
                     </Label>
                     <Input
                       id='appliction-start'
-                      defaultValue={period.applicationStart.toISOString().slice(0, 10)}
+                      defaultValue={period.applicationPeriodStartAt.toISOString().slice(0, 10)}
                       type='date'
                     />
                   </div>
@@ -78,7 +79,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
                     <Input
                       id='appliction-end'
                       type='date'
-                      defaultValue={period.applicationEnd.toISOString().slice(0, 10)}
+                      defaultValue={period.applicationPeriodEndAt.toISOString().slice(0, 10)}
                     />
                   </div>
                 </div>
