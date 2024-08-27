@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Application, Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
@@ -29,7 +30,7 @@ export class ApplicationController {
   findAll(
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('page_size', ParseIntPipe) pageSize: number = 10
-  ): Promise<Application[]> {
+  ): Promise<PaginationDto<Application>> {
     return this.applicationService.findAll(page, pageSize);
   }
 

@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { SimplePostDto } from './dto/simple-post.dto';
@@ -28,7 +29,7 @@ export class PostsController {
   async findAll(
     @Query('page', ParseIntPipe) page: number = 1,
     @Query('page_size', ParseIntPipe) pageSize: number = 10
-  ): Promise<SimplePostDto[]> {
+  ): Promise<PaginationDto<SimplePostDto>> {
     return this.postsService.findAll(page, pageSize);
   }
 

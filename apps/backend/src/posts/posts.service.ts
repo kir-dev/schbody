@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreatePostDto } from './dto/create-post.dto';
+import { SimplePostDto } from './dto/simple-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
@@ -21,12 +23,26 @@ export class PostsService {
     });
   }
 
-  findAll(page: number, pageSize: number) {
+  findAll(page: number, pageSize: number): Promise<PaginationDto<SimplePostDto>> {
     const skip = page * pageSize;
-    return this.prisma.post.findMany({
+    const posts = this.prisma.post.findMany({
       skip,
       take: Number(pageSize),
     });
+    const total = this.prisma.post.count();
+    return Promise.all([posts, total])
+      .then(([posts, total]) => {
+        const limit = Math.floor(total / pageSize);
+        return {
+          data: posts,
+          total,
+          page,
+          limit,
+        };
+      })
+      .catch(() => {
+        throw new InternalServerErrorException('An error occurred.');
+      });
   }
 
   async findOne(id: number) {
