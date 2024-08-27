@@ -1,4 +1,4 @@
-import { FiEdit2, FiType } from 'react-icons/fi';
+import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
 import useSWR from 'swr';
 
 import api from '@/components/network/apiSetup';
@@ -16,7 +16,7 @@ export default function NewsCard({ index }: { index: number } /*{ post }: { post
     await api.patch(`/posts/${index}`);
   };
 
-  const { data: post, isLoading } = useSWR<PostEntity>(`/posts/${index}`, axiosGetFetcher);
+  const { data: post } = useSWR<PostEntity>(`/posts/${index}`, axiosGetFetcher);
 
   return (
     <>
@@ -26,7 +26,10 @@ export default function NewsCard({ index }: { index: number } /*{ post }: { post
           <CardHeader className='relative'>
             <CardTitle>{post.title}</CardTitle>
             <CardDescription className='flex gap-8'>
-              {post.author.fullName}
+              <p className='flex items-center gap-2'>
+                <FiUser />
+                {post.author.fullName}
+              </p>
               <p className='flex items-center gap-2'>
                 <FiType />
                 {post.createdAt.toString().slice(0, 10)}
