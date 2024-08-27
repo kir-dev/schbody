@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import useSWR from 'swr';
 
+import LoadingCard from '@/components/ui/LoadingCard';
 import NewsCard from '@/components/ui/NewsCard';
 import {
   Pagination,
@@ -11,23 +11,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { axiosGetFetcher } from '@/lib/fetchers';
+import usePosts from '@/hooks/usePosts';
 import { PostEntity } from '@/types/post-entity';
 
 export default function Forum() {
   const [pageIndex, setPageIndex] = React.useState(0);
-  const { data } = useSWR<PostEntity[]>(`/posts/?page=${pageIndex}&page_size=10`, axiosGetFetcher);
-  /*  const getPosts = async (page: number) => {
-    const response = await axios.get(`/posts?page=${page}&pageSize=${postsPerPage}`);
-    if (response.status === 200) {
-      setPosts([...posts, response.data]);
-    }
-    return response.data;
-  };*/
+  const { data: posts, isLoading } = usePosts(pageIndex);
 
   return (
     <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
-      {data && data.map((post: PostEntity) => <NewsCard post={post} key={post.id} />)}
+      {isLoading && <LoadingCard />}
+      {posts && posts.map((post: PostEntity) => <NewsCard post={post} key={post.id} />)}
       <Pagination>
         <PaginationContent>
           <PaginationItem
