@@ -62,7 +62,10 @@ export default function PostCreateOrEditDialog({
       <DialogContent className='sm:max-w-[425px] md:min-w-[800px]'>
         <DialogHeader>
           <DialogTitle> Hír szerkesztése</DialogTitle>
-          <DialogDescription>Minden változtatást az eredeti szerző nevében végzel</DialogDescription>
+          {p !== undefined && (
+            <DialogDescription>Minden változtatást az eredeti szerző nevében végzel</DialogDescription>
+          )}
+          {p === undefined && <DialogDescription>A neved mindenki számára látható lesz</DialogDescription>}
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-4'>
