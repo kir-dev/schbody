@@ -8,3 +8,7 @@ yarn-error.log*
 yarn.lock
 /apps/backend/.env
 /apps/frontend/.env
+
+
+.env
+
