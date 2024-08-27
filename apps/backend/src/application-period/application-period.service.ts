@@ -10,12 +10,20 @@ import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto'
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
   findAll(getApplicationPeriodsDto: GetApplicationPeriodsDto) {
-    const skip = getApplicationPeriodsDto.page * getApplicationPeriodsDto.page_size;
+    const skip = getApplicationPeriodsDto.page * Number(getApplicationPeriodsDto.page_size);
     return this.prisma.applicationPeriod.findMany({
       skip,
       take: Number(getApplicationPeriodsDto.page_size),
     });
   }
+  findApplications(id: number) {
+    return this.prisma.application.findMany({
+      where: {
+        applicationPeriodId: id,
+      },
+    });
+  }
+
   async getCurrentPeriod(): Promise<ApplicationPeriod> {
     const period = await this.prisma.applicationPeriod.findFirst({
       where: {
@@ -28,7 +36,7 @@ export class ApplicationPeriodService {
       },
     });
     if (!period) {
-      throw new NotFoundException('No current application period found');
+      throw new NotFoundException('Nem található aktuális jelentkezési időszak');
     }
     return period;
   }
