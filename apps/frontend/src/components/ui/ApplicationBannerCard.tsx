@@ -14,7 +14,7 @@ export default function ApplicationBannerCard() {
   }
   return (
     <div className='flex mt-8'>
-      <Card className='mx-8 w-full bg-amber-100'>
+      <Card className='w-full bg-amber-100'>
         <CardHeader className='flex-row w-full justify-between space-y-0 items-center'>
           <div>
             <CardTitle> Jelentkezés </CardTitle>

@@ -58,36 +58,38 @@ export default function Forum() {
   }
 
   return (
-    <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
+    <div className='space-y-4'>
       {isLoading && <LoadingCard />}
       {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER') && (
         <Button onClick={() => setIsEditing(undefined)}>
           <FiMessageSquare /> Új hír közzététele
         </Button>
       )}
+      <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts &&
         posts.map((post: PostEntity) => <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />)}
-      <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem
-            onClick={() => {
-              if (pageIndex === 0) return;
-              setPageIndex(pageIndex - 1);
-            }}
-          >
-            <PaginationPrevious href='#' />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href='#' isActive>
-              {pageIndex + 1}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
-            <PaginationNext href='#' />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {posts && posts.length > 0 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem
+              onClick={() => {
+                if (pageIndex === 0) return;
+                setPageIndex(pageIndex - 1);
+              }}
+            >
+              <PaginationPrevious href='#' />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href='#' isActive>
+                {pageIndex + 1}
+              </PaginationLink>
+            </PaginationItem>
+            <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
+              <PaginationNext href='#' />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

@@ -122,7 +122,7 @@ export default function ProfileForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
         <UserProfileBanner
           user={user}
           editingIsOn={editingIsOn}
