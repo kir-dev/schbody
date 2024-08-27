@@ -3,7 +3,6 @@ import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { CreatePostDto } from './dto/create-post.dto';
-import { GetPostsDto } from './dto/get-posts.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
@@ -22,11 +21,11 @@ export class PostsService {
     });
   }
 
-  findAll(getPostsDto: GetPostsDto) {
-    const skip = getPostsDto.page * getPostsDto.page_size;
+  findAll(page: number, pageSize: number) {
+    const skip = page * pageSize;
     return this.prisma.post.findMany({
       skip,
-      take: Number(getPostsDto.page_size),
+      take: Number(pageSize),
     });
   }
 
