@@ -16,8 +16,8 @@ export default function Page() {
         <CardHeader>
           <CardTitle>{applications[0].period.name}</CardTitle>
           <CardDescription>
-            {applications[0].period.applicationStart.toString().slice(0, 16)} -{' '}
-            {applications[0].period.applicationEnd.toString().slice(0, 16)}
+            {applications[0].period.applicationPeriodStartAt.toString().slice(0, 16)} -{' '}
+            {applications[0].period.applicationPeriodEndAt.toString().slice(0, 16)}
           </CardDescription>
         </CardHeader>
         <CardContent>

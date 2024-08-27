@@ -58,8 +58,8 @@ export const mockApplicationPeriods: ApplicationPeriodEntity[] = [
   {
     id: 1,
     name: '2021/22/1',
-    applicationStart: new Date(2021, 8, 1),
-    applicationEnd: new Date(2021, 8, 15),
+    applicationPeriodStartAt: new Date(2021, 8, 1),
+    applicationPeriodEndAt: new Date(2021, 8, 15),
     ticketsAreValid: false,
     createdAt: new Date(313123122),
     updatedAt: new Date(313123122),

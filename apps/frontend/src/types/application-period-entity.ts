@@ -4,7 +4,10 @@ export type ApplicationPeriodEntity = {
   applicationPeriodStartAt: Date;
   applicationPeriodEndAt: Date;
   ticketsAreValid: boolean;
-  authorId: string;
+  author: {
+    fullName: string;
+    nickName: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 };
