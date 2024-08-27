@@ -31,6 +31,9 @@ export class PostsService {
       where: {
         visible: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         author: {
           select: {
