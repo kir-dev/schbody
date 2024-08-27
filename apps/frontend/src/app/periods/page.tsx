@@ -93,25 +93,38 @@ export default function Page() {
         <PaginationContent>
           <PaginationItem
             onClick={() => {
-              if (pageIndex === 0) return;
-              setPageIndex(pageIndex - 1);
+              if (pageIndex > 0) {
+                setPageIndex(pageIndex - 1);
+              }
             }}
           >
-            <PaginationPrevious href='#' />
+            <PaginationPrevious className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : undefined} />
           </PaginationItem>
           <PaginationItem>
             <PaginationLink href='#' isActive>
               {pageIndex + 1}
             </PaginationLink>
           </PaginationItem>
-          <PaginationItem onClick={() => setPageIndex(pageIndex + 1)}>
-            <PaginationNext href='#' />
+          <PaginationItem
+            onClick={() => {
+              if (applications.data?.total && pageIndex < applications.data.total) {
+                setPageIndex(pageIndex + 1);
+              }
+            }}
+          >
+            <PaginationNext
+              className={
+                applications.data?.total && pageIndex < applications.data.total
+                  ? undefined
+                  : 'pointer-events-none opacity-50'
+              }
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
       {applications.isLoading && 'Loading...'}
       {applications.data &&
-        applications.data.map((application) => (
+        applications.data.data.map((application) => (
           <Card className='m-8 relative' key={application.id}>
             <CardHeader>
               <Link href={`/periods/${application.id}`}>

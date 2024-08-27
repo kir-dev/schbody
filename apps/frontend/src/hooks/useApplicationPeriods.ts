@@ -1,11 +1,11 @@
 import useSWR from 'swr';
 
 import { axiosGetFetcher } from '@/lib/fetchers';
-import { ApplicationPeriodEntity } from '@/types/application-period-entity';
+import { ApplicationPeriodEntityPagination } from '@/types/application-period-entity';
 
-const APPLICATION_PERIODS_PAGE_SIZE = 10;
+const APPLICATION_PERIODS_PAGE_SIZE = 2;
 export default function useApplicationPeriods(page: number) {
-  return useSWR<ApplicationPeriodEntity[]>(
+  return useSWR<ApplicationPeriodEntityPagination>(
     `/application-periods?page=${page}&page_size=${APPLICATION_PERIODS_PAGE_SIZE}`,
     axiosGetFetcher
   );

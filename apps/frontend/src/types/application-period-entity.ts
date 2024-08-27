@@ -11,3 +11,9 @@ export type ApplicationPeriodEntity = {
   createdAt: Date;
   updatedAt: Date;
 };
+export type ApplicationPeriodEntityPagination = {
+  data: ApplicationPeriodEntity[];
+  total: number;
+  page: number;
+  limit: number;
+};
