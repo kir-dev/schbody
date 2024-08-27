@@ -64,38 +64,40 @@ export default function UserProfileBanner(props: {
         </div>
       </div>
       <div className='w-full'>
-        <CardContent>
-          <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
-            <div className='flex items-start'>
-              <div>
-                <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
-                <Th2 className='ml-8'>{props.user!.neptun}</Th2>
+        <div className='w-full'>
+          <CardContent>
+            <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
+              <div className='flex items-start'>
+                <div>
+                  <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+                  <Th2 className='ml-8'>{props.user!.neptun}</Th2>
+                </div>
+                <Badge className='text-sm px-4 py-2 rounded-xl' variant='secondary'>
+                  {props.user!.role}
+                </Badge>
               </div>
-              <Badge className='text-sm px-4 py-2 rounded-xl' variant='secondary'>
-                {props.user!.role}
-              </Badge>
-            </div>
-            <div className='flex gap-4'>
-              {!props.editingIsOn && (
-                <Button variant='secondary' onClick={props.onClick}>
-                  <FiEdit2 />
-                  Adatok szerkesztése
+              <div className='flex gap-4'>
+                {!props.editingIsOn && (
+                  <Button variant='secondary' onClick={props.onClick}>
+                    <FiEdit2 />
+                    Adatok szerkesztése
+                  </Button>
+                )}
+                {props.editingIsOn && (
+                  <Button type='submit'>
+                    <FiSave />
+                    Mentés
+                  </Button>
+                )}
+                <Button variant='destructive' onClick={onLogout}>
+                  <FiLogOut />
+                  Kijelenkezés
                 </Button>
-              )}
-              {props.editingIsOn && (
-                <Button type='submit'>
-                  <FiSave />
-                  Mentés
-                </Button>
-              )}
-              <Button variant='destructive' onClick={onLogout}>
-                <FiLogOut />
-                Kijelenkezés
-              </Button>
+              </div>
             </div>
-          </div>
-          <UserTimeStampsBlock user={props.user} />
-        </CardContent>
+            <UserTimeStampsBlock user={props.user} />
+          </CardContent>
+        </div>
       </div>
     </Card>
   );
