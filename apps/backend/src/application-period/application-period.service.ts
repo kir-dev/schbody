@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ApplicationPeriod, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
@@ -8,9 +9,9 @@ import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto'
 @Injectable()
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll(page: number, pageSize: number) {
-    const skip = page * Number(pageSize);
-    return this.prisma.applicationPeriod.findMany({
+  findAll(page: number, pageSize: number): Promise<PaginationDto<ApplicationPeriod>> {
+    const skip = page * pageSize;
+    const periods = this.prisma.applicationPeriod.findMany({
       skip,
       take: Number(pageSize),
       orderBy: {
@@ -25,6 +26,20 @@ export class ApplicationPeriodService {
         },
       },
     });
+    const total = this.prisma.post.count();
+    return Promise.all([periods, total])
+      .then(([data, total]) => {
+        const limit = Math.floor(total / pageSize);
+        return {
+          data,
+          total,
+          page,
+          limit,
+        };
+      })
+      .catch(() => {
+        throw new InternalServerErrorException('An error occurred.');
+      });
   }
   findApplications(id: number) {
     return this.prisma.application.findMany({

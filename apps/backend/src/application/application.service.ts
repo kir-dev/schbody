@@ -1,7 +1,14 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Application, Prisma, Role, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
@@ -52,12 +59,26 @@ export class ApplicationService {
     }
   }
 
-  async findAll(page: number, pageSize: number): Promise<Application[]> {
-    const skip = page * Number(pageSize);
-    return await this.prisma.application.findMany({
+  async findAll(page: number, pageSize: number): Promise<PaginationDto<Application>> {
+    const skip = page * pageSize;
+    const applications = this.prisma.application.findMany({
       skip,
       take: pageSize,
     });
+    const total = this.prisma.post.count();
+    return Promise.all([applications, total])
+      .then(([data, total]) => {
+        const limit = Math.floor(total / pageSize);
+        return {
+          data,
+          total,
+          page,
+          limit,
+        };
+      })
+      .catch(() => {
+        throw new InternalServerErrorException('An error occurred.');
+      });
   }
 
   async findOne(id: number): Promise<Application> {
