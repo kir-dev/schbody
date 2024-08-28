@@ -49,7 +49,9 @@ export default function NewsCard({
               )}
             </CardDescription>
           </CardHeader>
-          <CardContent>{post.content}</CardContent>
+          <CardContent>
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          </CardContent>
           <CardFooter>
             <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
           </CardFooter>
