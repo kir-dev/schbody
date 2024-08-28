@@ -1,7 +1,6 @@
 'use client';
 
 import { addDays } from 'date-fns';
-import { PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
@@ -53,15 +52,12 @@ export default function Page() {
       });
   };
   return (
-    <>
-      <Th1 className='justify-between flex flex-row'>
-        Jelentkezési időszakok kezelése{' '}
+    <div>
+      <div className='flex justify-between md:flex-row max-md:flex-col items-center mr-8'>
+        <Th1>Jelentkezési időszakok kezelése</Th1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button variant='outline'>
-              Új jelentkezési időszak létrehozása
-              <PlusIcon className='ml-2' />
-            </Button>
+            <Button>+ Új jelentkezési időszak létrehozása</Button>
           </DialogTrigger>
           <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader className='mb-4'>
@@ -88,44 +84,12 @@ export default function Page() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </Th1>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem
-            onClick={() => {
-              if (pageIndex > 0) {
-                setPageIndex(pageIndex - 1);
-              }
-            }}
-          >
-            <PaginationPrevious className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : undefined} />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href='#' isActive>
-              {pageIndex + 1}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem
-            onClick={() => {
-              if (applications.data?.total && pageIndex < applications.data.total) {
-                setPageIndex(pageIndex + 1);
-              }
-            }}
-          >
-            <PaginationNext
-              className={
-                applications.data?.total && pageIndex < applications.data.total
-                  ? undefined
-                  : 'pointer-events-none opacity-50'
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      </div>
+
       {applications.isLoading && 'Loading...'}
       {applications.data &&
         applications.data.data.map((application) => (
-          <Card className='m-8 relative' key={application.id}>
+          <Card className='mx-8 my-4 relative' key={application.id}>
             <CardHeader>
               <Link href={`/periods/${application.id}`}>
                 <CardTitle>{application.name}</CardTitle>
@@ -134,7 +98,7 @@ export default function Page() {
                     minute: 'numeric',
                     hour: 'numeric',
                     day: '2-digit',
-                    month: 'long',
+                    month: 'short',
                     year: 'numeric',
                   })}{' '}
                   -{' '}
@@ -142,7 +106,7 @@ export default function Page() {
                     minute: 'numeric',
                     hour: 'numeric',
                     day: '2-digit',
-                    month: 'long',
+                    month: 'short',
                     year: 'numeric',
                   })}
                 </CardDescription>
@@ -150,7 +114,7 @@ export default function Page() {
             </CardHeader>
             {new Date(application.applicationPeriodStartAt) < new Date() &&
               new Date(application.applicationPeriodEndAt) > new Date() && (
-                <Badge className='text-sm px-4 py-2 rounded-xl absolute right-2 top-2' variant='secondary'>
+                <Badge className='text-sm px-4 py-2 rounded absolute right-4 top-4' variant='secondary'>
                   Jelenleg zajlik
                 </Badge>
               )}
@@ -166,6 +130,37 @@ export default function Page() {
             </CardContent>
           </Card>
         ))}
-    </>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem
+            onClick={() => {
+              if (pageIndex > 0) {
+                setPageIndex(pageIndex - 1);
+              }
+            }}
+          >
+            <PaginationPrevious className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : ''} />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href='#' isActive>
+              {pageIndex + 1}
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem
+            onClick={() => {
+              if (applications.data?.total && pageIndex < applications.data.total) {
+                setPageIndex(pageIndex + 1);
+              }
+            }}
+          >
+            <PaginationNext
+              className={
+                applications.data?.total && pageIndex < applications.data.total ? '' : 'pointer-events-none opacity-50'
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
   );
 }
