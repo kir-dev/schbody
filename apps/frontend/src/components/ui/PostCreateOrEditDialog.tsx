@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import TipTap from '@/components/ui/TipTap';
 import { PostEntity } from '@/types/post-entity';
 
 const formSchema = z.object({
@@ -89,7 +89,7 @@ export default function PostCreateOrEditDialog({
                 <FormItem>
                   <FormLabel>Tartalom</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <TipTap content={field.value.toString()} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

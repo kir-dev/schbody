@@ -49,9 +49,7 @@ export default function NewsCard({
               )}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className='break-words'>{post.content}</p>
-          </CardContent>
+          <CardContent>{post.content}</CardContent>
           <CardFooter>
             <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
           </CardFooter>
