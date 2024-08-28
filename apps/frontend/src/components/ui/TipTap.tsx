@@ -41,9 +41,9 @@ export default function TipTap({ content, onChange }: { content: string; onChang
   });
 
   return (
-    <>
+    <div>
       <Toolbar editor={editor!} />
       <EditorContent editor={editor!} />
-    </>
+    </div>
   );
 }

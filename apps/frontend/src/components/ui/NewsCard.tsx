@@ -50,6 +50,7 @@ export default function NewsCard({
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* eslint-disable-next-line react/no-danger */}
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </CardContent>
           <CardFooter>

@@ -59,7 +59,7 @@ export default function PostCreateOrEditDialog({
 
   return (
     <Dialog open={p !== null} onOpenChange={closeDialog}>
-      <DialogContent className='sm:max-w-[425px] md:min-w-[800px]'>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle> Hír szerkesztése</DialogTitle>
           {p !== undefined && (

@@ -44,10 +44,10 @@ export function Toolbar({ editor }: Props) {
       <Toggle
         pressed={editor.isActive('link')}
         onPressedChange={() => {
-          if (!editor?.isActive('link')) {
-            setLink();
-          } else {
+          if (editor?.isActive('link')) {
             editor.chain().focus().unsetLink().run();
+          } else {
+            setLink();
           }
         }}
       >
