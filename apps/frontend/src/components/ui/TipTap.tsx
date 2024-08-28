@@ -32,19 +32,18 @@ export default function TipTap({ content, onChange }: { content: string; onChang
     content: content,
     editorProps: {
       attributes: {
-        class: 'rounded border border-input bg-back',
+        class: 'rounded border border-input bg-back focus:outline h-20 p-2',
       },
     },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
-      console.log(editor.getHTML());
     },
   });
 
   return (
     <>
       <Toolbar editor={editor!} />
-      <EditorContent className='min-h-48' editor={editor!} />
+      <EditorContent editor={editor!} />
     </>
   );
 }

@@ -99,7 +99,7 @@ export default function PostCreateOrEditDialog({
               <Button type='submit'>
                 <FiCheck /> Közzététel
               </Button>
-              <Button variant='secondary' onClick={closeDialog}>
+              <Button variant='secondary' onClick={closeDialog} type='reset'>
                 <FiX />
                 Mégse
               </Button>
