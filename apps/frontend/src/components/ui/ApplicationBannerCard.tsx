@@ -12,10 +12,6 @@ export default function ApplicationBannerCard() {
   if (!currentPeriod) {
     return null;
   }
-  const { data: currentPeriod } = usePeriod();
-  if (!currentPeriod) {
-    return null;
-  }
   return (
     <div className='flex mt-8'>
       <Card className='w-full bg-amber-100'>
