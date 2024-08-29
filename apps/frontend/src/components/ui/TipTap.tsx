@@ -32,7 +32,7 @@ export default function TipTap({ content, onChange }: { content: string; onChang
     content: content,
     editorProps: {
       attributes: {
-        class: 'rounded border border-input bg-back focus:outline h-20 p-2',
+        class: 'rounded border border-input bg-back focus:outline h-20 p-2 min-h-40 h-auto',
       },
     },
     onUpdate: ({ editor }) => {
