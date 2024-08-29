@@ -1,6 +1,5 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React from 'react';
 import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,10 @@ import usePeriod from '@/hooks/usePeriod';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
+  const { data: currentPeriod } = usePeriod();
+  if (!currentPeriod) {
+    return null;
+  }
   const { data: currentPeriod } = usePeriod();
   if (!currentPeriod) {
     return null;

@@ -13,7 +13,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  BODY_ADMIN
+  BODY_MEMBER
+  USER
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+  NEEDS_REVIEW
+  FINISHED
+}
+
 model User {
-  authSchId String @id
-  email     String @unique
+  authSchId          String              @id
+  fullName           String
+  nickName           String
+  role               Role                @default(USER)
+  neptun             String?             @unique
+  email              String?
+  isSchResident      Boolean
+  isActiveVikStudent Boolean
+  roomNumber         Int?
+  profileImage       Bytes?
+  canHelpNoobs       Boolean             @default(false)
+  publicDesc         String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  vikStatusUpdatedAt DateTime            @default(now())
+  applicationPeriods ApplicationPeriod[]
+  applications       Application[]
+  posts              Post[]
+}
+
+model ApplicationPeriod {
+  id                       Int           @id @default(autoincrement())
+  name                     String
+  applicationPeriodStartAt DateTime
+  applicationPeriodEndAt   DateTime
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  ticketsAreValid          Boolean       @default(false)
+  author                   User          @relation(fields: [authorId], references: [authSchId])
+  authorId                 String
+  applications             Application[]
+
+  @@index([authorId])
+}
+
+model Application {
+  id                  Int               @id @default(autoincrement())
+  user                User              @relation(fields: [userId], references: [authSchId])
+  userId              String
+  applicationPeriod   ApplicationPeriod @relation(fields: [applicationPeriodId], references: [id])
+  applicationPeriodId Int
+  status              ApplicationStatus @default(SUBMITTED)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([userId, applicationPeriodId])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  preview   String
+  visible   Boolean  @default(true)
+  author    User     @relation(fields: [authorId], references: [authSchId])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
 }

@@ -1,14 +1,13 @@
 {
+  "dependencies": {
+    "@nestjs/mapped-types": "*"
+  },
   "name": "next-nest-template",
   "version": "0.0.0",
   "description": "Template repository for full-stack NestJS + NextJS projects",
   "author": "Kir-Dev",
   "license": "MIT",
   "private": true,
-  "resolutions": {
-    "wrap-ansi": "7.0.0",
-    "string-width": "4.1.0"
-  },
   "scripts": {
     "start:backend": "cd apps/backend && yarn start:dev",
     "start:frontend": "cd apps/frontend && yarn dev",
