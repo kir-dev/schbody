@@ -15,7 +15,6 @@ export function middleware(request: NextRequest) {
 
   if (request.nextUrl.pathname.startsWith('/periods')) {
     if (role === 'BODY_MEMBER' || role === 'BODY_ADMIN') {
-      console.log('periods');
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/', request.url));
