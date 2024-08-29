@@ -32,6 +32,7 @@ module.exports = {
     'react/prefer-stateless-function': 'error',
     'react/self-closing-comp': 'error',
     'react/style-prop-object': 'error',
+    'react/prop-types': 'off',
     'react/void-dom-elements-no-children': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

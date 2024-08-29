@@ -1,19 +1,21 @@
-import { Role } from '@prisma/client';
+import { Application, ApplicationPeriod, Post } from '@prisma/client';
 
-export class UserEntity {
+export class User {
   authSchId: string;
+  role: string;
   fullName: string;
-  nickName: string;
-  role: Role;
-  neptun?: string;
-  email?: string;
+  email: string;
   isSchResident: boolean;
   isActiveVikStudent: boolean;
-  roomNumber?: number;
-  profileImage?: Buffer;
+  roomNumber: number;
+  profileImage: any;
   canHelpNoobs: boolean;
-  publicDesc?: string;
+  publicDesc: string;
   createdAt: Date;
   updatedAt: Date;
-  profileSeenAt?: Date;
+  profileSeenAt: Date;
+  applicationPeriods: ApplicationPeriod[];
+  applications: Application[];
+  posts: Post[];
 }
+
