@@ -17,3 +17,12 @@ export type ApplicationEntity = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type ApplicationEntity2 = {
+  id: number;
+  userId: string;
+  applicationPeriodId: number;
+  status: ApplicationStatus;
+  createdAt: Date;
+  updatedAt: Date;
+};
