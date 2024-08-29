@@ -1,24 +1,27 @@
 import { CurrentUser } from '@kir-dev/passport-authsch';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { ApplicationPeriod, Role, User } from '@prisma/client';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Application, ApplicationPeriod, Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { ApplicationPeriodService } from './application-period.service';
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
-import { GetApplicationPeriodsDto } from './dto/get-application-periods.dto';
-import { SimpleApplicationPeriodDto } from './dto/simple-application-period.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
 
+@ApiTags('application-periods')
 @Controller('application-periods')
 export class ApplicationPeriodController {
   constructor(private readonly applicationPeriodService: ApplicationPeriodService) {}
 
   @Get()
-  async findAll(@Query() getApplicationPeriodsDto: GetApplicationPeriodsDto): Promise<SimpleApplicationPeriodDto[]> {
-    return this.applicationPeriodService.findAll(getApplicationPeriodsDto);
+  async findAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('page_size', ParseIntPipe) pageSize: number = 10
+  ): Promise<PaginationDto<ApplicationPeriod>> {
+    return this.applicationPeriodService.findAll(page, pageSize);
   }
 
   @Get('current')
@@ -27,8 +30,12 @@ export class ApplicationPeriodController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.findOne(Number(id));
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
+    return this.applicationPeriodService.findOne(id);
+  }
+  @Get(':id/applications')
+  async findApplications(@Param('id', ParseIntPipe) id: number): Promise<Application[]> {
+    return this.applicationPeriodService.findApplications(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -46,8 +53,8 @@ export class ApplicationPeriodController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.delete(Number(id));
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
+    return this.applicationPeriodService.delete(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -56,8 +63,8 @@ export class ApplicationPeriodController {
   @Patch(':id')
   async update(
     @Body() updateApplicationPeriodDto: UpdateApplicationPeriodDto,
-    @Param() id: string
+    @Param('id', ParseIntPipe) id: number
   ): Promise<ApplicationPeriod> {
-    return this.applicationPeriodService.update(updateApplicationPeriodDto, Number(id));
+    return this.applicationPeriodService.update(updateApplicationPeriodDto, id);
   }
 }

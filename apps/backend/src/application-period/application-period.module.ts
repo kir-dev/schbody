@@ -6,5 +6,6 @@ import { ApplicationPeriodService } from './application-period.service';
 @Module({
   controllers: [ApplicationPeriodController],
   providers: [ApplicationPeriodService],
+  exports: [ApplicationPeriodService],
 })
 export class ApplicationPeriodModule {}

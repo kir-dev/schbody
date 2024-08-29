@@ -1,11 +1,9 @@
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { IsNumberString, IsOptional } from 'class-validator';
 export class GetApplicationPeriodsDto {
   @IsOptional()
-  @IsInt()
-  @Min(0)
+  @IsNumberString()
   page: number;
   @IsOptional()
-  @IsInt()
-  @Min(1)
-  page_size: number;
+  @IsNumberString()
+  page_size: string;
 }

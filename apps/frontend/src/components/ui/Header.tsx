@@ -10,7 +10,7 @@ export default function Header() {
         <TTitle>
           <Link href='/'>SCHBody</Link>
         </TTitle>
-        <div className='flex items-center max-md:hidden gap-8 h-full'>
+        <div className='flex items-center max-md:hidden gap-4 h-full'>
           <THeaderLink>
             <Link href='/gym'>Terem</Link>
           </THeaderLink>

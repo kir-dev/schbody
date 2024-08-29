@@ -1,21 +1,54 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ApplicationPeriod, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
+import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
-import { GetApplicationPeriodsDto } from './dto/get-application-periods.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
 
 @Injectable()
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll(getApplicationPeriodsDto: GetApplicationPeriodsDto) {
-    const skip = getApplicationPeriodsDto.page * getApplicationPeriodsDto.page_size;
-    return this.prisma.applicationPeriod.findMany({
+  findAll(page: number, pageSize: number): Promise<PaginationDto<ApplicationPeriod>> {
+    const skip = page * pageSize;
+    const periods = this.prisma.applicationPeriod.findMany({
       skip,
-      take: Number(getApplicationPeriodsDto.page_size),
+      take: Number(pageSize),
+      orderBy: {
+        applicationPeriodStartAt: 'desc',
+      },
+      include: {
+        author: {
+          select: {
+            fullName: true,
+            nickName: true,
+          },
+        },
+      },
+    });
+    const total = this.prisma.post.count();
+    return Promise.all([periods, total])
+      .then(([data, total]) => {
+        const limit = Math.floor(total / pageSize);
+        return {
+          data,
+          total,
+          page,
+          limit,
+        };
+      })
+      .catch(() => {
+        throw new InternalServerErrorException('An error occurred.');
+      });
+  }
+  findApplications(id: number) {
+    return this.prisma.application.findMany({
+      where: {
+        applicationPeriodId: id,
+      },
     });
   }
+
   async getCurrentPeriod(): Promise<ApplicationPeriod> {
     const period = await this.prisma.applicationPeriod.findFirst({
       where: {
@@ -28,7 +61,7 @@ export class ApplicationPeriodService {
       },
     });
     if (!period) {
-      throw new NotFoundException('No current application period found');
+      throw new NotFoundException('Nem található aktuális jelentkezési időszak');
     }
     return period;
   }
