@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOne(id: string): Promise<UserEntity> {
+  async findOne(id: string): Promise<User> {
     const user = this.prisma.user.findUnique({
       where: { authSchId: id },
     });
@@ -20,10 +20,7 @@ export class UserService {
     return user;
   }
 
-  async findMany(
-    page: number,
-    pageSize: number
-  ): Promise<{ users: UserEntity[]; pageNumber: number; totalUsers: number }> {
+  async findMany(page: number, pageSize: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
     const [totalUsers, users] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.findMany({
@@ -40,7 +37,7 @@ export class UserService {
     };
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
 
     if (user === null) {
@@ -53,7 +50,7 @@ export class UserService {
   }
 
   // TODO maybe remove it? currently not used (could be useful later)
-  async delete(id: string): Promise<UserEntity> {
+  async delete(id: string): Promise<User> {
     try {
       return this.prisma.user.delete({ where: { authSchId: id } });
     } catch (error) {

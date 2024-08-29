@@ -6,7 +6,7 @@ import { Role } from '@prisma/client';
 import { Roles } from '../auth/decorators/Roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -22,14 +22,14 @@ export class UserController {
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
-  async getCurrentUser(@CurrentUser() user: UserEntity) {
+  async getCurrentUser(@CurrentUser() user: User) {
     return user;
   }
 
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.USER)
-  async updateCurrentUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: UserEntity) {
+  async updateCurrentUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
     return this.userService.update(user.authSchId, updateUserDto);
   }
 
