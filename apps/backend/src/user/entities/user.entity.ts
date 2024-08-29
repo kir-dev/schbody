@@ -18,4 +18,3 @@ export class User {
   applications: Application[];
   posts: Post[];
 }
-
