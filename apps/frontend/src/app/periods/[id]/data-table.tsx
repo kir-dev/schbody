@@ -13,6 +13,7 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import ColoredBadge from '@/components/ui/ColoredBadge';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -66,10 +67,15 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
   };
   function setSelectedToStatus2(value: ApplicationStatus) {
-    table.getSelectedRowModel().rows.forEach((row) => {
-      row.original = { ...row.original, status: value };
-      //todo data manipulation
-    });
+    /* setData((prevData) =>
+      prevData.map((row) => {
+        const tableRow = table.getRowModel().rows.find((r) => r.original === row);
+        if (tableRow && tableRow.getIsSelected()) {
+          return { ...row, status: value };
+        }
+        return row;
+      })
+    );*/
   }
 
   return (
@@ -88,10 +94,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <MenubarSub>
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
-                  {(Object.keys(ApplicationStatus) as Array<keyof typeof ApplicationStatus>).map((key) => {
+                  {Object.values(ApplicationStatus).map((key) => {
                     return (
-                      <MenubarItem key={key} onClick={() => setSelectedToStatus2(ApplicationStatus[key])}>
-                        {key}
+                      <MenubarItem key={key} onClick={() => setSelectedToStatus2(key as ApplicationStatus)}>
+                        <ColoredBadge status={key as ApplicationStatus} />
                       </MenubarItem>
                     );
                   })}

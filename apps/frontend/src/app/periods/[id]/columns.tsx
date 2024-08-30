@@ -1,5 +1,5 @@
 'use client';
-import { Column, ColumnDef, Row } from '@tanstack/react-table';
+import { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { useState } from 'react';
 
@@ -21,7 +21,9 @@ function SortableHeader(column: Column<ApplicationEntity>, title: string) {
   );
 }
 
-export const columns: ColumnDef<ApplicationEntity>[] = [
+export const columns: (
+  onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
+) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
   {
     id: 'Választ',
     header: ({ table }) => (
@@ -72,9 +74,13 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button variant='ghost'>
-              <ColoredBadge status={row.original.status} onClick={() => setOpen(true)}>
-                {row.original.status}
-              </ColoredBadge>
+              <ColoredBadge
+                status={row.original.status as ApplicationStatus}
+                onClick={(r) => {
+                  r.stopPropagation();
+                  setOpen(true);
+                }}
+              />
             </Button>
           </PopoverTrigger>
           <PopoverContent>
@@ -88,7 +94,7 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
                       key={status}
                       value={status}
                       onSelect={(value) => {
-                        saveStatus(row, value as ApplicationStatus);
+                        onStatusChange(row, value as ApplicationStatus);
                         setOpen(false);
                       }}
                     >
@@ -104,7 +110,3 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
     },
   },
 ];
-
-function saveStatus(row: Row<ApplicationEntity>, status: ApplicationStatus) {
-  row.original.status = status;
-}
