@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { ApplicationPeriod, Prisma } from '@prisma/client';
+import { ApplicationPeriod, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
@@ -88,20 +88,18 @@ export class ApplicationPeriodService {
     return period;
   }
 
-  async create(createApplicationPeriodDto: CreateApplicationPeriodDto, user): Promise<ApplicationPeriod> {
+  async create(createApplicationPeriodDto: CreateApplicationPeriodDto, user: User): Promise<ApplicationPeriod> {
     try {
       const conflictingPeriod = await this.prisma.applicationPeriod.findFirst({
         where: {
-          AND: [
+          OR: [
             {
-              applicationPeriodStartAt: {
-                lte: createApplicationPeriodDto.applicationPeriodEndAt,
-              },
+              applicationPeriodStartAt: { lte: createApplicationPeriodDto.applicationPeriodEndAt },
+              applicationPeriodEndAt: { gte: createApplicationPeriodDto.applicationPeriodStartAt },
             },
             {
-              applicationPeriodEndAt: {
-                gte: createApplicationPeriodDto.applicationPeriodStartAt,
-              },
+              applicationPeriodStartAt: { gte: createApplicationPeriodDto.applicationPeriodStartAt },
+              applicationPeriodEndAt: { lte: createApplicationPeriodDto.applicationPeriodEndAt },
             },
           ],
         },
@@ -112,6 +110,8 @@ export class ApplicationPeriodService {
     } catch (e: any) {
       if (e instanceof Prisma.PrismaClientValidationError) {
         throw new BadRequestException('Invalid date format');
+      } else if (e instanceof BadRequestException) {
+        throw e;
       }
     }
     return this.prisma.applicationPeriod.create({
