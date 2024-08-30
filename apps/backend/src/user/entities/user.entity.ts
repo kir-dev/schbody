@@ -1,5 +1,3 @@
-import { Application, ApplicationPeriod, Post } from '@prisma/client';
-
 export class User {
   authSchId: string;
   role: string;
@@ -14,7 +12,4 @@ export class User {
   createdAt: Date;
   updatedAt: Date;
   profileSeenAt: Date;
-  applicationPeriods: ApplicationPeriod[];
-  applications: Application[];
-  posts: Post[];
 }
