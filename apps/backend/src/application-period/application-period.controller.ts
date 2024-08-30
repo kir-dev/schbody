@@ -33,6 +33,10 @@ export class ApplicationPeriodController {
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
     return this.applicationPeriodService.findOne(id);
   }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Get(':id/applications')
   async findApplications(@Param('id', ParseIntPipe) id: number): Promise<Application[]> {
     return this.applicationPeriodService.findApplications(id);

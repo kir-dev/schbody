@@ -46,6 +46,16 @@ export class ApplicationPeriodService {
       where: {
         applicationPeriodId: id,
       },
+      include: {
+        user: {
+          select: {
+            fullName: true,
+            neptun: true,
+            isActiveVikStudent: true,
+            email: true,
+          },
+        },
+      },
     });
   }
 
