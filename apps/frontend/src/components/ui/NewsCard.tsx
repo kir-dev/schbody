@@ -18,25 +18,40 @@ export default function NewsCard({
       <div />
       {post && (
         <Card>
-          <CardHeader className='relative'>
+          <CardHeader className='relative overflow-hidden'>
             <CardTitle>{post.title}</CardTitle>
-            <CardDescription className='flex gap-8'>
+            <CardDescription className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row'>
               <p className='flex items-center gap-2'>
                 <FiUser />
                 {post.author.fullName}
               </p>
               <p className='flex items-center gap-2'>
                 <FiType />
-                {post.createdAt.toString().slice(0, 10)}
+                {new Date(post.createdAt).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}{' '}
               </p>
-              <p className='flex items-center gap-2'>
-                <FiEdit2 />
-                {post.updatedAt.toString().slice(0, 10)}
-              </p>
+              {post.createdAt !== post.updatedAt && (
+                <p className='flex items-center gap-2'>
+                  <FiEdit2 />
+                  {new Date(post.updatedAt).toLocaleDateString('hu-HU', {
+                    minute: 'numeric',
+                    hour: 'numeric',
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}{' '}
+                </p>
+              )}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>{post.content}</p>
+            {/* eslint-disable-next-line react/no-danger */}
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </CardContent>
           <CardFooter>
             <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
