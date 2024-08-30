@@ -20,3 +20,9 @@ export type UserEntity = {
   updatedAt: string;
   profileSeenAt: string | null;
 };
+
+export type UserEntityPagination = {
+  users: UserEntity[];
+  totalUsers: number;
+  pageNumber: number;
+};

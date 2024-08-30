@@ -2,7 +2,7 @@
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import Th1, { Th2 } from '@/components/typography/typography';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import LoadingCard from '@/components/ui/LoadingCard';
 import { Switch } from '@/components/ui/switch';
@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { id: number } }) {
       {applications && (
         <Card>
           <CardHeader>
-            <CardTitle>{applications[0].period}</CardTitle>
+            {/*<CardTitle>{applications[0].period}</CardTitle>*/}
             <CardDescription />
           </CardHeader>
           <CardContent>
