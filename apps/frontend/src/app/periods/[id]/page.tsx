@@ -12,6 +12,12 @@ export default function Page({ params }: { params: { id: number } }) {
   const { data: applications, isLoading } = useApplications(params.id);
   /*  const isLoading = true;
   const applications = mockApplications;*/
+  /*  const fetchedApplications = {};
+  useEffect(() => {
+    applications.map((application) => {
+      fetchedApplications += application;
+    });
+  }, [applications]);*/
 
   return (
     <>

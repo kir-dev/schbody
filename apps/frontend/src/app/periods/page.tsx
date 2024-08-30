@@ -92,6 +92,7 @@ export default function Page() {
           <Card className='mx-8 my-4 relative' key={application.id}>
             <CardHeader>
               <Link href={`/periods/${application.id}`}>
+                <p className='font-mono'>#{application.id}</p>
                 <CardTitle>{application.name}</CardTitle>
                 <CardDescription>
                   {new Date(application.applicationPeriodStartAt).toLocaleDateString('hu-HU', {
