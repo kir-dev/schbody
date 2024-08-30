@@ -13,9 +13,9 @@ export default function PostManagementButtons(props: PostManagementButtonsProps)
   const { data: user } = useProfile();
 
   return (
-    <div className='flex w-full justify-end '>
+    <div className='flex w-full justify-end overflow-hidden '>
       {user?.role === Role.BODY_ADMIN && (
-        <div className='flex gap-4'>
+        <div className='flex gap-2'>
           <Button variant='secondary' onClick={props.onEdit}>
             <FiEdit2 />
             Módosítás

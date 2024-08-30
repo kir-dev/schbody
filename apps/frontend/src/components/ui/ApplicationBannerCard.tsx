@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,7 @@ export default function ApplicationBannerCard() {
   return (
     <div className='flex mt-8'>
       <Card className='w-full bg-amber-100'>
-        <CardHeader className='flex-row w-full justify-between space-y-0 items-center'>
+        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
           <div>
             <CardTitle> Jelentkezés </CardTitle>
             <CardDescription>
@@ -23,7 +23,10 @@ export default function ApplicationBannerCard() {
               Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod.name}</span> jelentkezési időszak!
             </CardDescription>
           </div>
-          <Button onClick={() => router.push('/application-form')}> Jelentkezés leadása </Button>
+          <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
+            <FiFastForward />
+            Jelentkezés
+          </Button>
         </CardHeader>
       </Card>
     </div>
