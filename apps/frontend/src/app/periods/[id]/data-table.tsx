@@ -33,9 +33,10 @@ import { ApplicationStatus } from '@/types/application-entity';
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onStatusChange?: (row: TData, status: ApplicationStatus) => void;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, onStatusChange }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -66,16 +67,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     const visibles = table.getFilteredRowModel().rows;
     table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
   };
-  function setSelectedToStatus2(value: ApplicationStatus) {
-    /* setData((prevData) =>
-      prevData.map((row) => {
-        const tableRow = table.getRowModel().rows.find((r) => r.original === row);
-        if (tableRow && tableRow.getIsSelected()) {
-          return { ...row, status: value };
-        }
-        return row;
-      })
-    );*/
+  function setSelectedToStatus(value: ApplicationStatus) {
+    if (!onStatusChange) return;
+    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    selectedRows.map((row) => onStatusChange(row.original, value));
   }
 
   return (
@@ -94,9 +89,9 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
               <MenubarSub>
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
-                  {Object.values(ApplicationStatus).map((key) => {
+                  {Object.keys(ApplicationStatus).map((key) => {
                     return (
-                      <MenubarItem key={key} onClick={() => setSelectedToStatus2(key as ApplicationStatus)}>
+                      <MenubarItem key={key} onClick={() => setSelectedToStatus(key as ApplicationStatus)}>
                         <ColoredBadge status={key as ApplicationStatus} />
                       </MenubarItem>
                     );

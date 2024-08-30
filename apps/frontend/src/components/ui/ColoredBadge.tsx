@@ -5,7 +5,7 @@ import { ApplicationStatus } from '@/types/application-entity';
 
 export default function ColoredBadge({ status }: { status: ApplicationStatus }) {
   const color = useMemo(() => {
-    switch (status) {
+    switch (ApplicationStatus[status]) {
       case ApplicationStatus.SUBMITTED:
         return 'blue';
       case ApplicationStatus.ACCEPTED:
@@ -19,5 +19,9 @@ export default function ColoredBadge({ status }: { status: ApplicationStatus }) 
     }
   }, [status]);
 
-  return <Badge variant={color}>{status}</Badge>;
+  return (
+    <Badge variant={color} className='w-44 text-center'>
+      {ApplicationStatus[status]}
+    </Badge>
+  );
 }

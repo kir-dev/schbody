@@ -73,7 +73,7 @@ export const columns: (
       return (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button variant='ghost'>
+            <Button variant='ghost' className='m-0 p-0'>
               <ColoredBadge
                 status={row.original.status as ApplicationStatus}
                 onClick={(r) => {
@@ -89,7 +89,7 @@ export const columns: (
               <CommandList>
                 <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
                 <CommandGroup>
-                  {Object.values(ApplicationStatus).map((status) => (
+                  {Object.keys(ApplicationStatus).map((status) => (
                     <CommandItem
                       key={status}
                       value={status}
