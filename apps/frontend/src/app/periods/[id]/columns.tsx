@@ -1,11 +1,14 @@
 'use client';
-import { Column, ColumnDef } from '@tanstack/react-table';
+import { Column, ColumnDef, Row } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
+import { useState } from 'react';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ApplicationEntity } from '@/types/application-entity';
+import ColoredBadge from '@/components/ui/ColoredBadge';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 function SortableHeader(column: Column<ApplicationEntity>, title: string) {
   return (
@@ -64,7 +67,44 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
       return SortableHeader(column, 'Státusz');
     },
     cell: ({ row }) => {
-      return <Badge>{row.getValue('Státusz')}</Badge>;
+      const [open, setOpen] = useState(false);
+      return (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant='ghost'>
+              <ColoredBadge status={row.original.status} onClick={() => setOpen(true)}>
+                {row.original.status}
+              </ColoredBadge>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <Command>
+              <CommandInput placeholder='Keresés...' />
+              <CommandList>
+                <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
+                <CommandGroup>
+                  {Object.values(ApplicationStatus).map((status) => (
+                    <CommandItem
+                      key={status}
+                      value={status}
+                      onSelect={(value) => {
+                        saveStatus(row, value as ApplicationStatus);
+                        setOpen(false);
+                      }}
+                    >
+                      <ColoredBadge status={status as ApplicationStatus} />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      );
     },
   },
 ];
+
+function saveStatus(row: Row<ApplicationEntity>, status: ApplicationStatus) {
+  row.original.status = status;
+}

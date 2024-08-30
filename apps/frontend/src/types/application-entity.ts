@@ -2,11 +2,11 @@ import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
 
 export enum ApplicationStatus {
-  SUBMITTED,
-  ACCEPTED,
-  REJECTED,
-  NEEDS_REVIEW,
-  FINISHED,
+  SUBMITTED = 'Benyújtott',
+  ACCEPTED = 'Elfogadott',
+  REJECTED = 'Elutasított',
+  NEEDS_REVIEW = 'Vizsgálat szükséges',
+  FINISHED = 'Kiosztott',
 }
 
 export type ApplicationEntity = {

@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import {
   AlertDialog,
@@ -29,16 +30,24 @@ import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 export default function AdminApplicationPeriodCard({ period }: { period: ApplicationPeriodEntity }) {
   const deleteApplicationPeriod = () => {};
-  /*const editApplicationPeriod = () => {};*/
 
   return (
-    <Card className='m-8'>
+    <Card className=''>
       <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
         <div className='max-md:w-full'>
           <CardTitle>{period.name}</CardTitle>
           <CardDescription>
-            {period.applicationPeriodStartAt.toString().slice(0, 16)} -{' '}
-            {period.applicationPeriodEndAt.toString().slice(0, 16)}
+            {new Date(period.applicationPeriodStartAt).toLocaleDateString('hu-HU', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}
+            {' - '}
+            {new Date(period.applicationPeriodEndAt).toLocaleDateString('hu-HU', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}
           </CardDescription>
         </div>
         <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-4'>
@@ -68,7 +77,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
                     </Label>
                     <Input
                       id='appliction-start'
-                      defaultValue={period.applicationPeriodStartAt.toISOString().slice(0, 10)}
+                      defaultValue={period.applicationPeriodStartAt.toString().toString().slice(0, 10)}
                       type='date'
                     />
                   </div>
@@ -79,7 +88,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
                     <Input
                       id='appliction-end'
                       type='date'
-                      defaultValue={period.applicationPeriodEndAt.toISOString().slice(0, 10)}
+                      defaultValue={period.applicationPeriodEndAt.toString().toString().slice(0, 10)}
                     />
                   </div>
                 </div>
