@@ -37,7 +37,7 @@ export class ApplicationController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @Get('my')
-  getCurrentUserApplication(@CurrentUser() user: User): Promise<Application | null> {
+  getCurrentUserApplication(@CurrentUser() user: User): Promise<Application[] | null> {
     return this.applicationService.getCurrentUserApplication(user);
   }
 
