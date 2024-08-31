@@ -7,6 +7,7 @@ import { Role } from '@prisma/client';
 import { Roles } from '../auth/decorators/Roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 @ApiTags('users')
@@ -32,7 +33,6 @@ export class UserController {
   @Patch('me')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.USER)
   async updateCurrentUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
     return this.userService.update(user.authSchId, updateUserDto);
   }
@@ -48,8 +48,8 @@ export class UserController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @Roles(Role.BODY_ADMIN)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserAdminDto) {
+    return this.userService.updateAdmin(id, updateUserDto);
   }
 }
