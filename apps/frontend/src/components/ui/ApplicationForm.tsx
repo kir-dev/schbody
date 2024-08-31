@@ -78,13 +78,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
   });
 
   useEffect(() => {
-    // check if data exists and the effect haven't been called
     if (user && !effectCalledRef.current) {
       effectCalledRef.current = true;
       form.setValue('nickName', user.data?.nickName || '');
       form.setValue('email', user.data?.email || '');
       form.setValue('isSchResident', user.data?.isSchResident || false);
       form.setValue('roomNumber', user.data?.roomNumber || 0);
+      effectCalledRef.current = false;
     }
   }, [user.data]);
 

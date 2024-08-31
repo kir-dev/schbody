@@ -1,16 +1,17 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import Th1 from '@/components/typography/typography';
 import ApplicationForm from '@/components/ui/ApplicationForm';
+import useCurrentApplication from '@/hooks/useCurrentApplication';
 import usePeriod from '@/hooks/usePeriod';
 
 export default function Page() {
   const { data: currentPeriod } = usePeriod();
-  const router = useRouter();
+  const application = useCurrentApplication();
 
-  if (!currentPeriod) {
-    return router.push('/');
+  if (!currentPeriod || application.data !== undefined) {
+    return redirect('/');
   }
   return (
     <>
