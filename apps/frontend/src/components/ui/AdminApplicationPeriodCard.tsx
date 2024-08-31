@@ -37,7 +37,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
     } else {
       toast({
         title: 'Hiba történt!',
-        description: response.toString() || 'Ismeretlen hiba',
+        description: response ? response.statusText : 'Ismeretlen hiba',
       });
     }
   };

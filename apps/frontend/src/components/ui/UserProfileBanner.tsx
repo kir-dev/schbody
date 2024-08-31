@@ -22,9 +22,10 @@ export default function UserProfileBanner(props: {
   const router = useRouter();
   const onLogout = () => {
     Cookies.remove('jwt');
-    mutate(undefined, false);
+    mutate();
     router.push('/');
   };
+  if (!props.user) return null;
 
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center'>
@@ -48,11 +49,11 @@ export default function UserProfileBanner(props: {
           <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
             <div className='flex items-start'>
               <div>
-                <TTitle className='mt-0'>{props.user?.fullName}</TTitle>
-                <Th2 className='ml-8'>{props.user?.neptun}</Th2>
+                <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+                <Th2 className='ml-8'>{props.user!.neptun}</Th2>
               </div>
               <Badge className='text-sm px-4 py-2 rounded-xl' variant='secondary'>
-                {props.user?.role}
+                {props.user!.role}
               </Badge>
             </div>
             <div className='flex gap-4'>

@@ -100,7 +100,7 @@ export default function PeriodCreateOrEditDialog(props: props) {
         <DatePickerWithRange id='datepicker' date={date} setDate={setDate} />
         <DialogFooter>
           <Button type='submit' onClick={onSave}>
-            Időszak létrehozása
+            {props.period ? 'Mentés' : 'Időszak létrehozása'}
           </Button>
         </DialogFooter>
       </DialogContent>

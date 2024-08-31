@@ -8,9 +8,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import ColoredBadge from '@/components/ui/ColoredBadge';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
-function SortableHeader(column: Column<ApplicationEntity>, title: string) {
+function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
   return (
     <div className=' flex h-4 items-center gap-4'>
       {title}
@@ -22,8 +22,8 @@ function SortableHeader(column: Column<ApplicationEntity>, title: string) {
 }
 
 export const columns: (
-  onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
+  onStatusChange: (row: ApplicationEntity2, status: ApplicationStatus) => void
+) => ColumnDef<ApplicationEntity2>[] = (onStatusChange) => [
   {
     id: 'Választ',
     header: ({ table }) => (
@@ -86,14 +86,14 @@ export const columns: (
       return (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button variant='ghost' className='m-0 p-0'>
-              <ColoredBadge
-                status={row.original.status as ApplicationStatus}
-                onClick={(r) => {
-                  r.stopPropagation();
-                  setOpen(true);
-                }}
-              />
+            <Button
+              variant='ghost'
+              className='m-0 p-0'
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              <ColoredBadge status={row.original.status as ApplicationStatus} />
             </Button>
           </PopoverTrigger>
           <PopoverContent>
