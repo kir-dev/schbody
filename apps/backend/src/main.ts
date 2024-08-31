@@ -13,7 +13,7 @@ async function bootstrap() {
     })
   );
   app.enableCors({
-    origin: [process.env.FRONTEND_URL, 'http://localhost:3000'],
+    origin: [process.env.FRONTEND_URL, 'http://localhost:3000', '*kir-dev.vercel.app'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
     credentials: true,
   });
