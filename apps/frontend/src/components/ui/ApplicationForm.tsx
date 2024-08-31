@@ -1,10 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,7 +14,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
+import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
+import { ApplicationPeriodEntity } from '@/types/application-period-entity';
+
+import api from '../network/apiSetup';
 
 const formSchema = z
   .object({
@@ -58,8 +61,10 @@ const formSchema = z
       message: 'A szoba szám megadása kötelező, ha kolis vagy.',
     }
   );
-export default function ApplicationForm() {
+export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
+  const user = useProfile();
   const { toast } = useToast();
+  const effectCalledRef = useRef(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,10 +77,24 @@ export default function ApplicationForm() {
     },
   });
 
+  useEffect(() => {
+    // check if data exists and the effect haven't been called
+    if (user && !effectCalledRef.current) {
+      effectCalledRef.current = true;
+      form.setValue('nickname', user.data?.nickName || '');
+      form.setValue('contact_email', user.data?.email || '');
+      form.setValue('is_sch_resident', user.data?.isSchResident || false);
+      form.setValue('room_number', user.data?.roomNumber || 0);
+    }
+  }, [user.data]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await axios.post('/api/application', values);
-      if (response.status === 200) {
+      const response2 = await api.patch('/users/me', values);
+      const response = await api.post('/application', {
+        applicationPeriodId: currentPeriod.id,
+      });
+      if (response.status === 200 && response2.status === 200) {
         toast({
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
