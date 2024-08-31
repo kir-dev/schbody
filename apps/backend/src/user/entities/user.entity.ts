@@ -1,5 +1,5 @@
 import { Role } from '@prisma/client';
-import { IsBase64, IsBoolean, IsDate, IsEmail, IsEnum, IsNumber, IsPositive, IsString, IsUUID } from 'class-validator';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsNumber, IsPositive, IsString, IsUUID } from 'class-validator';
 
 export class User {
   @IsUUID()
@@ -17,7 +17,6 @@ export class User {
   @IsNumber()
   @IsPositive()
   roomNumber: number;
-  @IsBase64()
   profileImage: any;
   @IsBoolean()
   canHelpNoobs: boolean;
