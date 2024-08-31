@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
   };
   function setSelectedToStatus(value: ApplicationStatus) {
     if (!onStatusChange) return;
-    const selectedRows = table.getFilteredSelectedRowModel().rows;
+    const selectedRows = table.getSelectedRowModel().rows;
     selectedRows.map((row) => onStatusChange(row.original, value));
   }
 

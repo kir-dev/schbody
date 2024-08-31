@@ -1,6 +1,8 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
+import api from '@/components/network/apiSetup';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,22 +16,30 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
+import { toast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 export default function AdminApplicationPeriodCard({ period }: { period: ApplicationPeriodEntity }) {
-  const deleteApplicationPeriod = () => {};
+  const router = useRouter();
+  const deleteApplicationPeriod = async () => {
+    const response = await api.delete(`/application-periods/${period.id}`).catch((e) => {
+      toast({
+        title: 'Hiba történt!',
+        description: e.message,
+      });
+    });
+    if (response && response.status === 200) {
+      router.push('/periods');
+    } else {
+      toast({
+        title: 'Hiba történt!',
+        description: response.toString() || 'Ismeretlen hiba',
+      });
+    }
+  };
 
   return (
     <Card className=''>
@@ -55,51 +65,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
             <Label htmlFor='tickets-are-valid-now'>Az itt kiosztott belépők jelenleg érvényesek</Label>
             <Switch id='tickets-are-valid-now' />
           </div>
-          <Dialog>
-            <DialogTrigger asChild className='max-md:w-full'>
-              <Button>Szerkesztés</Button>
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
-              <form>
-                <DialogHeader>
-                  <DialogTitle>Jelentkezési időszak szerkesztése</DialogTitle>
-                  <DialogDescription>A változtatásaid mentés után azonnal hatályba lépnek</DialogDescription>
-                </DialogHeader>
-                {/*todo make it react-hook-forms and use zod to validate*/}
-                <div className='mt-4'>
-                  <Label htmlFor='name'>Név</Label>
-                  <Input id='name' defaultValue={period.name} />
-                </div>
-                <div className='grid grid-cols-2 gap-4 mt-4'>
-                  <div>
-                    <Label htmlFor='appliction-start' className='text-right'>
-                      Jelenetkezés kezdete
-                    </Label>
-                    <Input
-                      id='appliction-start'
-                      defaultValue={period.applicationPeriodStartAt.toString().toString().slice(0, 10)}
-                      type='date'
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor='appliction-end' className='text-right'>
-                      Jelenetkezés vége
-                    </Label>
-                    <Input
-                      id='appliction-end'
-                      type='date'
-                      defaultValue={period.applicationPeriodEndAt.toString().toString().slice(0, 10)}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type='submit' className='mt-4'>
-                    Mentés
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <PeriodCreateOrEditDialog period={period} />
           <AlertDialog>
             <AlertDialogTrigger asChild className='max-md:w-full'>
               <Button variant='destructive'> Törlés </Button>

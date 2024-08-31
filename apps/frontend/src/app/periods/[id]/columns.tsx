@@ -61,6 +61,19 @@ export const columns: (
     header: ({ column }) => {
       return SortableHeader(column, 'Leadva');
     },
+    cell: ({ row }) => {
+      return (
+        <span>
+          {new Date(row.original.createdAt).toLocaleDateString('hu-HU', {
+            minute: 'numeric',
+            hour: 'numeric',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </span>
+      );
+    },
   },
   {
     id: 'Státusz',
@@ -94,7 +107,7 @@ export const columns: (
                       key={status}
                       value={status}
                       onSelect={(value) => {
-                        onStatusChange(row, value as ApplicationStatus);
+                        onStatusChange(row.original, value as ApplicationStatus);
                         setOpen(false);
                       }}
                     >

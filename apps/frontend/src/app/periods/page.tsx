@@ -1,18 +1,12 @@
 'use client';
 
-import { addDays } from 'date-fns';
 import Link from 'next/link';
 import { useState } from 'react';
-import { DateRange } from 'react-day-picker';
 
 import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DatePickerWithRange } from '@/components/ui/DatePickerWithRange';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Pagination,
@@ -22,68 +16,45 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
-import useApplicationPeriods from '@/hooks/useApplicationPeriods';
+import useApplicationPeriods from '@/hooks/usePeriod';
 
 export default function Page() {
   const [pageIndex, setPageIndex] = useState(0);
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 20),
-  });
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState<string>('');
   const applications = useApplicationPeriods(pageIndex);
   const handleCheckedChange = (value: boolean, applicationId: number) => {
     api.patch(`/application-periods/${applicationId}`, { ticketsAreValid: value }).then(() => applications.mutate());
   };
 
-  const onSave = () => {
+  /*  const onSave = async () => {
     if (date === undefined) return;
+
     api
       .post('/application-periods', {
         name,
         applicationPeriodStartAt: date.from,
         applicationPeriodEndAt: date.to,
       })
-      .then(() => {
-        setOpen(false);
-        applications.mutate();
+      .then((response) => {
+        if (response.status === 201) {
+          setOpen(false);
+          return applications.mutate();
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message || 'Ismeretlen hiba';
+        toast({
+          title: 'Hiba történt!',
+          description: errorMessage,
+        });
       });
-  };
+  };*/
   return (
     <div>
       <div className='flex justify-between md:flex-row max-md:flex-col items-center mr-8'>
         <Th1>Jelentkezési időszakok kezelése</Th1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button>+ Új jelentkezési időszak létrehozása</Button>
-          </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
-            <DialogHeader className='mb-4'>
-              <DialogTitle>Új belépőigénylési időszak</DialogTitle>
-            </DialogHeader>
-            <Label htmlFor='name' className='text-right'>
-              Név
-            </Label>
-            <Input
-              id='name'
-              placeholder='Őszi jelentkezési időszak 2024'
-              onChange={(event) => setName(event.target.value)}
-              value={name}
-            />
-
-            <Label htmlFor='datepicker' className='text-right'>
-              Időszak kezdete és vége
-            </Label>
-            <DatePickerWithRange id='datepicker' date={date} setDate={setDate} />
-            <DialogFooter>
-              <Button type='submit' onClick={onSave}>
-                Időszak létrehozása
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <PeriodCreateOrEditDialog />
       </div>
 
       {applications.isLoading && 'Loading...'}

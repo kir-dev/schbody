@@ -4,11 +4,11 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import usePeriod from '@/hooks/usePeriod';
+import { useCurrentPeriod } from '@/hooks/usePeriod';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
-  const { data: currentPeriod } = usePeriod();
+  const { data: currentPeriod } = useCurrentPeriod();
   if (!currentPeriod) {
     return null;
   }
@@ -20,7 +20,7 @@ export default function ApplicationBannerCard() {
             <CardTitle> Jelentkezés </CardTitle>
             <CardDescription>
               {' '}
-              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod.name}</span> jelentkezési időszak!
+              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod!.name}</span> jelentkezési időszak!
             </CardDescription>
           </div>
           <Button onClick={() => router.push('/application-form')}> Jelentkezés leadása </Button>
