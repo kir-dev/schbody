@@ -1,13 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 
-import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { ApplicationPeriodCard } from '@/components/ui/ApplicationPeriodCard';
 import {
   Pagination,
   PaginationContent,
@@ -17,39 +13,11 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
-import { Switch } from '@/components/ui/switch';
 import useApplicationPeriods from '@/hooks/usePeriod';
 
 export default function Page() {
   const [pageIndex, setPageIndex] = useState(0);
-  const applications = useApplicationPeriods(pageIndex);
-  const handleCheckedChange = (value: boolean, applicationId: number) => {
-    api.patch(`/application-periods/${applicationId}`, { ticketsAreValid: value }).then(() => applications.mutate());
-  };
-
-  /*  const onSave = async () => {
-    if (date === undefined) return;
-
-    api
-      .post('/application-periods', {
-        name,
-        applicationPeriodStartAt: date.from,
-        applicationPeriodEndAt: date.to,
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          setOpen(false);
-          return applications.mutate();
-        }
-      })
-      .catch((error) => {
-        const errorMessage = error.response?.data?.message || 'Ismeretlen hiba';
-        toast({
-          title: 'Hiba történt!',
-          description: errorMessage,
-        });
-      });
-  };*/
+  const periods = useApplicationPeriods(pageIndex);
   return (
     <div>
       <div className='flex justify-between md:flex-row max-md:flex-col items-center mr-8'>
@@ -57,51 +25,8 @@ export default function Page() {
         <PeriodCreateOrEditDialog />
       </div>
 
-      {applications.isLoading && 'Loading...'}
-      {applications.data &&
-        applications.data.data.map((application) => (
-          <Card className='mx-8 my-4 relative' key={application.id}>
-            <CardHeader>
-              <Link href={`/periods/${application.id}`}>
-                <p className='font-mono'>#{application.id}</p>
-                <CardTitle>{application.name}</CardTitle>
-                <CardDescription>
-                  {new Date(application.applicationPeriodStartAt).toLocaleDateString('hu-HU', {
-                    minute: 'numeric',
-                    hour: 'numeric',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}{' '}
-                  -{' '}
-                  {new Date(application.applicationPeriodEndAt).toLocaleDateString('hu-HU', {
-                    minute: 'numeric',
-                    hour: 'numeric',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </CardDescription>
-              </Link>
-            </CardHeader>
-            {new Date(application.applicationPeriodStartAt) < new Date() &&
-              new Date(application.applicationPeriodEndAt) > new Date() && (
-                <Badge className='text-sm px-4 py-2 rounded absolute right-4 top-4' variant='secondary'>
-                  Jelenleg zajlik
-                </Badge>
-              )}
-            <CardContent>
-              <div className='flex items-center space-x-2'>
-                <Switch
-                  id='is-valid'
-                  checked={application.ticketsAreValid}
-                  onCheckedChange={(value) => handleCheckedChange(value, application.id)}
-                />
-                <Label htmlFor='is-valid'>Az itt kiosztott belépők jelenleg érvényesek</Label>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {periods.isLoading && 'Loading...'}
+      {periods.data && periods.data.data.map((period) => <ApplicationPeriodCard key={period.id} period={period} />)}
       <Pagination>
         <PaginationContent>
           <PaginationItem
@@ -120,15 +45,13 @@ export default function Page() {
           </PaginationItem>
           <PaginationItem
             onClick={() => {
-              if (applications.data?.total && pageIndex < applications.data.total) {
+              if (periods.data?.total && pageIndex < periods.data.total) {
                 setPageIndex(pageIndex + 1);
               }
             }}
           >
             <PaginationNext
-              className={
-                applications.data?.total && pageIndex < applications.data.total ? '' : 'pointer-events-none opacity-50'
-              }
+              className={periods.data?.total && pageIndex < periods.data.total ? '' : 'pointer-events-none opacity-50'}
             />
           </PaginationItem>
         </PaginationContent>

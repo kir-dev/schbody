@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { mutate } from 'swr';
 
 import api from '@/components/network/apiSetup';
 import {
@@ -41,6 +42,16 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
     }
   };
 
+  const onActiveChange = async (value: boolean) => {
+    await api.patch(`/application-periods/${period.id}`, { ticketsAreValid: value }).catch((e) => {
+      toast({
+        title: 'Hiba történt!',
+        description: e.message,
+      });
+    });
+    await mutate(`/application-periods/${period.id}`);
+  };
+
   return (
     <Card className=''>
       <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
@@ -63,7 +74,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
         <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-4'>
           <div className='flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4'>
             <Label htmlFor='tickets-are-valid-now'>Az itt kiosztott belépők jelenleg érvényesek</Label>
-            <Switch id='tickets-are-valid-now' />
+            <Switch id='tickets-are-valid-now' onCheckedChange={onActiveChange} checked={period.ticketsAreValid} />
           </div>
           <PeriodCreateOrEditDialog period={period} />
           <AlertDialog>

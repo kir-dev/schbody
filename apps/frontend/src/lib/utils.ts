@@ -8,7 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getStatusKey(status: ApplicationStatus): string | undefined {
-  console.log(status.toString());
   const statusEntries = Object.entries(ApplicationStatus) as [string, ApplicationStatus][];
   for (const [key, value] of statusEntries) {
     if (value === status) {
