@@ -4,12 +4,14 @@ import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import useCurrentApplication from '@/hooks/useCurrentApplication';
 import usePeriod from '@/hooks/usePeriod';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
   const { data: currentPeriod } = usePeriod();
-  if (!currentPeriod) {
+  const application = useCurrentApplication();
+  if (!currentPeriod || application.data === undefined) {
     return null;
   }
   return (
