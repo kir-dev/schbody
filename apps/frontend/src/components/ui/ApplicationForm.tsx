@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,17 +15,19 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
+import useUser from '@/hooks/useUser';
 import { useToast } from '@/lib/use-toast';
+import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 const formSchema = z
   .object({
-    nickname: z.string({
+    nickName: z.string({
       required_error: 'Ez a mező kötelező',
       invalid_type_error: 'String, tesó!',
     }),
-    contact_email: z.string().email(),
-    is_sch_resident: z.boolean().optional(),
-    room_number: z
+    email: z.string().email(),
+    isSchResident: z.boolean().optional(),
+    roomNumber: z
       .union([
         z.literal(0 && NaN),
         z
@@ -48,8 +50,8 @@ const formSchema = z
   })
   .refine(
     (data) => {
-      if (data.is_sch_resident) {
-        return data.room_number !== 0 && data.room_number !== undefined;
+      if (data.isSchResident) {
+        return data.roomNumber !== 0 && data.roomNumber !== undefined;
       }
       return true;
     },
@@ -58,24 +60,41 @@ const formSchema = z
       message: 'A szoba szám megadása kötelező, ha kolis vagy.',
     }
   );
-export default function ApplicationForm() {
+export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
+  const user = useUser();
   const { toast } = useToast();
+  const effectCalledRef = useRef(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickname: 'Bujdi Bohoc',
-      contact_email: 'email@gmail.com',
-      is_sch_resident: false,
-      room_number: 0,
+      nickName: 'Bujdi Bohoc',
+      email: 'email@gmail.com',
+      isSchResident: false,
+      roomNumber: 0,
       terms: false,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    if (user && !effectCalledRef.current) {
+      effectCalledRef.current = true;
+      form.setValue('nickName', user.data?.nickName || '');
+      form.setValue('email', user.data?.email || '');
+      form.setValue('isSchResident', user.data?.isSchResident || false);
+      form.setValue('roomNumber', user.data?.roomNumber || 0);
+      effectCalledRef.current = false;
+    }
+  }, [user.data]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
     try {
-      const response = await api.post('/api/application', values);
-      if (response.status === 200) {
+      const updateResponse = await api.patch('/users/me', values);
+      const response = await api.post('/application', {
+        applicationPeriodId: currentPeriod.id,
+      });
+      if (response.status === 201 && updateResponse.status === 200) {
         toast({
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
@@ -88,8 +107,13 @@ export default function ApplicationForm() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      console.error('There was an error!', error);
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        toast({
+          title: 'Már jelentkeztél erre az időszakra!',
+          variant: 'destructive',
+        });
+      }
     }
   }
 
@@ -104,15 +128,15 @@ export default function ApplicationForm() {
           <CardContent className='md:grid-cols-4 grid gap-4'>
             <FormItem>
               <FormLabel>Név</FormLabel>
-              <Input disabled value='Minta Pista' />
+              <Input disabled value={user.data?.fullName} />
             </FormItem>
             <FormItem>
               <FormLabel>Neptun</FormLabel>
-              <Input disabled value='NEPTUN' />
+              <Input disabled value={user.data?.neptun} />
             </FormItem>
             <FormField
               control={form.control}
-              name='nickname'
+              name='nickName'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Becenév</FormLabel>
@@ -125,7 +149,7 @@ export default function ApplicationForm() {
             />
             <FormField
               control={form.control}
-              name='contact_email'
+              name='email'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kapcsolattartási email cím</FormLabel>
@@ -146,7 +170,7 @@ export default function ApplicationForm() {
           <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
-              name='is_sch_resident'
+              name='isSchResident'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
                   <div className='space-y-0.5'>
@@ -159,7 +183,7 @@ export default function ApplicationForm() {
                       checked={field.value}
                       onCheckedChange={(data) => {
                         field.onChange(data);
-                        form.resetField('room_number');
+                        form.resetField('roomNumber');
                       }}
                     />
                   </FormControl>
@@ -168,10 +192,10 @@ export default function ApplicationForm() {
             />
             <FormField
               control={form.control}
-              name='room_number'
+              name='roomNumber'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
@@ -180,8 +204,8 @@ export default function ApplicationForm() {
                   </div>
                   <FormControl>
                     <InputOTP
-                      maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
-                      disabled={!form.watch('is_sch_resident')}
+                      maxLength={form.watch('roomNumber')?.toString().startsWith('1') ? 4 : 3}
+                      disabled={!form.watch('isSchResident')}
                       value={field.value ? `${field.value}` : ''}
                       onChange={(value: string) => {
                         let numericValue = parseInt(value, 10);
@@ -195,7 +219,7 @@ export default function ApplicationForm() {
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
-                        {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
+                        {form.watch('roomNumber')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>

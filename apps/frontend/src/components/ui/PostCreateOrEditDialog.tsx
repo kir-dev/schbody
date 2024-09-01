@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiCheck, FiX } from 'react-icons/fi';
 import { z } from 'zod';
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import TipTap from '@/components/ui/TipTap';
 import { PostEntity } from '@/types/post-entity';
 
 const formSchema = z.object({
@@ -89,7 +89,7 @@ export default function PostCreateOrEditDialog({
                 <FormItem>
                   <FormLabel>Tartalom</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <TipTap content={field.value.toString()} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,7 +99,7 @@ export default function PostCreateOrEditDialog({
               <Button type='submit'>
                 <FiCheck /> Közzététel
               </Button>
-              <Button variant='secondary' onClick={closeDialog}>
+              <Button variant='secondary' onClick={closeDialog} type='reset'>
                 <FiX />
                 Mégse
               </Button>
