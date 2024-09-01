@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { mutate } from 'swr';
 import { z } from 'zod';
 
 import api from '@/components/network/apiSetup';
@@ -99,6 +100,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
         });
+        mutate('/application/my');
         router.push('/');
       } else {
         toast({
