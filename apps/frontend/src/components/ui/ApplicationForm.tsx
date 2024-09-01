@@ -108,8 +108,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      console.error('There was an error!', error);
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        toast({
+          title: 'Már jelentkeztél erre az időszakra!',
+          variant: 'destructive',
+        });
+      }
     }
   }
 
