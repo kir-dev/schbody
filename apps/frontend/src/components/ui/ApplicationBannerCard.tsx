@@ -5,13 +5,13 @@ import { FiFastForward } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
-import usePeriod from '@/hooks/usePeriod';
+import { useCurrentPeriod } from '@/hooks/usePeriod';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
-  const { data: currentPeriod } = usePeriod();
+  const { data: currentPeriod } = useCurrentPeriod();
   const application = useCurrentApplication();
-  if (!currentPeriod || application.data === undefined) {
+  if (!currentPeriod || application.data !== undefined) {
     return null;
   }
   return (
@@ -22,7 +22,7 @@ export default function ApplicationBannerCard() {
             <CardTitle> Jelentkezés </CardTitle>
             <CardDescription>
               {' '}
-              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod.name}</span> jelentkezési időszak!
+              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod!.name}</span> jelentkezési időszak!
             </CardDescription>
           </div>
           <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>

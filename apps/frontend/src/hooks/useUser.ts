@@ -8,3 +8,7 @@ export default function useUser() {
     shouldRetryOnError: false,
   });
 }
+
+// export function useUser(id: string) {
+//   return useSWR(`/user/${id}`, axiosGetFetcher);
+// }

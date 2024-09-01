@@ -1,12 +1,16 @@
 'use client';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ApplicationEntity } from '@/types/application-entity';
+import ColoredBadge from '@/components/ui/ColoredBadge';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
-function SortableHeader(column: Column<ApplicationEntity>, title: string) {
+function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
   return (
     <div className=' flex h-4 items-center gap-4'>
       {title}
@@ -17,7 +21,9 @@ function SortableHeader(column: Column<ApplicationEntity>, title: string) {
   );
 }
 
-export const columns: ColumnDef<ApplicationEntity>[] = [
+export const columns: (
+  onStatusChange: (row: ApplicationEntity2, status: ApplicationStatus) => void
+) => ColumnDef<ApplicationEntity2>[] = (onStatusChange) => [
   {
     id: 'Választ',
     header: ({ table }) => (
@@ -55,12 +61,65 @@ export const columns: ColumnDef<ApplicationEntity>[] = [
     header: ({ column }) => {
       return SortableHeader(column, 'Leadva');
     },
+    cell: ({ row }) => {
+      return (
+        <span>
+          {new Date(row.original.createdAt).toLocaleDateString('hu-HU', {
+            minute: 'numeric',
+            hour: 'numeric',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}
+        </span>
+      );
+    },
   },
   {
     id: 'Státusz',
     accessorKey: 'status',
     header: ({ column }) => {
       return SortableHeader(column, 'Státusz');
+    },
+    cell: ({ row }) => {
+      const [open, setOpen] = useState(false);
+      return (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant='ghost'
+              className='m-0 p-0'
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              <ColoredBadge status={row.original.status as ApplicationStatus} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <Command>
+              <CommandInput placeholder='Keresés...' />
+              <CommandList>
+                <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
+                <CommandGroup>
+                  {Object.keys(ApplicationStatus).map((status) => (
+                    <CommandItem
+                      key={status}
+                      value={status}
+                      onSelect={(value) => {
+                        onStatusChange(row.original, value as ApplicationStatus);
+                        setOpen(false);
+                      }}
+                    >
+                      <ColoredBadge status={status as ApplicationStatus} />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      );
     },
   },
 ];

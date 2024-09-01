@@ -20,15 +20,20 @@ export default function LoginButton({ version }: { version: number }) {
   return (
     <>
       {user && (
-        <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
-          {version === 1 && user.fullName}
-          {version === 0 && (
-            <>
-              <FiUser />
-              {user.fullName.slice(0, 1)}
-            </>
+        <>
+          {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+            <Button onClick={() => router.push('/periods')}>Admin</Button>
           )}
-        </Button>
+          <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
+            {version === 1 && user.fullName}
+            {version === 0 && (
+              <>
+                <FiUser />
+                {user.fullName.slice(0, 1)}
+              </>
+            )}
+          </Button>
+        </>
       )}
       {!user && (
         <Button className='m-8 ml-0 max-md:m-2' onClick={handleLogin}>

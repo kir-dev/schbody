@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -17,8 +18,6 @@ import { Switch } from '@/components/ui/switch';
 import useUser from '@/hooks/useUser';
 import { useToast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
-
-import api from '../network/apiSetup';
 
 const formSchema = z
   .object({
