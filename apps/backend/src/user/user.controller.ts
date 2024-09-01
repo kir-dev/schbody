@@ -36,6 +36,13 @@ export class UserController {
   async updateCurrentUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
     return this.userService.update(user.authSchId, updateUserDto);
   }
+  @Get('members')
+  async getMembers(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('pageSize', ParseIntPipe) pageSize: number = 10
+  ) {
+    return this.userService.findMembers(page, pageSize);
+  }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
