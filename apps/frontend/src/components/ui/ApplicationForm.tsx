@@ -16,7 +16,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
-import useUser from '@/hooks/useUser';
+import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
@@ -62,7 +62,7 @@ const formSchema = z
     }
   );
 export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
-  const user = useUser();
+  const user = useProfile();
   const { toast } = useToast();
   const effectCalledRef = useRef(false);
   const router = useRouter();

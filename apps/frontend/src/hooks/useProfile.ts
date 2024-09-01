@@ -9,7 +9,7 @@ export default function useProfile(): {
   mutate: () => void;
   error: unknown;
 } {
-  return useSWR<UserEntity>('/auth/me', axiosGetFetcher, {
+  return useSWR<UserEntity>('/users/me', axiosGetFetcher, {
     shouldRetryOnError: false,
   });
 }
