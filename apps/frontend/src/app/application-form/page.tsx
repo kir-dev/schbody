@@ -4,10 +4,10 @@ import { redirect } from 'next/navigation';
 import Th1 from '@/components/typography/typography';
 import ApplicationForm from '@/components/ui/ApplicationForm';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
-import usePeriod from '@/hooks/usePeriod';
+import { useCurrentPeriod } from '@/hooks/usePeriod';
 
 export default function Page() {
-  const { data: currentPeriod } = usePeriod();
+  const { data: currentPeriod } = useCurrentPeriod();
   const application = useCurrentApplication();
 
   if (!currentPeriod || application.data !== undefined) {

@@ -11,7 +11,7 @@ export default function ApplicationBannerCard() {
   const router = useRouter();
   const { data: currentPeriod } = useCurrentPeriod();
   const application = useCurrentApplication();
-  if (!currentPeriod || application.data === undefined) {
+  if (!currentPeriod || application.data !== undefined) {
     return null;
   }
   return (
