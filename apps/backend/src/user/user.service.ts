@@ -20,11 +20,11 @@ export class UserService {
 
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
   }
-  searchUser(query: string): Promise<User[]> {
+  async searchUser(query: string): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
     if (query.length < 3) {
       throw new BadRequestException('Query must be at least 3 characters long');
     }
-    return this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
       where: {
         OR: [
           { fullName: { contains: query, mode: 'insensitive' } },
@@ -33,6 +33,11 @@ export class UserService {
         ],
       },
     });
+    return {
+      users,
+      pageNumber: -1,
+      totalUsers: users.length,
+    };
   }
   async findOne(id: string): Promise<User> {
     const user = this.prisma.user.findUnique({
@@ -76,7 +81,7 @@ export class UserService {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
-    return await this.prisma.user.update({ where: { authSchId: id }, data: updateData });
+    return this.prisma.user.update({ where: { authSchId: id }, data: updateData });
   }
 
   // TODO maybe remove it? currently not used (could be useful later)
