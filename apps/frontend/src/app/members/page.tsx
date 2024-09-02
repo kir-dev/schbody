@@ -1,7 +1,7 @@
 'use client';
 import { BodyMemberTile } from '@/components/ui/body-member-tile';
 import LoadingCard from '@/components/ui/LoadingCard';
-import { useUsers } from '@/hooks/useUser';
+import { useUsers } from '@/hooks/useUsers';
 
 export default function MembersPage() {
   const { data, isLoading } = useUsers();
