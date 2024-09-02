@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FiEdit2, FiUser } from 'react-icons/fi';
 
 import api from '@/components/network/apiSetup';
@@ -14,10 +14,8 @@ import { toast } from '@/lib/use-toast';
 import { Role } from '@/types/user-entity';
 
 export default function Page() {
-  const users = useUsers();
   const [search, setSearch] = React.useState('');
-  const [filteredUsers, setFilteredUsers] = React.useState(users.data?.users);
-
+  const users = useUsers(search);
   async function onChange(newRole: Role, userId: string) {
     try {
       await api.patch(`/users/${userId}`, { role: newRole });
@@ -32,26 +30,21 @@ export default function Page() {
     }
   }
 
-  useEffect(() => {
-    if (!users.data) return;
-    setFilteredUsers(users.data!.users.filter((user) => user.fullName.toLowerCase().includes(search.toLowerCase())));
-  }, [search, users.data]);
-
   return (
     <>
       <Th1>Jogosultságok kezelése</Th1>
-      {(users.isLoading || filteredUsers === undefined) && <LoadingCard />}
-      {users.data && filteredUsers !== undefined && (
-        <div className='flex flex-col gap-4'>
-          <div className='flex justify-end w-full'>
-            <Input
-              placeholder='Keresés név alapján...'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className='max-w-sm'
-            />
-          </div>
-          {filteredUsers!.map((user) => (
+      <div className='flex flex-col gap-4'>
+        <div className='flex justify-end w-full'>
+          <Input
+            placeholder='Keresés név alapján...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className='max-w-sm'
+          />
+        </div>
+        {users.isLoading && !users.data && <LoadingCard />}
+        {users.data &&
+          users.data.users.map((user) => (
             <Card key={user.id}>
               <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
                 <div className='max-md:w-full'>
@@ -85,8 +78,7 @@ export default function Page() {
               </CardHeader>
             </Card>
           ))}
-        </div>
-      )}
+      </div>
     </>
   );
 }
