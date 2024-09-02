@@ -25,13 +25,8 @@ export default function LoginButton({ version }: { version: number }) {
             <Button onClick={() => router.push('/periods')}>Admin</Button>
           )}
           <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
-            {version === 1 && user.fullName}
-            {version === 0 && (
-              <>
-                <FiUser />
-                {user.fullName.slice(0, 1)}
-              </>
-            )}
+            <FiUser />
+            {version === 0 ? user.nickName.slice(0, 1) : user.nickName}
           </Button>
         </>
       )}

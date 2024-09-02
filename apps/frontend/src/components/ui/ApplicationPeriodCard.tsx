@@ -12,7 +12,7 @@ export function ApplicationPeriodCard(props: { period: ApplicationPeriodEntity }
       <CardHeader className='flex max-md:flex-col md:flex-row justify-between'>
         <Link href={`/periods/${props.period.id}`}>
           <CardTitle>{props.period.name}</CardTitle>
-          <CardDescription className='flex gap-8'>
+          <CardDescription className='flex gap-8 mt-2'>
             <p className='flex items-center gap-2'>
               <LuHash />
               {props.period.id}
