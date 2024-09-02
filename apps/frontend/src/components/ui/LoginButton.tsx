@@ -22,7 +22,10 @@ export default function LoginButton({ version }: { version: number }) {
       {user && (
         <>
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
-            <Button onClick={() => router.push('/periods')}>Admin</Button>
+            <Button onClick={() => router.push('/periods')}>Jelentkezések</Button>
+          )}
+          {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+            <Button onClick={() => router.push('/roles')}>Jogosultságok</Button>
           )}
           <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
             {version === 1 && user.fullName}

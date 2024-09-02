@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/utils';
 import { ApplicationStatus } from '@/types/application-entity';
 
-export default function ColoredBadge({ status }: { status: ApplicationStatus }) {
+export default function StatusBadge({ status }: { status: ApplicationStatus }) {
   const convertedStatus = statusConvert(status);
   const color = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {

@@ -13,7 +13,6 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
-import ColoredBadge from '@/components/ui/ColoredBadge';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -27,6 +26,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApplicationStatus } from '@/types/application-entity';
 
@@ -92,7 +92,7 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
                   {Object.keys(ApplicationStatus).map((key) => {
                     return (
                       <MenubarItem key={key} onClick={() => setSelectedToStatus(key as ApplicationStatus)}>
-                        <ColoredBadge status={key as ApplicationStatus} />
+                        <StatusBadge status={key as ApplicationStatus} />
                       </MenubarItem>
                     );
                   })}

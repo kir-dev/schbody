@@ -4,7 +4,7 @@ import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import ColoredBadge from '@/components/ui/ColoredBadge';
+import StatusBadge from '@/components/ui/StatusBadge';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
 import useProfile from '@/hooks/useProfile';
@@ -30,7 +30,7 @@ export default function ApplicationBannerCard() {
           </div>
           <div className='flex md:flex-row max-md:flex-col gap-4'>
             <p>Jelentkezésed státusza: </p>
-            <ColoredBadge status={application.data.status} />
+            <StatusBadge status={application.data.status} />
           </div>
         </CardHeader>
       </Card>

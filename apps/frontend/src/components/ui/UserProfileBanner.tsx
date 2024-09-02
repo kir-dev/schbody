@@ -18,11 +18,11 @@ export default function UserProfileBanner(props: {
   onClick: () => void;
   onSubmit: () => void;
 }) {
-  const { mutate } = useProfile();
+  const profile = useProfile();
   const router = useRouter();
-  const onLogout = () => {
+  const onLogout = async () => {
     Cookies.remove('jwt');
-    mutate();
+    profile.mutate();
     router.push('/');
   };
   if (!props.user) return null;
