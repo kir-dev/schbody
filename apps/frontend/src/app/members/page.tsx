@@ -23,9 +23,7 @@ export default function MembersPage() {
       <h2 className='text-2xl font-bold my-4'>Segíthetnek nooboknak:</h2>
       <div className='grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4'>
         {canHelpNoobsUsers.map((u) => (
-          <div key={u.id} className='flex'>
-            <BodyMemberTile userEntity={u} />
-          </div>
+          <BodyMemberTile userEntity={u} key={u.id} />
         ))}
       </div>
 
@@ -33,9 +31,7 @@ export default function MembersPage() {
       <h2 className='text-2xl font-bold my-4'>Nem segíthetnek nooboknak:</h2>
       <div className='grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4'>
         {cannotHelpNoobsUsers.map((u) => (
-          <div key={u.id} className='flex'>
-            <BodyMemberTile userEntity={u} />
-          </div>
+          <BodyMemberTile key={u.id} userEntity={u} />
         ))}
       </div>
     </main>
