@@ -22,11 +22,16 @@ export default function LoginButton({ version }: { version: number }) {
       {user && (
         <>
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
-            <Button onClick={() => router.push('/periods')}>Jelentkezések</Button>
+            <Button variant='secondary' onClick={() => router.push('/roles')}>
+              Jogosultságok
+            </Button>
           )}
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
-            <Button onClick={() => router.push('/roles')}>Jogosultságok</Button>
+            <Button variant='secondary' onClick={() => router.push('/periods')}>
+              Jelentkezések
+            </Button>
           )}
+
           <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
             {version === 1 && user.fullName}
             {version === 0 && (

@@ -8,7 +8,7 @@ import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 export function ApplicationPeriodCard(props: { period: ApplicationPeriodEntity }) {
   return (
-    <Card className='mx-8 my-4 relative'>
+    <Card className='my-4 relative'>
       <CardHeader className='flex max-md:flex-col md:flex-row justify-between'>
         <Link href={`/periods/${props.period.id}`}>
           <CardTitle>{props.period.name}</CardTitle>
