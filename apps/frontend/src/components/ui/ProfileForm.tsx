@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,6 +15,8 @@ import { Textarea } from '@/components/ui/textarea';
 import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
+
+import api from '../network/apiSetup';
 
 const formSchema = z
   .object({
@@ -81,7 +82,7 @@ export default function ProfileForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
     try {
-      const response = await axios.post('/api/submit', JSON.stringify(values));
+      const response = await api.patch('/users/me', JSON.stringify(values));
       if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',
