@@ -59,11 +59,10 @@ export class ApplicationService {
     }
   }
 
-  async findAll(page: number, pageSize: number): Promise<PaginationDto<Application>> {
-    const skip = page * pageSize;
+  async findAll(page?: number, pageSize?: number): Promise<PaginationDto<Application>> {
     const applications = this.prisma.application.findMany({
-      skip,
-      take: pageSize,
+      skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
+      take: page === undefined || pageSize === undefined ? undefined : pageSize,
     });
     const total = this.prisma.post.count();
     return Promise.all([applications, total])

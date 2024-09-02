@@ -23,11 +23,10 @@ export class PostsService {
     });
   }
 
-  findAll(page: number, pageSize: number): Promise<PaginationDto<SimplePostDto>> {
-    const skip = page * pageSize;
+  findAll(page?: number, pageSize?: number): Promise<PaginationDto<SimplePostDto>> {
     const posts = this.prisma.post.findMany({
-      skip,
-      take: Number(pageSize),
+      skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
+      take: page === undefined || pageSize === undefined ? undefined : pageSize,
       where: {
         visible: true,
       },
