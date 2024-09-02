@@ -11,7 +11,7 @@ export default function Page() {
   const application = useCurrentApplication();
 
   if (!currentPeriod || application.data !== undefined) {
-    return redirect('/');
+    return redirect('/unauthorized');
   }
   return (
     <>
