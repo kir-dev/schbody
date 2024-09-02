@@ -58,9 +58,11 @@ export default function Forum() {
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
       {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER') && (
-        <Button onClick={() => setIsEditing(undefined)}>
-          <FiMessageSquare /> Új hír közzététele
-        </Button>
+        <div className='flex w-full justify-end'>
+          <Button onClick={() => setIsEditing(undefined)}>
+            <FiMessageSquare /> Új hír közzététele
+          </Button>
+        </div>
       )}
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts?.data &&

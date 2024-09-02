@@ -53,7 +53,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
   };
 
   return (
-    <Card className=''>
+    <Card>
       <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
         <div className='max-md:w-full'>
           <CardTitle>{period.name}</CardTitle>

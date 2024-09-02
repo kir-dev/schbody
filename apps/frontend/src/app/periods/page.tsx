@@ -20,7 +20,7 @@ export default function Page() {
   const periods = useApplicationPeriods(pageIndex);
   return (
     <div>
-      <div className='flex justify-between md:flex-row max-md:flex-col items-center mr-8'>
+      <div className='flex justify-between md:flex-row max-md:flex-col items-center'>
         <Th1>Jelentkezési időszakok kezelése</Th1>
         <PeriodCreateOrEditDialog />
       </div>

@@ -5,9 +5,9 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import ColoredBadge from '@/components/ui/ColoredBadge';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import StatusBadge from '@/components/ui/StatusBadge';
 import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
 function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
@@ -93,7 +93,7 @@ export const columns: (
                 setOpen(true);
               }}
             >
-              <ColoredBadge status={row.original.status as ApplicationStatus} />
+              <StatusBadge status={row.original.status as ApplicationStatus} />
             </Button>
           </PopoverTrigger>
           <PopoverContent>
@@ -111,7 +111,7 @@ export const columns: (
                         setOpen(false);
                       }}
                     >
-                      <ColoredBadge status={status as ApplicationStatus} />
+                      <StatusBadge status={status as ApplicationStatus} />
                     </CommandItem>
                   ))}
                 </CommandGroup>
