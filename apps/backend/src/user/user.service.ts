@@ -51,14 +51,18 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
-
+    const updateData = updateUserDto;
+    if (user.role === 'USER') {
+      updateData.canHelpNoobs = false;
+      updateData.publicDesc = '';
+    }
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
     } else if (user.isSchResident === false && updateUserDto.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
-    return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
+    return this.prisma.user.update({ where: { authSchId: id }, data: updateData });
   }
 
   // TODO maybe remove it? currently not used (could be useful later)
