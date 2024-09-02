@@ -97,7 +97,7 @@ export class ApplicationService {
     }
   }
 
-  async getCurrentUserApplication(user: User): Promise<Application | null> {
+  async getCurrentUserApplication(user: User): Promise<Application> {
     const currentPeriod = await this.applicationPeriodService.getCurrentPeriod();
     try {
       return await this.prisma.application.findFirstOrThrow({

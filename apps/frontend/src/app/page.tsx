@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 
 import Th1 from '@/components/typography/typography';

@@ -1,6 +1,8 @@
-import { IsBoolean, IsDateString, IsISO8601, IsOptional } from 'class-validator';
+import { IsBoolean, IsDateString, IsISO8601, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateApplicationPeriodDto {
+  @IsString()
+  @IsNotEmpty()
   name: string;
   @IsDateString()
   @IsISO8601()

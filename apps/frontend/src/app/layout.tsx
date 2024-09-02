@@ -23,8 +23,10 @@ export default function RootLayout({
   return (
     <html lang='hu'>
       <body className={`${inter.className} min-h-dvh flex flex-col justify-between`}>
-        <Header />
-        <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>{children}</div>
+        <div>
+          <Header />
+          <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>{children}</div>
+        </div>
         <Toaster />
         <Footer />
       </body>
