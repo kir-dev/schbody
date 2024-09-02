@@ -6,12 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
+import useProfile from '@/hooks/useProfile';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
-  const { data: currentPeriod } = useCurrentPeriod();
+  const currentPeriod = useCurrentPeriod();
+  const user = useProfile();
   const application = useCurrentApplication();
-  if (!currentPeriod || application.data !== undefined) {
+  if (
+    !currentPeriod ||
+    application.data !== undefined ||
+    !user.data ||
+    user.isLoading ||
+    application.isLoading ||
+    currentPeriod.isLoading
+  ) {
     return null;
   }
   return (
@@ -22,7 +31,8 @@ export default function ApplicationBannerCard() {
             <CardTitle> Jelentkezés </CardTitle>
             <CardDescription>
               {' '}
-              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod!.name}</span> jelentkezési időszak!
+              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
+              időszak!
             </CardDescription>
           </div>
           <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>

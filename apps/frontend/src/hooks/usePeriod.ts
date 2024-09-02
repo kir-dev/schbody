@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { axiosGetFetcher } from '@/lib/fetchers';
 import { ApplicationPeriodEntity, ApplicationPeriodEntityPagination } from '@/types/application-period-entity';
 
-export function useCurrentPeriod(): { data: ApplicationPeriodEntity | undefined } {
+export function useCurrentPeriod() {
   return useSWR<ApplicationPeriodEntity>('/application-periods/current', axiosGetFetcher, {
     shouldRetryOnError: false,
   });
