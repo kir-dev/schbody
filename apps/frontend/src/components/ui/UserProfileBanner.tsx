@@ -1,6 +1,8 @@
 'use client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
 import { Th2, TTitle } from '@/components/typography/typography';
@@ -58,11 +60,18 @@ export default function UserProfileBanner(props: {
             <div className='flex gap-4'>
               {!props.editingIsOn && (
                 <Button variant='secondary' onClick={props.onClick}>
+                  <FiEdit2 />
                   Adatok szerkesztése
                 </Button>
               )}
-              {props.editingIsOn && <Button type='submit'>Mentés</Button>}
+              {props.editingIsOn && (
+                <Button type='submit'>
+                  <FiSave />
+                  Mentés
+                </Button>
+              )}
               <Button variant='destructive' onClick={onLogout}>
+                <FiLogOut />
                 Kijelenkezés
               </Button>
             </div>
