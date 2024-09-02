@@ -28,8 +28,8 @@ export class ApplicationController {
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Get()
   findAll(
-    @Query('page', ParseIntPipe) page?: number,
-    @Query('page_size', ParseIntPipe) pageSize?: number
+    @Query('page', ParseIntPipe) page: number,
+    @Query('page_size', ParseIntPipe) pageSize: number
   ): Promise<PaginationDto<Application>> {
     return this.applicationService.findAll(page, pageSize);
   }

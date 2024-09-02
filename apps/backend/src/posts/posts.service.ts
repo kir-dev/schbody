@@ -24,9 +24,10 @@ export class PostsService {
   }
 
   findAll(page?: number, pageSize?: number): Promise<PaginationDto<SimplePostDto>> {
+    const hasPagination = page !== -1 && pageSize !== -1;
     const posts = this.prisma.post.findMany({
-      skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
-      take: page === undefined || pageSize === undefined ? undefined : pageSize,
+      skip: hasPagination ? page * pageSize : undefined,
+      take: hasPagination ? pageSize : undefined,
       where: {
         visible: true,
       },
@@ -45,7 +46,7 @@ export class PostsService {
     const total = this.prisma.post.count();
     return Promise.all([posts, total])
       .then(([posts, total]) => {
-        const limit = Math.floor(total / pageSize);
+        const limit = hasPagination ? Math.floor(total / pageSize) : 0;
         return {
           data: posts,
           total,

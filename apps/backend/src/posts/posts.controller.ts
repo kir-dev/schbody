@@ -27,8 +27,8 @@ export class PostsController {
 
   @Get()
   async findAll(
-    @Query('page', ParseIntPipe) page?: number,
-    @Query('page_size', ParseIntPipe) pageSize?: number
+    @Query('page', ParseIntPipe) page: number,
+    @Query('page_size', ParseIntPipe) pageSize: number
   ): Promise<PaginationDto<SimplePostDto>> {
     return this.postsService.findAll(page, pageSize);
   }

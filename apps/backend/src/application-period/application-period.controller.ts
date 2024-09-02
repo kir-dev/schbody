@@ -18,8 +18,8 @@ export class ApplicationPeriodController {
 
   @Get()
   async findAll(
-    @Query('page', ParseIntPipe) page?: number,
-    @Query('page_size', ParseIntPipe) pageSize?: number
+    @Query('page', ParseIntPipe) page: number,
+    @Query('page_size', ParseIntPipe) pageSize: number
   ): Promise<PaginationDto<ApplicationPeriod>> {
     return this.applicationPeriodService.findAll(page, pageSize);
   }
