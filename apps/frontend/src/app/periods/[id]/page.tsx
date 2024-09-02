@@ -1,4 +1,6 @@
 'use client';
+import { pdf } from '@react-pdf/renderer';
+
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import api from '@/components/network/apiSetup';
@@ -8,13 +10,15 @@ import LoadingCard from '@/components/ui/LoadingCard';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
 import { toast } from '@/lib/use-toast';
-import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+
+import { PassExport } from './pass-export';
 
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
 
-  const handleStatusChange = async (application: ApplicationEntity2, status: ApplicationStatus) => {
+  const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
     /*todo make it dynamic by id, for that, we should get the right id from the api*/
     const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
     mutate();
@@ -30,6 +34,21 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   };
 
+  const onExport = async (data: ApplicationEntity[]) => {
+    if (period?.data) {
+      const blob = await pdf(<PassExport applicationData={data} periodName={period.data.name} />).toBlob();
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      document.body.appendChild(a);
+
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = `schbody_pass_export_${Date.now()}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  };
+
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
@@ -41,7 +60,12 @@ export default function Page({ params }: { params: { id: number } }) {
         <Th2>Jelentkezők</Th2>
         {areApplicationsLoading && <LoadingCard />}
         {applications && (
-          <DataTable columns={columns(handleStatusChange)} data={applications} onStatusChange={handleStatusChange} />
+          <DataTable
+            columns={columns(handleStatusChange)}
+            data={applications}
+            onStatusChange={handleStatusChange}
+            onExportClicked={onExport}
+          />
         )}
       </div>
     </>

@@ -53,6 +53,8 @@ export class ApplicationPeriodService {
             neptun: true,
             isActiveVikStudent: true,
             email: true,
+            roomNumber: true,
+            profileImage: true,
           },
         },
       },
