@@ -4,22 +4,17 @@ import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import ColoredBadge from '@/components/ui/ColoredBadge';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
+import useProfile from '@/hooks/useProfile';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
   const currentPeriod = useCurrentPeriod();
   const user = useProfile();
   const application = useCurrentApplication();
-  if (
-    !currentPeriod ||
-    application.data !== undefined ||
-    !user.data ||
-    user.isLoading ||
-    application.isLoading ||
-    currentPeriod.isLoading
-  ) {
+  if (!currentPeriod || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
     return null;
   }
   if (application.data) {
@@ -29,7 +24,7 @@ export default function ApplicationBannerCard() {
           <div>
             <CardTitle> Leadott jelentkezés </CardTitle>
             <CardDescription>
-              A most zajló, <span className='font-bold'>{currentPeriod!.name}</span> időszakra már sikeresen
+              A most zajló, <span className='font-bold'>{currentPeriod.data?.name}</span> időszakra már sikeresen
               jelentkeztél!
             </CardDescription>
           </div>
@@ -48,7 +43,8 @@ export default function ApplicationBannerCard() {
           <CardTitle> Jelentkezés </CardTitle>
           <CardDescription>
             {' '}
-            Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési időszak!
+            Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
+            időszak!
           </CardDescription>
         </div>
         <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
