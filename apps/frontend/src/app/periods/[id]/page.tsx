@@ -11,7 +11,7 @@ import { toast } from '@/lib/use-toast';
 import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
 export default function Page({ params }: { params: { id: number } }) {
-  const { data: period, isLoading: isPeriodLoading, error } = usePeriod(params.id);
+  const period = usePeriod(params.id);
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
 
   const handleStatusChange = async (application: ApplicationEntity2, status: ApplicationStatus) => {
@@ -30,13 +30,13 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   };
 
-  if (error) return <div>Hiba történt: {error.message}</div>;
+  if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
     <>
       <Th1>Jelentkezési időszak kezelése</Th1>
-      {isPeriodLoading && <LoadingCard />}
-      {period && <AdminApplicationPeriodCard period={period} />}
+      {period?.isLoading && <LoadingCard />}
+      {period?.data && <AdminApplicationPeriodCard period={period.data} />}
       <div className='mt-16'>
         <Th2>Jelentkezők</Th2>
         {areApplicationsLoading && <LoadingCard />}

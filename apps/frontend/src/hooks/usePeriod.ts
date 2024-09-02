@@ -10,6 +10,7 @@ export function useCurrentPeriod() {
 }
 
 export function usePeriod(id: number) {
+  if (id === -1) return null;
   return useSWR<ApplicationPeriodEntity>(`/application-periods/${id}`, axiosGetFetcher, {
     shouldRetryOnError: false,
     revalidateOnFocus: true,
