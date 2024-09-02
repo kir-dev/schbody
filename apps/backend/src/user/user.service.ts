@@ -37,7 +37,7 @@ export class UserService {
       this.prisma.user.count(),
       this.prisma.user.findMany({
         orderBy: { fullName: 'asc' },
-        skip: (page - 1) * pageSize,
+        skip: page * pageSize,
         take: pageSize,
       }),
     ]);
@@ -62,7 +62,7 @@ export class UserService {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
-    return this.prisma.user.update({ where: { authSchId: id }, data: updateData });
+    return await this.prisma.user.update({ where: { authSchId: id }, data: updateData });
   }
 
   // TODO maybe remove it? currently not used (could be useful later)

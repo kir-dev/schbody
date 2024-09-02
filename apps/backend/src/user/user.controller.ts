@@ -27,7 +27,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   async getCurrentUser(@CurrentUser() user: User) {
-    return user;
+    return this.userService.findOne(user.authSchId);
   }
 
   @Patch('me')
