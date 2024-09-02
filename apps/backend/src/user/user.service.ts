@@ -7,6 +7,8 @@ import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
 
@@ -18,8 +20,20 @@ export class UserService {
 
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
   }
-  constructor(private readonly prisma: PrismaService) {}
-
+  searchUser(query: string): Promise<User[]> {
+    if (query.length < 3) {
+      throw new BadRequestException('Query must be at least 3 characters long');
+    }
+    return this.prisma.user.findMany({
+      where: {
+        OR: [
+          { fullName: { contains: query, mode: 'insensitive' } },
+          { email: { contains: query, mode: 'insensitive' } },
+          { nickName: { contains: query, mode: 'insensitive' } },
+        ],
+      },
+    });
+  }
   async findOne(id: string): Promise<User> {
     const user = this.prisma.user.findUnique({
       where: { authSchId: id },
@@ -32,13 +46,13 @@ export class UserService {
     return user;
   }
 
-  async findMany(page: number, pageSize: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
+  async findMany(page?: number, pageSize?: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
     const [totalUsers, users] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.findMany({
         orderBy: { fullName: 'asc' },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
+        skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
+        take: page === undefined || pageSize === undefined ? undefined : pageSize,
       }),
     ]);
 
@@ -62,7 +76,7 @@ export class UserService {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
-    return this.prisma.user.update({ where: { authSchId: id }, data: updateData });
+    return await this.prisma.user.update({ where: { authSchId: id }, data: updateData });
   }
 
   // TODO maybe remove it? currently not used (could be useful later)

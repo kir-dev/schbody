@@ -1,15 +1,13 @@
 'use client';
-import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useSWRConfig } from 'swr';
 
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
-import useProfile from '@/hooks/useProfile';
 import { UserEntity } from '@/types/user-entity';
 
 export default function UserProfileBanner(props: {
@@ -18,12 +16,13 @@ export default function UserProfileBanner(props: {
   onClick: () => void;
   onSubmit: () => void;
 }) {
-  const profile = useProfile();
   const router = useRouter();
-  const onLogout = async () => {
-    Cookies.remove('jwt');
-    profile.mutate();
-    router.push('/');
+  const { mutate } = useSWRConfig();
+  const onLogout = () => {
+    fetch('/auth/logout').then(() => {
+      mutate(() => true, undefined, { revalidate: false });
+      router.refresh();
+    });
   };
   if (!props.user) return null;
 
