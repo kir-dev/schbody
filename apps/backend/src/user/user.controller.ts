@@ -19,7 +19,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
-  async findAll(@Query('page', ParseIntPipe) page: number = 1, @Query('pageSize', ParseIntPipe) pageSize: number = 10) {
+  async findAll(@Query('page', ParseIntPipe) page?: number, @Query('pageSize', ParseIntPipe) pageSize?: number) {
     return this.userService.findMany(page, pageSize);
   }
 
@@ -35,6 +35,13 @@ export class UserController {
   @ApiBearerAuth()
   async updateCurrentUser(@Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
     return this.userService.update(user.authSchId, updateUserDto);
+  }
+  @Get('search')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  async searchUser(@Query('query') query: string) {
+    return this.userService.searchUser(query);
   }
 
   @Get(':id')
