@@ -12,16 +12,16 @@ export default function Ticket({ user }: { user: UserEntity }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Card className='flex gap-2 p-2 bg-red-200 relative'>
-            <img src='bb.png' className='w-[65px] h-[90px] overflow-hidden rounded' alt='kep' />
+            <img src='bb.png' className='w-[65px] h-[90px] overflow-hidden rounded object-cover' alt='kep' />
             <div>
               <CardTitle>
-                <Th2>{user.fullName}</Th2>
+                <Th2 className='max-w-40 overflow-hidden whitespace-nowrap'>{user.fullName}</Th2>
               </CardTitle>
               <CardContent className='p-0'>
-                <div className='bg-gray-400 rounded px-1 py-0 text-xs w-fit mt-1'>
+                <div className='bg-gray-200 rounded px-1 py-0 text-xs w-fit mt-1'>
                   <p>{user.isSchResident ? user.roomNumber : 'Külsős'}</p>
                 </div>
-                <div className='bg-gray-400 rounded px-1 py-0 text-xs w-fit mt-1'>
+                <div className='bg-gray-200 rounded px-1 py-0 text-xs w-fit mt-1'>
                   <p>{Math.round(Math.random() * 10000)}</p>
                 </div>
                 <span className='text-4xl m-0 absolute bottom-1 right-1 hover:scale-110 transition transform duration-150'>
