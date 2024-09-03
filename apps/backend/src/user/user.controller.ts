@@ -43,6 +43,13 @@ export class UserController {
   async searchUser(@Query('query') query: string) {
     return this.userService.searchUser(query);
   }
+  @Get('members')
+  async getMembers(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('pageSize', ParseIntPipe) pageSize: number = 10
+  ) {
+    return this.userService.findMembers(page, pageSize);
+  }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)

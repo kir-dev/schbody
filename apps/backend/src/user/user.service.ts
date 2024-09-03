@@ -50,14 +50,23 @@ export class UserService {
 
     return user;
   }
+  findMembers(page: number, pageSize: number) {
+    return this.prisma.user.findMany({
+      orderBy: { fullName: 'asc' },
+      skip: page * pageSize,
+      take: pageSize,
+      where: { canHelpNoobs: true, role: 'BODY_MEMBER' },
+    });
+  }
 
-  async findMany(page?: number, pageSize?: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
+  async findMany(page: number, pageSize: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
+    const hasPagination = page !== -1 && pageSize !== -1;
     const [totalUsers, users] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.findMany({
         orderBy: { fullName: 'asc' },
-        skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
-        take: page === undefined || pageSize === undefined ? undefined : pageSize,
+        skip: hasPagination ? page * pageSize : undefined,
+        take: hasPagination ? pageSize : undefined,
       }),
     ]);
 
