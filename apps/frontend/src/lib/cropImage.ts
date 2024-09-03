@@ -1,4 +1,10 @@
-export default async function getCroppedImg(imageSrc: string | ArrayBuffer, crop: any): Promise<unknown> {
+import { Area } from 'react-easy-crop';
+
+export default async function getCroppedImg(
+  imageSrc: string | ArrayBuffer,
+  mimeType: string,
+  cropArea: Area
+): Promise<Blob> {
   const image = await createImage(imageSrc);
   // eslint-disable-next-line no-undef
   const canvas = document.createElement('canvas');
@@ -11,19 +17,19 @@ export default async function getCroppedImg(imageSrc: string | ArrayBuffer, crop
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
 
-  canvas.width = crop.width;
-  canvas.height = crop.height;
+  canvas.width = cropArea.width;
+  canvas.height = cropArea.height;
 
   ctx.drawImage(
     image,
-    crop.x * scaleX,
-    crop.y * scaleY,
-    crop.width * scaleX,
-    crop.height * scaleY,
+    cropArea.x * scaleX,
+    cropArea.y * scaleY,
+    cropArea.width * scaleX,
+    cropArea.height * scaleY,
     0,
     0,
-    crop.width,
-    crop.height
+    cropArea.width,
+    cropArea.height
   );
 
   return new Promise((resolve, reject) => {
@@ -33,7 +39,7 @@ export default async function getCroppedImg(imageSrc: string | ArrayBuffer, crop
         return;
       }
       resolve(blob);
-    }, 'image/jpeg');
+    }, mimeType);
   });
 }
 

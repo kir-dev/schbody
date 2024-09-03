@@ -1,21 +1,23 @@
 'use client';
-import axios from 'axios';
-import { useCallback, useState } from 'react';
-import Cropper from 'react-easy-crop';
+import { ChangeEvent, useCallback, useState } from 'react';
+import Cropper, { Area } from 'react-easy-crop';
 
+import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import getCroppedImg from '@/lib/cropImage';
+import { useToast } from '@/lib/use-toast';
 
 export default function Page() {
+  const { toast } = useToast();
   const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -26,7 +28,7 @@ export default function Page() {
     }
   };
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+  const onCropComplete = useCallback((croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
@@ -34,18 +36,25 @@ export default function Page() {
     if (!imageSrc || !croppedAreaPixels) return;
 
     try {
-      const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
+      const mimeType = 'image/jpeg';
+      const croppedImageBlob = await getCroppedImg(imageSrc, mimeType, croppedAreaPixels);
 
-      const response = await axios.post('/users/me', croppedImageBlob);
+      const data = new FormData();
+      data.append('image', croppedImageBlob);
+      const response = await api.post('/users/me/profile-picture', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-      if (response.status === 200) {
-        alert('Image uploaded successfully!');
+      if (response.status >= 200 && response.status < 300) {
+        toast({ title: 'Profilkép sikeresen feltöltve!' });
       } else {
-        alert('Failed to upload the image.');
+        toast({ title: 'Profilkép feltöltése sikertelen!' });
       }
     } catch (e) {
       console.error(e);
-      alert('Failed to process the image.');
+      toast({ title: 'Hiba a kép feldolgozása közben!' });
     }
   };
 

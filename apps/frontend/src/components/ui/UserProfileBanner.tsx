@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -28,16 +27,12 @@ export default function UserProfileBanner(props: {
     });
   };
   if (!props.user) return null;
-
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center'>
-      <div className='min-w-44 min-h-44 w-1/4 h-full aspect-square relative'>
-        <Image
-          src='https://mozsarmate.me/marci.jpg'
-          placeholder='blur'
-          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+      <div className='min-w-44 min-h-44 w-1/4 h-full relative'>
+        <img
+          src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
           alt='PROFIL KEP'
-          fill
           className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
         />
         <div className='w-full absolute flex bottom-2'>
