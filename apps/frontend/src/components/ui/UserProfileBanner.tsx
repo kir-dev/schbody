@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
@@ -34,6 +33,10 @@ export default function UserProfileBanner(props: {
           src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
           alt='PROFIL KEP'
           className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = 'default_pfp.jpg';
+          }}
         />
         <div className='w-full absolute flex bottom-2'>
           <Link href='/profile/image' className='m-auto bg-white rounded p-2'>
