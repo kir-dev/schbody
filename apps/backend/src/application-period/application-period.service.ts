@@ -49,10 +49,12 @@ export class ApplicationPeriodService {
       include: {
         user: {
           select: {
+            authSchId: true,
             fullName: true,
             neptun: true,
             isActiveVikStudent: true,
             email: true,
+            roomNumber: true,
           },
         },
       },

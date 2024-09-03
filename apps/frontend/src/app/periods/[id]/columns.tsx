@@ -8,9 +8,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
-function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
+function SortableHeader(column: Column<ApplicationEntity>, title: string) {
   return (
     <div className=' flex h-4 items-center gap-4'>
       {title}
@@ -22,8 +22,8 @@ function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
 }
 
 export const columns: (
-  onStatusChange: (row: ApplicationEntity2, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity2>[] = (onStatusChange) => [
+  onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
+) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
   {
     id: 'Választ',
     header: ({ table }) => (
