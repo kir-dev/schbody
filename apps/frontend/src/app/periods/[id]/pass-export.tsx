@@ -38,8 +38,10 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
               padding: '3mm 6mm 0 4mm',
             }}
           >
-            {/* TODO use profileImage */}
-            <Image src='https://placehold.co/650x900/jpeg' style={{ width: '2.6cm', height: '3.5cm' }} />
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`}
+              style={{ width: '2.6cm', height: '3.5cm', borderRadius: '5%' }}
+            />
             <View style={{ flexDirection: 'column' }}>
               <Text
                 style={{
@@ -53,32 +55,31 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
               >
                 {a.user.fullName}
               </Text>
-              <Text style={{ fontSize: '3pt', marginTop: '1mm' }}>Szobaszám</Text>
-              <Text
+              <View
                 style={{
-                  marginTop: '0.5mm',
+                  marginTop: '1.5mm',
                   backgroundColor: 'lightgray',
-                  padding: '0 5mm 1mm 5mm',
-                  fontSize: '8pt',
+                  padding: '0mm 1mm 1mm 1mm',
                   width: '15mm',
                   borderRadius: '20%',
                 }}
               >
-                {a.user.roomNumber}
-              </Text>
-              <Text style={{ fontSize: '3pt', marginTop: '1mm' }}>Azonosító</Text>
-              <Text
+                <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Szobaszám</Text>
+                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>{a.user.roomNumber}</Text>
+              </View>
+              <View
                 style={{
-                  marginTop: '0.5mm',
+                  marginTop: '1.5mm',
                   backgroundColor: 'lightgray',
-                  padding: '0 5mm 1mm 5mm',
-                  fontSize: '8pt',
+                  padding: '0mm 1mm 1mm 1mm',
                   width: '15mm',
                   borderRadius: '20%',
                 }}
               >
-                {a.id}
-              </Text>
+                <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Azonosító</Text>
+                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>{a.id}</Text>
+              </View>
+
               <View
                 style={{
                   backgroundColor: 'lightgray',
@@ -89,7 +90,7 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
                   borderTopRightRadius: '20%',
                   fontSize: '8pt',
                   fontWeight: 'bold',
-                  padding: '1mm 0 1mm 0',
+                  padding: '0.5mm 0 1mm 0',
                 }}
               >
                 <Text style={{ width: '100%', textAlign: 'center' }}>{periodName.split(' ')[0]}</Text>
