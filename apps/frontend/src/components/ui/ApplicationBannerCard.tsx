@@ -1,6 +1,5 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React from 'react';
 import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,7 @@ export default function ApplicationBannerCard() {
   const currentPeriod = useCurrentPeriod();
   const user = useProfile();
   const application = useCurrentApplication();
-  if (!currentPeriod || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
+  if (!currentPeriod.data || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
     return null;
   }
   if (application.data) {
