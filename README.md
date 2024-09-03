@@ -1,8 +1,9 @@
-# NestJS + NextJS Starter Project by Kir-Dev
+# SCHBody💪
+by Kir-Dev
 
-This is a starter project for a fullstack application using NestJS and NextJS.
-It includes a basic setup for a NestJS as backend and a NextJS as frontend,
-including shadcn/ui, ESLint, Prettier, and GitHub Actions.
+A Schönherz Kollégium konditermének weboldala és adminisztrációs rendszere.
+- Ha hibát találsz, kérlek nyiss egy issue-t!
+- Ha részt akarsz venni a fejlesztésben, vedd fel a kapcsolatot velünk és nyiss egy pull requestet!
 
 ## Getting Started
 

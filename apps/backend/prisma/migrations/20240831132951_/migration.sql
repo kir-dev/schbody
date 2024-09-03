@@ -20,7 +20,7 @@ CREATE TABLE "User" (
     "publicDesc" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "profileSeenAt" TIMESTAMP(3),
+    "vikStatusUpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("authSchId")
 );

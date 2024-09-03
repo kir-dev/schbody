@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,15 +16,17 @@ import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 
+import api from '../network/apiSetup';
+
 const formSchema = z
   .object({
-    nickname: z.string({
+    nickName: z.string({
       required_error: 'Ez a mező kötelező',
       invalid_type_error: 'String, tesó!',
     }),
-    contact_email: z.string().email(),
-    is_sch_resident: z.boolean().optional(),
-    room_number: z
+    email: z.string().email(),
+    isSchResident: z.boolean().optional(),
+    roomNumber: z
       .union([
         z.literal(0 && NaN),
         z
@@ -44,13 +45,13 @@ const formSchema = z
         },
         { message: 'Cseles, de ilyen szoba nem létezik' }
       ),
-    can_help_noobs: z.boolean(),
-    public_desc: z.string().optional(),
+    canHelpNoobs: z.boolean(),
+    publicDesc: z.string().optional(),
   })
   .refine(
     (data) => {
-      if (data.is_sch_resident) {
-        return data.room_number !== 0 && data.room_number !== undefined;
+      if (data.isSchResident) {
+        return data.roomNumber !== 0 && data.roomNumber !== undefined;
       }
       return true;
     },
@@ -67,12 +68,12 @@ export default function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickname: '',
-      contact_email: '',
-      is_sch_resident: false,
-      room_number: 0,
-      can_help_noobs: false,
-      public_desc: '',
+      nickName: 'Bujdi Bohoc',
+      email: 'email@gmail.com',
+      isSchResident: false,
+      roomNumber: 0,
+      canHelpNoobs: false,
+      publicDesc: '',
     },
   });
 
@@ -81,7 +82,7 @@ export default function ProfileForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
     try {
-      const response = await axios.post('/api/submit', JSON.stringify(values));
+      const response = await api.patch('/users/me', JSON.stringify(values));
       if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',
@@ -106,12 +107,12 @@ export default function ProfileForm() {
   useEffect(() => {
     if (user) {
       reset({
-        nickname: user.nickName || '',
-        contact_email: user.email || '',
-        is_sch_resident: user.isSchResident || false,
-        room_number: user.roomNumber || 0,
-        can_help_noobs: user.canHelpNoobs || false,
-        public_desc: user.publicDesc || '',
+        nickName: user.nickName || '',
+        email: user.email || '',
+        isSchResident: user.isSchResident || false,
+        roomNumber: user.roomNumber || 0,
+        canHelpNoobs: user.canHelpNoobs || false,
+        publicDesc: user.publicDesc || '',
       });
     }
   }, [user, reset]);
@@ -138,7 +139,7 @@ export default function ProfileForm() {
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
             <FormField
               control={form.control}
-              name='nickname'
+              name='nickName'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Becenév</FormLabel>
@@ -151,7 +152,7 @@ export default function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='contact_email'
+              name='email'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kapcsolattartási email cím</FormLabel>
@@ -171,7 +172,7 @@ export default function ProfileForm() {
           <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
-              name='is_sch_resident'
+              name='isSchResident'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
                   <div className='space-y-0.5'>
@@ -185,7 +186,7 @@ export default function ProfileForm() {
                       disabled={!editingIsOn}
                       onCheckedChange={(data) => {
                         field.onChange(data);
-                        form.resetField('room_number');
+                        form.resetField('roomNumber');
                       }}
                     />
                   </FormControl>
@@ -194,10 +195,10 @@ export default function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='room_number'
+              name='roomNumber'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('is_sch_resident') ? 'opacity-100' : 'opacity-0'}`}
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
@@ -206,8 +207,8 @@ export default function ProfileForm() {
                   </div>
                   <FormControl>
                     <InputOTP
-                      maxLength={form.watch('room_number')?.toString().startsWith('1') ? 4 : 3}
-                      disabled={!form.watch('is_sch_resident') || !editingIsOn}
+                      maxLength={form.watch('roomNumber')?.toString().startsWith('1') ? 4 : 3}
+                      disabled={!form.watch('isSchResident') || !editingIsOn}
                       value={field.value ? `${field.value}` : ''}
                       onChange={(value: string) => {
                         let numericValue = parseInt(value, 10);
@@ -221,7 +222,7 @@ export default function ProfileForm() {
                         <InputOTPSlot index={0} />
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
-                        {form.watch('room_number')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
+                        {form.watch('roomNumber')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>
@@ -237,7 +238,7 @@ export default function ProfileForm() {
           <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
-              name='can_help_noobs'
+              name='canHelpNoobs'
               render={({ field }) => (
                 <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
                   <div className='space-y-0.5'>
@@ -259,10 +260,10 @@ export default function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='public_desc'
+              name='publicDesc'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('can_help_noobs') ? 'opacity-100' : 'opacity-0'}`}
+                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('canHelpNoobs') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Leírás</FormLabel>
@@ -276,7 +277,7 @@ export default function ProfileForm() {
                       placeholder='...'
                       className='resize-none'
                       {...field}
-                      disabled={!editingIsOn || !form.watch('can_help_noobs')}
+                      disabled={!editingIsOn || !form.watch('canHelpNoobs')}
                     />
                   </FormControl>
                 </FormItem>

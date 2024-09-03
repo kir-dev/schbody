@@ -20,15 +20,23 @@ export default function LoginButton({ version }: { version: number }) {
   return (
     <>
       {user && (
-        <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
-          {version === 1 && user.fullName}
-          {version === 0 && (
-            <>
-              <FiUser />
-              {user.fullName.slice(0, 1)}
-            </>
+        <>
+          {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+            <Button variant='secondary' onClick={() => router.push('/roles')}>
+              Jogosultságok
+            </Button>
           )}
-        </Button>
+          {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+            <Button variant='secondary' onClick={() => router.push('/periods')}>
+              Jelentkezések
+            </Button>
+          )}
+
+          <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
+            <FiUser />
+            {version === 0 ? user.nickName.slice(0, 1) : user.nickName}
+          </Button>
+        </>
       )}
       {!user && (
         <Button className='m-8 ml-0 max-md:m-2' onClick={handleLogin}>

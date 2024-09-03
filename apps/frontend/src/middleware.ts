@@ -7,9 +7,13 @@ import { getRoleFromJwt } from './lib/utils';
 export function middleware(request: NextRequest) {
   const jwt = request.cookies.get('jwt');
   const role = getRoleFromJwt(jwt?.value);
-  if (request.nextUrl.pathname.startsWith('/profile')) {
+  if (
+    request.nextUrl.pathname.startsWith('/profile') ||
+    request.nextUrl.pathname.startsWith('/applications') ||
+    request.nextUrl.pathname.startsWith('/application-form')
+  ) {
     if (role === 'UNAUTHORIZED') {
-      return NextResponse.redirect(new URL('/', request.url));
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
     }
   }
 
@@ -19,6 +23,7 @@ export function middleware(request: NextRequest) {
     }
     return NextResponse.redirect(new URL('/', request.url));
   }
+
   return NextResponse.next();
 }
 export const config = {
