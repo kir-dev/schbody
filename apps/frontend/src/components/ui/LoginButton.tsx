@@ -25,13 +25,13 @@ export default function LoginButton({ version }: { version: number }) {
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
             <Button variant='secondary' onClick={() => router.push('/roles')}>
               <FiShield />
-              {version === 1 ? 'Jogosultságok' : ''}
+              {version === 1 ? 'Jogosultságok' : 'Jogok'}
             </Button>
           )}
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
             <Button variant='secondary' onClick={() => router.push('/periods')}>
               <FiGrid />
-              {version === 1 ? 'Időszakok' : ''}
+              {version === 1 ? 'Időszakok' : 'Idők'}
             </Button>
           )}
 
