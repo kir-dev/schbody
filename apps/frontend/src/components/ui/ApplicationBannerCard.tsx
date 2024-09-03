@@ -16,7 +16,7 @@ export default function ApplicationBannerCard() {
   const currentPeriod = useCurrentPeriod();
   const user = useProfile();
   const application = useCurrentApplication();
-  if (!currentPeriod || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
+  if (!currentPeriod.data || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
     return null;
   }
   if (application.data) {
