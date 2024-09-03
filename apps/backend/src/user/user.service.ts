@@ -55,7 +55,10 @@ export class UserService {
       orderBy: { fullName: 'asc' },
       skip: page * pageSize,
       take: pageSize,
-      where: { canHelpNoobs: true, role: 'BODY_MEMBER' },
+      where: {
+        canHelpNoobs: true,
+        OR: [{ role: 'BODY_MEMBER' }, { role: 'BODY_ADMIN' }],
+      },
     });
   }
 

@@ -16,6 +16,9 @@ export default function RoleBadge({ role }: { role: Role }) {
     }
   }, [role]);
 
+  if (convertedRole === Role.SUPERUSER) {
+    return null;
+  }
   return (
     <Badge variant={color} className='w-44 text-center'>
       {Role[convertedRole]}

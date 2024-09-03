@@ -18,7 +18,7 @@ export class UserController {
   @Get()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   async findAll(@Query('page', ParseIntPipe) page?: number, @Query('pageSize', ParseIntPipe) pageSize?: number) {
     return this.userService.findMany(page, pageSize);
   }
@@ -39,7 +39,7 @@ export class UserController {
   @Get('search')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   async searchUser(@Query('query') query: string) {
     return this.userService.searchUser(query);
   }
@@ -54,7 +54,7 @@ export class UserController {
   @Get(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
@@ -62,7 +62,7 @@ export class UserController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN)
+  @Roles(Role.BODY_ADMIN, Role.SUPERUSER)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserAdminDto) {
     return this.userService.updateAdmin(id, updateUserDto);
   }

@@ -25,7 +25,7 @@ export class ApplicationController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   @Get()
   findAll(
     @Query('page', ParseIntPipe) page: number,
@@ -43,7 +43,7 @@ export class ApplicationController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Application> {
     return this.applicationService.findOne(Number(id));
@@ -51,7 +51,7 @@ export class ApplicationController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
