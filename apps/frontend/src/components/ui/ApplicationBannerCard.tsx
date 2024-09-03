@@ -6,6 +6,7 @@ import { FiFastForward } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Ticket from '@/components/ui/Ticket';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
@@ -30,17 +31,20 @@ export default function ApplicationBannerCard() {
               jelentkeztél!
             </CardDescription>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                {/*todo tooltip does not work */}
-                <StatusBadge status={application.data.status} />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className='flex flex-col items-center gap-2'>
+            <Ticket user={user.data} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/*todo tooltip does not work */}
+                  <StatusBadge status={application.data.status} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </CardHeader>
       </Card>
     );

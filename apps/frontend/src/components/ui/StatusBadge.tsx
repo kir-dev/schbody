@@ -21,9 +21,5 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
     }
   }, [status]);
 
-  return (
-    <Badge variant={color} className='w-44 text-center'>
-      {ApplicationStatus[convertedStatus]}
-    </Badge>
-  );
+  return <Badge variant={color}>{ApplicationStatus[convertedStatus]}</Badge>;
 }
