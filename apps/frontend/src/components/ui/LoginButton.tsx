@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FiLogIn, FiUser } from 'react-icons/fi';
+import React from 'react';
+import { FiGrid, FiLogIn, FiShield, FiUser } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import useProfile from '@/hooks/useProfile';
@@ -20,23 +21,25 @@ export default function LoginButton({ version }: { version: number }) {
   return (
     <>
       {user && (
-        <>
+        <div className='flex gap-2 items-center'>
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
             <Button variant='secondary' onClick={() => router.push('/roles')}>
-              Jogosultságok
+              <FiShield />
+              {version === 1 ? 'Jogosultságok' : ''}
             </Button>
           )}
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
             <Button variant='secondary' onClick={() => router.push('/periods')}>
-              Jelentkezések
+              <FiGrid />
+              {version === 1 ? 'Időszakok' : ''}
             </Button>
           )}
 
-          <Button className='m-8 ml-0 max-md:m-2' onClick={handleNavToProfile}>
+          <Button onClick={handleNavToProfile}>
             <FiUser />
             {version === 0 ? user.nickName.slice(0, 1) : user.nickName}
           </Button>
-        </>
+        </div>
       )}
       {!user && (
         <Button className='m-8 ml-0 max-md:m-2' onClick={handleLogin}>

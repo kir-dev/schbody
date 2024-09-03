@@ -10,8 +10,8 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header>
-      <div className='flex flex-row w-full h-16 bg-amber-200 items-center justify-between'>
+    <header className='bg-amber-200'>
+      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 items-center justify-between'>
         <TTitle>
           <Link href='/'>SCHBody</Link>
         </TTitle>
@@ -24,7 +24,7 @@ export default function Header() {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className='absolute top-16 left-0 right-0 bg-amber-200 flex flex-col items-start md:hidden z-50'>
+          <div className='absolute top-14 left-0 right-0 bg-amber-200 flex flex-col items-start md:hidden z-50 pl-8 pb-4'>
             <THeaderLink>
               <Link href='/gym'>Terem</Link>
             </THeaderLink>
@@ -41,7 +41,7 @@ export default function Header() {
         )}
 
         {/* Desktop view */}
-        <div className='hidden md:flex items-center gap-4 h-full'>
+        <div className='hidden md:flex items-center gap-2 h-full'>
           <THeaderLink>
             <Link href='/gym'>Terem</Link>
           </THeaderLink>
