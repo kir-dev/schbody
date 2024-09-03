@@ -2,8 +2,8 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class UserService {
@@ -60,14 +60,13 @@ export class UserService {
   }
 
   async findMany(page: number, pageSize: number): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
+    const hasPagination = page !== -1 && pageSize !== -1;
     const [totalUsers, users] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.findMany({
         orderBy: { fullName: 'asc' },
-        skip: page === undefined || pageSize === undefined ? undefined : page * pageSize,
-        take: page === undefined || pageSize === undefined ? undefined : pageSize,
-        skip: page * pageSize,
-        take: pageSize,
+        skip: hasPagination ? page * pageSize : undefined,
+        take: hasPagination ? pageSize : undefined,
       }),
     ]);
 

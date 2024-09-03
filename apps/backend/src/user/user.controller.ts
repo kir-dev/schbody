@@ -6,8 +6,8 @@ import { Role } from '@prisma/client';
 
 import { Roles } from '../auth/decorators/Roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 @ApiTags('users')
