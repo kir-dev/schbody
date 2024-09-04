@@ -19,7 +19,7 @@ export class PostsController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Post()
   create(@Body() createPostDto: CreatePostDto, @CurrentUser() user: User) {
     return this.postsService.create(createPostDto, user);
@@ -39,7 +39,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
@@ -47,7 +47,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()
   @Delete(':id')
   remove(@Param('id') id: string) {

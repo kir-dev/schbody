@@ -36,7 +36,7 @@ export class ApplicationPeriodController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Get(':id/applications')
   async findApplications(@Param('id', ParseIntPipe) id: number): Promise<Application[]> {
     return this.applicationPeriodService.findApplications(id);
@@ -44,7 +44,7 @@ export class ApplicationPeriodController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Post()
   async create(
     @Body() createApplicationPeriodDto: CreateApplicationPeriodDto,
@@ -55,7 +55,7 @@ export class ApplicationPeriodController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number): Promise<ApplicationPeriod> {
     return this.applicationPeriodService.delete(id);
@@ -63,7 +63,7 @@ export class ApplicationPeriodController {
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER, Role.SUPERUSER)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Patch(':id')
   async update(
     @Body() updateApplicationPeriodDto: UpdateApplicationPeriodDto,

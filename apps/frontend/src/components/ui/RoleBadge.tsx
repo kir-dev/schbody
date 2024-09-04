@@ -13,12 +13,10 @@ export default function RoleBadge({ role }: { role: Role }) {
         return 'blue';
       case Role.BODY_ADMIN:
         return 'red';
+      case Role.SUPERUSER:
+        return 'green';
     }
   }, [role]);
-
-  if (convertedRole === Role.SUPERUSER) {
-    return null;
-  }
   return (
     <Badge variant={color} className='w-44 text-center'>
       {Role[convertedRole]}

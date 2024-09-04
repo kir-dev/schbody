@@ -231,7 +231,7 @@ export default function ProfileForm() {
             />
           </CardContent>
         </Card>
-        {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+        {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN' || user.role === 'SUPERUSER') && (
           <Card>
             <CardHeader>
               <CardTitle>Körtag beállítások</CardTitle>
