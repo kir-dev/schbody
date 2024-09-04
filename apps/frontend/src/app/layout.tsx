@@ -25,7 +25,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-dvh flex flex-col justify-between`}
         style={{
-          background: "url('suly4.png')",
+          background: "url('bg.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
