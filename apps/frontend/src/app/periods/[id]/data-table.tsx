@@ -73,6 +73,15 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
     selectedRows.map((row) => onStatusChange(row.original, value));
   }
 
+  function selectGivenStatuses(value: ApplicationStatus) {
+    table.getRowModel().rows.map((row) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
+      else row.toggleSelected(false);
+    });
+  }
+
   return (
     <div>
       <div className='flex items-center justify-between py-4 gap-4'>
@@ -82,10 +91,22 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
             <MenubarContent>
               <MenubarItem onClick={() => table.toggleAllPageRowsSelected(true)}>Összes kijelölése</MenubarItem>
               <MenubarItem onClick={selectAllFiltered}>Kiszűrtek kijelölése</MenubarItem>
+
               <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
               <MenubarItem onClick={() => table.toggleAllPageRowsSelected(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
-
+              <MenubarSub>
+                <MenubarSubTrigger>Adott státuszúak kijelölése</MenubarSubTrigger>
+                <MenubarSubContent>
+                  {Object.keys(ApplicationStatus).map((key) => {
+                    return (
+                      <MenubarItem key={key} onClick={() => selectGivenStatuses(key as ApplicationStatus)}>
+                        <StatusBadge status={key as ApplicationStatus} /> -k kijelölése
+                      </MenubarItem>
+                    );
+                  })}
+                </MenubarSubContent>
+              </MenubarSub>
               <MenubarSub>
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
@@ -93,6 +114,7 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
                     return (
                       <MenubarItem key={key} onClick={() => setSelectedToStatus(key as ApplicationStatus)}>
                         <StatusBadge status={key as ApplicationStatus} />
+                        -ra/re állítása
                       </MenubarItem>
                     );
                   })}

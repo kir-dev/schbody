@@ -1,23 +1,83 @@
 'use client';
 import { Column, ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-icons/md';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
-function SortableHeader(column: Column<ApplicationEntity2>, title: string) {
+function SortableFilterableHeader(column: Column<ApplicationEntity2>, title: string) {
   return (
-    <div className=' flex h-4 items-center gap-4'>
+    <div className=' flex h-4 items-center gap-1 justify-start'>
       {title}
       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <ArrowUpDown className='w-4 h-4' />
+        <MdSortByAlpha size={20} />
       </Button>
+      <Popover>
+        <PopoverTrigger>
+          {column.getFilterValue() === undefined ? (
+            <MdOutlineFilterAlt size={20} />
+          ) : (
+            <MdOutlineFilterAltOff size={20} />
+          )}
+        </PopoverTrigger>
+        <PopoverContent className='p-3'>
+          <p className='mb-2 font-bold'>Szöveges szűrés</p>
+          <Input
+            value={column.getFilterValue()?.toString()}
+            onChange={(e) => column.setFilterValue(e.target.value)}
+            placeholder={`Szűrés ${title} alapján`}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
+  );
+}
+
+function DateSortableFilterableHeader(column: Column<ApplicationEntity2>) {
+  const [start, setStart] = useState(column.getFilterValue()?.toString() || '');
+  const [end, setEnd] = useState(column.getFilterValue()?.toString() || '');
+
+  const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStart(e.target.value);
+    column.setFilterValue(e.target.value);
+  };
+
+  const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEnd(e.target.value);
+    column.setFilterValue(e.target.value);
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger>
+        {column.getFilterValue() === undefined ? <MdOutlineFilterAlt size={20} /> : <MdOutlineFilterAltOff size={20} />}
+      </PopoverTrigger>
+      <PopoverContent>
+        <p className='mb-2 font-bold'>Dátum szűrés</p>
+        <div className='flex gap-2'>
+          <Input
+            type='date'
+            value={start}
+            onChange={handleStartChange}
+            className='date-input'
+            placeholder='Szűrés dátum alapján'
+          />
+          <Input
+            type='date'
+            value={end}
+            onChange={handleEndChange}
+            className='date-input'
+            placeholder='Szűrés dátum alapján'
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -45,21 +105,28 @@ export const columns: (
     id: 'Név',
     accessorKey: 'user.fullName',
     header: ({ column }) => {
-      return SortableHeader(column, 'Név');
+      return SortableFilterableHeader(column, 'Név');
+    },
+  },
+  {
+    id: 'Neptun',
+    accessorKey: 'user.neptun',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column, 'Neptun');
     },
   },
   {
     id: 'Kontakt',
     accessorKey: 'user.email',
     header: ({ column }) => {
-      return SortableHeader(column, 'Kontakt');
+      return SortableFilterableHeader(column, 'Kontakt');
     },
   },
   {
     id: 'Leadva',
     accessorKey: 'createdAt',
     header: ({ column }) => {
-      return SortableHeader(column, 'Leadva');
+      return DateSortableFilterableHeader(column);
     },
     cell: ({ row }) => {
       return (
@@ -79,7 +146,7 @@ export const columns: (
     id: 'Státusz',
     accessorKey: 'status',
     header: ({ column }) => {
-      return SortableHeader(column, 'Státusz');
+      return SortableFilterableHeader(column, 'Státusz');
     },
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);

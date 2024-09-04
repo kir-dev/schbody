@@ -100,7 +100,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
         });
-        mutate('/application/my');
+        await mutate('/application/my');
         router.push('/');
       } else {
         toast({
@@ -256,9 +256,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
             />
           </CardContent>
         </Card>
-        <Button className='float-right w-60 h-16' type='submit'>
-          Jelentkezés leadása
-        </Button>
+        <Button type='submit'>Jelentkezés leadása</Button>
       </form>
     </Form>
   );
