@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
@@ -19,6 +20,7 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
+  const [invalidProfilePic, setInvalidProfilePic] = useState(false);
   const { mutate } = useSWRConfig();
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
@@ -37,11 +39,12 @@ export default function UserProfileBanner(props: {
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = 'default_pfp.jpg';
+            setInvalidProfilePic(true);
           }}
         />
         <div className='w-full absolute flex bottom-2'>
           <Link href='/profile/image' className='m-auto bg-white rounded p-2'>
-            Profilkép módosítása
+            {invalidProfilePic ? 'Profilkép feltöltése' : 'Profilkép módosítása'}
           </Link>
           {/*<Dialog>
             <DialogTrigger variant='secondary' className='block m-auto' asChild>

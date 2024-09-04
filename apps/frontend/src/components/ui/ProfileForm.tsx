@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -63,7 +62,6 @@ const formSchema = z
 
 export default function ProfileForm() {
   const { toast } = useToast();
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,15 +77,17 @@ export default function ProfileForm() {
 
   const { data: user, error, isLoading } = useProfile();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit({ roomNumber, ...values }: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
     try {
-      const response = await api.patch('/users/me', JSON.stringify(values));
+      const response = await api.patch(
+        '/users/me',
+        JSON.stringify(values.isSchResident ? { ...values, roomNumber } : values)
+      );
       if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',
         });
-        router.push('/');
       } else {
         toast({
           title: 'Hiba történt!',

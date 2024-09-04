@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
+import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
+import * as sharp from 'sharp';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
@@ -14,7 +16,7 @@ export class UserService {
 
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
-    } else if (user.isSchResident === false && updateUserDto.roomNumber) {
+    } else if (!(updateUserDto.isSchResident ?? user.isSchResident) && updateUserDto.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
@@ -52,6 +54,7 @@ export class UserService {
 
     return user;
   }
+
   findMembers(page: number, pageSize: number) {
     return this.prisma.user.findMany({
       orderBy: { fullName: 'asc' },
@@ -83,7 +86,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
-    } else if (user.isSchResident === false && updateData.roomNumber) {
+    } else if (!(updateData.isSchResident ?? user.isSchResident) && updateData.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
     if (user.role === 'USER') {
@@ -108,7 +111,7 @@ export class UserService {
       throw new BadRequestException('Invalid image format');
     }
     try {
-      await this.createOrUpdateProfilePicture(authSchId, buffer, mimetype);
+      await this.createOrUpdateProfilePicture(authSchId, buffer);
     } catch (error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
@@ -116,24 +119,33 @@ export class UserService {
 
   async findProfilePicture(authSchId: string): Promise<Buffer> {
     try {
-      const profilePic = await this.prisma.profilePicture.findUnique({ where: { userId: authSchId } });
+      const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
       return profilePic.profileImage;
     } catch (error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
   }
 
-  private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer, mimeType: string) {
-    const data = { userId, profileImage, mimeType };
+  private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer) {
+    const { image, mimeType } = await this.optimizeImage(profileImage);
+    const data = { userId, profileImage: image, mimeType };
     try {
       await this.prisma.profilePicture.update({ where: { userId: userId }, data });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           await this.prisma.profilePicture.create({ data });
+          return;
         }
       }
       throw e;
     }
+  }
+
+  private async optimizeImage(source: Buffer): Promise<{ image: Buffer; mimeType: string }> {
+    const image = sharp(source).jpeg({ mozjpeg: true }).resize(650, 900, { fit: 'cover' });
+    const metadata = await image.metadata();
+    const mimeType = mime.lookup(metadata.format, 'image/jpeg');
+    return { mimeType, image: await image.toBuffer() };
   }
 }
