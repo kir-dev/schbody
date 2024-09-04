@@ -23,6 +23,7 @@ export default function TipTap({ content, onChange }: { content: string; onChang
         openOnClick: false,
         autolink: true,
         defaultProtocol: 'https',
+        HTMLAttributes: { class: 'text-red underline' },
       }),
       BulletList.configure({ HTMLAttributes: { class: 'list-disc ml-4' } }),
       ListItem,

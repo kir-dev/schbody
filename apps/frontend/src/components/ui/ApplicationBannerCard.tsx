@@ -23,7 +23,7 @@ export default function ApplicationBannerCard() {
   if (application.data) {
     return (
       <Card className='w-full'>
-        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-start'>
+        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
           <div className='flex flex-col gap-4 justify-start'>
             <CardTitle> Leadott jelentkezés </CardTitle>
             <p>
@@ -31,7 +31,7 @@ export default function ApplicationBannerCard() {
               jelentkeztél!
             </p>
           </div>
-          <div className='flex flex-col items-center gap-2 m-0'>
+          <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
             <Ticket user={user.data} />
             <TooltipProvider>
               <Tooltip>

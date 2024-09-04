@@ -58,8 +58,8 @@ export default function Forum() {
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
       {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER' || user.role === 'SUPERUSER') && (
-        <div className='flex w-full justify-end'>
-          <Button onClick={() => setIsEditing(undefined)}>
+        <div className='flex w-full justify-end mt-4'>
+          <Button className='max-md:w-full' onClick={() => setIsEditing(undefined)}>
             <FiMessageSquare /> Új hír közzététele
           </Button>
         </div>

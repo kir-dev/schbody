@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { Th2 } from '@/components/typography/typography';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserEntity } from '@/types/user-entity';
 
-import { Th2 } from '../typography/typography';
 import { Card, CardContent, CardTitle } from './card';
 
 export default function Ticket({ user }: { user: UserEntity }) {
@@ -15,7 +15,7 @@ export default function Ticket({ user }: { user: UserEntity }) {
             <img src='bb.png' className='w-[65px] h-[90px] overflow-hidden rounded object-cover' alt='kep' />
             <div>
               <CardTitle>
-                <Th2 className='max-w-40 overflow-hidden whitespace-nowrap'>{user.fullName}</Th2>
+                <Th2 className='max-w-40 text-lg overflow-hidden whitespace-nowrap'>{user.fullName}</Th2>
               </CardTitle>
               <CardContent className='p-0'>
                 <div className='bg-gray-200 rounded px-1 py-0 text-xs w-fit mt-1'>
