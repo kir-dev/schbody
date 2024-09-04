@@ -1,10 +1,10 @@
 'use client';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
+import ProfileImageUploadDialog from '@/app/profile/image/page';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -42,26 +42,7 @@ export default function UserProfileBanner(props: {
           }}
         />
         <div className='w-full absolute flex bottom-2'>
-          <Link href='/profile/image' className='m-auto bg-white rounded p-2'>
-            {invalidProfilePic ? 'Profilkép feltöltése' : 'Profilkép módosítása'}
-          </Link>
-          {/*<Dialog>
-            <DialogTrigger variant='secondary' className='block m-auto' asChild>
-              Profilkép módosítása
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
-              <DialogHeader>
-                <DialogTitle>Profil kép feltöltése</DialogTitle>
-                <DialogDescription>Válassz egy kiváló képet magadról!</DialogDescription>
-              </DialogHeader>
-              <DialogContent>
-                <input type='file' />
-              </DialogContent>
-              <DialogFooter>
-                <Button type='submit'>Tovább</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>*/}
+          <ProfileImageUploadDialog />
         </div>
       </div>
       <div className='w-full'>
