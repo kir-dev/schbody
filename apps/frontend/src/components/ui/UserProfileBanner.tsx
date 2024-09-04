@@ -5,11 +5,12 @@ import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
 import { Th2, TTitle } from '@/components/typography/typography';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
+
+import RoleBadge from './RoleBadge';
 
 export default function UserProfileBanner(props: {
   user: UserEntity | undefined;
@@ -65,14 +66,12 @@ export default function UserProfileBanner(props: {
         <div className='w-full'>
           <CardContent>
             <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
-              <div className='flex items-start'>
+              <div className='flex items-center gap-4'>
                 <div>
-                  <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+                  <TTitle className='my-0'>{props.user!.fullName}</TTitle>
                   <Th2 className='ml-8'>{props.user!.neptun}</Th2>
                 </div>
-                <Badge className='text-sm px-4 py-2 rounded-xl' variant='secondary'>
-                  {props.user!.role}
-                </Badge>
+                <RoleBadge role={props.user!.role} />
               </div>
               <div className='flex gap-4'>
                 {!props.editingIsOn && (

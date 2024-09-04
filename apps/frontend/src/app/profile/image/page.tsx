@@ -1,4 +1,5 @@
 'use client';
+import { redirect } from 'next/navigation';
 import { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
@@ -49,6 +50,7 @@ export default function Page() {
 
       if (response.status >= 200 && response.status < 300) {
         toast({ title: 'Profilkép sikeresen feltöltve!' });
+        redirect('/profile');
       } else {
         toast({ title: 'Profilkép feltöltése sikertelen!' });
       }

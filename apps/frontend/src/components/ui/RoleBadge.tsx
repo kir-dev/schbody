@@ -16,9 +16,5 @@ export default function RoleBadge({ role }: { role: Role }) {
     }
   }, [role]);
 
-  return (
-    <Badge variant={color} className='w-44 text-center'>
-      {Role[convertedRole]}
-    </Badge>
-  );
+  return <Badge variant={color}>{Role[convertedRole]}</Badge>;
 }
