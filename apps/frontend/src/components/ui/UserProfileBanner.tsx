@@ -1,7 +1,7 @@
 'use client';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
@@ -19,6 +19,7 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
+  const [invalidProfilePic, setInvalidProfilePic] = useState(false);
   const { mutate } = useSWRConfig();
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
@@ -27,22 +28,40 @@ export default function UserProfileBanner(props: {
     });
   };
   if (!props.user) return null;
-
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center'>
-      <div className='min-w-44 min-h-44 w-1/4 h-full aspect-square relative'>
-        <Image
-          src='https://mozsarmate.me/marci.jpg'
-          placeholder='blur'
-          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+      <div className='min-w-44 min-h-44 w-1/4 h-full relative'>
+        <img
+          src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
           alt='PROFIL KEP'
-          fill
           className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = 'default_pfp.jpg';
+            setInvalidProfilePic(true);
+          }}
         />
         <div className='w-full absolute flex bottom-2'>
-          <Button variant='secondary' className='block m-auto'>
-            Profilkép módosítása
-          </Button>
+          <Link href='/profile/image' className='m-auto bg-white rounded p-2'>
+            {invalidProfilePic ? 'Profilkép feltöltése' : 'Profilkép módosítása'}
+          </Link>
+          {/*<Dialog>
+            <DialogTrigger variant='secondary' className='block m-auto' asChild>
+              Profilkép módosítása
+            </DialogTrigger>
+            <DialogContent className='sm:max-w-[425px]'>
+              <DialogHeader>
+                <DialogTitle>Profil kép feltöltése</DialogTitle>
+                <DialogDescription>Válassz egy kiváló képet magadról!</DialogDescription>
+              </DialogHeader>
+              <DialogContent>
+                <input type='file' />
+              </DialogContent>
+              <DialogFooter>
+                <Button type='submit'>Tovább</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>*/}
         </div>
       </div>
       <div className='w-full'>
