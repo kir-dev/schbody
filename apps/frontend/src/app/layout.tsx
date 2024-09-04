@@ -35,7 +35,7 @@ export default function RootLayout({
       >
         <div>
           <Header />
-          <div className='space-y-4 py-8 2xl:mx-64 xl:mx-32 max-xl:mx-8'>{children}</div>
+          <div className='space-y-4 py-8 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-4'>{children}</div>
         </div>
         <Toaster />
         <Footer />

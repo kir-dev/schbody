@@ -6,6 +6,7 @@ import { FiFastForward } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Ticket from '@/components/ui/Ticket';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
@@ -22,25 +23,28 @@ export default function ApplicationBannerCard() {
   if (application.data) {
     return (
       <Card className='w-full'>
-        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
-          <div>
+        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
+          <div className='flex flex-col gap-4 justify-start'>
             <CardTitle> Leadott jelentkezés </CardTitle>
-            <CardDescription>
+            <p>
               A most zajló, <span className='font-bold'>{currentPeriod.data?.name}</span> időszakra már sikeresen
               jelentkeztél!
-            </CardDescription>
+            </p>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                {/*todo tooltip does not work */}
-                <StatusBadge status={application.data.status} />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
+            <Ticket user={user.data} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/*todo tooltip does not work */}
+                  <StatusBadge status={application.data.status} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </CardHeader>
       </Card>
     );

@@ -17,6 +17,7 @@ enum Role {
   BODY_ADMIN
   BODY_MEMBER
   USER
+  SUPERUSER
 }
 
 enum ApplicationStatus {

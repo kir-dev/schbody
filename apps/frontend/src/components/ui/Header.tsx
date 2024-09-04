@@ -11,20 +11,20 @@ export default function Header() {
 
   return (
     <header className='bg-amber-200'>
-      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 items-center justify-between'>
+      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-4 items-center justify-between'>
         <TTitle>
           <Link href='/'>SCHBody</Link>
         </TTitle>
 
         {/* Mobile view */}
-        <div className='flex items-center gap-2 h-full md:hidden'>
+        <div className='flex items-center gap-2 h-full lg:hidden'>
           <LoginButton version={0} />
           <Hamburger toggled={isOpen} toggle={setIsOpen} />
         </div>
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className='absolute top-14 left-0 right-0 bg-amber-200 flex flex-col items-start md:hidden z-50 pl-8 pb-4'>
+          <div className='absolute top-14 left-0 right-0 bg-amber-200 flex flex-col items-start lg:hidden z-50 pl-8 pb-4'>
             <THeaderLink>
               <Link href='/gym'>Terem</Link>
             </THeaderLink>
@@ -41,7 +41,7 @@ export default function Header() {
         )}
 
         {/* Desktop view */}
-        <div className='hidden md:flex items-center gap-2 h-full'>
+        <div className='hidden lg:flex items-center gap-2 h-full'>
           <THeaderLink>
             <Link href='/gym'>Terem</Link>
           </THeaderLink>

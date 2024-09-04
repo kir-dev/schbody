@@ -8,10 +8,9 @@ import { useSWRConfig } from 'swr';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import RoleBadge from '@/components/ui/RoleBadge';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
-
-import RoleBadge from './RoleBadge';
 
 export default function UserProfileBanner(props: {
   user: UserEntity | undefined;
@@ -66,38 +65,36 @@ export default function UserProfileBanner(props: {
         </div>
       </div>
       <div className='w-full'>
-        <div className='w-full'>
-          <CardContent>
-            <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
-              <div className='flex items-center gap-4'>
-                <div>
-                  <TTitle className='my-0'>{props.user!.fullName}</TTitle>
-                  <Th2 className='ml-8'>{props.user!.neptun}</Th2>
-                </div>
-                <RoleBadge role={props.user!.role} />
+        <CardContent>
+          <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
+            <div className='flex items-start gap-4'>
+              <div>
+                <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+                <Th2 className='ml-8'>{props.user!.neptun}</Th2>
               </div>
-              <div className='flex gap-4'>
-                {!props.editingIsOn && (
-                  <Button variant='secondary' onClick={props.onClick}>
-                    <FiEdit2 />
-                    Adatok szerkesztése
-                  </Button>
-                )}
-                {props.editingIsOn && (
-                  <Button type='submit'>
-                    <FiSave />
-                    Mentés
-                  </Button>
-                )}
-                <Button variant='destructive' onClick={onLogout}>
-                  <FiLogOut />
-                  Kijelenkezés
-                </Button>
-              </div>
+              <RoleBadge role={props.user!.role} />
             </div>
-            <UserTimeStampsBlock user={props.user} />
-          </CardContent>
-        </div>
+            <div className='flex gap-4 max-lg:flex-col lg:flex-row'>
+              {!props.editingIsOn && (
+                <Button variant='secondary' onClick={props.onClick}>
+                  <FiEdit2 />
+                  Adatok szerkesztése
+                </Button>
+              )}
+              {props.editingIsOn && (
+                <Button type='submit'>
+                  <FiSave />
+                  Mentés
+                </Button>
+              )}
+              <Button variant='destructive' onClick={onLogout}>
+                <FiLogOut />
+                Kijelenkezés
+              </Button>
+            </div>
+          </div>
+          <UserTimeStampsBlock user={props.user} />
+        </CardContent>
       </div>
     </Card>
   );

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
@@ -11,13 +11,16 @@ import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto) {
+  async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
 
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
     } else if (!(updateUserDto.isSchResident ?? user.isSchResident) && updateUserDto.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
+    }
+    if ((updateUserDto.role === 'SUPERUSER' || user.role === 'SUPERUSER') && currentUserRole !== 'SUPERUSER') {
+      throw new UnauthorizedException('Only superusers can manage superuser role');
     }
 
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
@@ -60,7 +63,10 @@ export class UserService {
       orderBy: { fullName: 'asc' },
       skip: page * pageSize,
       take: pageSize,
-      where: { canHelpNoobs: true, role: 'BODY_MEMBER' },
+      where: {
+        canHelpNoobs: true,
+        OR: [{ role: 'BODY_MEMBER' }, { role: 'BODY_ADMIN' }],
+      },
     });
   }
 

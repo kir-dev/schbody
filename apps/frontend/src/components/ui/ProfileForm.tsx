@@ -66,8 +66,8 @@ export default function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickName: 'Bujdi Bohoc',
-      email: 'email@gmail.com',
+      nickName: '',
+      email: '',
       isSchResident: false,
       roomNumber: 0,
       canHelpNoobs: false,
@@ -231,7 +231,7 @@ export default function ProfileForm() {
             />
           </CardContent>
         </Card>
-        {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN') && (
+        {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN' || user.role === 'SUPERUSER') && (
           <Card>
             <CardHeader>
               <CardTitle>Körtag beállítások</CardTitle>
