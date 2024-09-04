@@ -1,5 +1,5 @@
 'use client';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
@@ -13,6 +13,7 @@ import { useToast } from '@/lib/use-toast';
 
 export default function Page() {
   const { toast } = useToast();
+  const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -50,7 +51,7 @@ export default function Page() {
 
       if (response.status >= 200 && response.status < 300) {
         toast({ title: 'Profilkép sikeresen feltöltve!' });
-        redirect('/profile');
+        router.push('/profile');
       } else {
         toast({ title: 'Profilkép feltöltése sikertelen!' });
       }

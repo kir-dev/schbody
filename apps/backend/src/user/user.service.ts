@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
-import mime from 'mime';
+import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -16,7 +16,7 @@ export class UserService {
 
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
-    } else if (user.isSchResident === false && updateUserDto.roomNumber) {
+    } else if (!(updateUserDto.isSchResident ?? user.isSchResident) && updateUserDto.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
 
@@ -86,7 +86,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
     if (user === null) {
       throw new NotFoundException(`User with id ${id} not found`);
-    } else if (user.isSchResident === false && updateData.roomNumber) {
+    } else if (!(updateData.isSchResident ?? user.isSchResident) && updateData.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
     if (user.role === 'USER') {
