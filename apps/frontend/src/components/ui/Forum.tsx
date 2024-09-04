@@ -57,7 +57,7 @@ export default function Forum() {
   return (
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
-      {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER') && (
+      {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER' || user.role === 'SUPERUSER') && (
         <div className='flex w-full justify-end'>
           <Button onClick={() => setIsEditing(undefined)}>
             <FiMessageSquare /> Új hír közzététele

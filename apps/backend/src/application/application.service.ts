@@ -149,7 +149,12 @@ export class ApplicationService {
     if (!application) {
       throw new NotFoundException('A keresett jelentkezés nem található');
     }
-    if (application.userId === user.authSchId || user.role === Role.BODY_ADMIN || user.role === Role.BODY_MEMBER) {
+    if (
+      application.userId === user.authSchId ||
+      user.role === Role.BODY_ADMIN ||
+      user.role === Role.BODY_MEMBER ||
+      user.role === Role.SUPERUSER
+    ) {
       const applicationPeriod = await this.prisma.applicationPeriod.findUnique({
         where: {
           id: application.applicationPeriodId,

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Role } from '@/types/user-entity';
@@ -28,7 +28,6 @@ export function RoleBadgeSelector(props: RoleBadgeSelectorProps) {
       </PopoverTrigger>
       <PopoverContent>
         <Command>
-          <CommandInput placeholder='Keresés...' />
           <CommandList>
             <CommandEmpty>Nincs ilyen szerep</CommandEmpty>
             <CommandGroup>

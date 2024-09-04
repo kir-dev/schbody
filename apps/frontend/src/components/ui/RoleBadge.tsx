@@ -13,6 +13,8 @@ export default function RoleBadge({ role }: { role: Role }) {
         return 'yellow';
       case Role.BODY_ADMIN:
         return 'red';
+      case Role.SUPERUSER:
+        return 'green';
     }
   }, [role]);
 
