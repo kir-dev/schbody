@@ -77,7 +77,9 @@ export default function PeriodCreateOrEditDialog(props: props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>{props.period ? 'Szerkesztés' : '+ Új jelentkezési időszak létrehozása'}</Button>
+        <Button className='max-md:w-full'>
+          {props.period ? 'Szerkesztés' : '+ Új jelentkezési időszak létrehozása'}
+        </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader className='mb-4'>

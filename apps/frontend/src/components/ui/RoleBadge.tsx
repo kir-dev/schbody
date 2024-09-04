@@ -8,18 +8,15 @@ export default function RoleBadge({ role }: { role: Role }) {
   const color = useMemo(() => {
     switch (Role[convertedRole]) {
       case Role.USER:
-        return 'yellow';
-      case Role.BODY_MEMBER:
         return 'blue';
+      case Role.BODY_MEMBER:
+        return 'yellow';
       case Role.BODY_ADMIN:
         return 'red';
       case Role.SUPERUSER:
         return 'green';
     }
   }, [role]);
-  return (
-    <Badge variant={color} className='w-44 text-center'>
-      {Role[convertedRole]}
-    </Badge>
-  );
+
+  return <Badge variant={color}>{Role[convertedRole]}</Badge>;
 }

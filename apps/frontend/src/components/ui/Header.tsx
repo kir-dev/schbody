@@ -10,7 +10,7 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className='bg-amber-200'>
+    <header className='bg-amber-200 h-16'>
       <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 items-center justify-between'>
         <TTitle>
           <Link href='/'>SCHBody</Link>
