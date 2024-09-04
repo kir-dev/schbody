@@ -41,7 +41,7 @@ export default function LoginButton({ version }: { version: number }) {
         </div>
       )}
       {!user && (
-        <Button className='m-8 ml-0 max-md:m-2' onClick={handleLogin}>
+        <Button className='ml-0 max-md:m-2' onClick={handleLogin}>
           {version === 1 && 'Bejelentkezés'}
           {version === 0 && <FiLogIn />}
         </Button>
