@@ -6,13 +6,20 @@ import { UserEntity } from '@/types/user-entity';
 
 export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) {
   return (
-    <div className='flex max-md:justify-center md:gap-16 max-md:hidden mx-0 my-8 font-mono mb-0'>
+    <div className='flex max-md:justify-center md:gap-16 max-md:hidden mx-0 my-8 mb-0'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span>
-              <FiUser size={24} />
-              {user?.createdAt?.slice(0, 10)}
+            <span className='flex gap-2 items-center'>
+              <FiUser />
+              {user?.createdAt &&
+                new Date(user.createdAt!).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}{' '}
             </span>
           </TooltipTrigger>
           <TooltipContent>
@@ -23,9 +30,16 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span>
-              <FiEdit2 size={24} />
-              {user?.updatedAt?.slice(0, 10)}
+            <span className='flex gap-2 items-center'>
+              <FiEdit2 />
+              {user?.createdAt &&
+                new Date(user.updatedAt!).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}{' '}
             </span>
           </TooltipTrigger>
           <TooltipContent>
@@ -37,9 +51,15 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span>
-                <FiUserCheck size={24} />
-                {user?.profileSeenAt?.slice(0, 10)}
+              <span className='flex gap-2 items-center'>
+                <FiUserCheck />
+                {new Date(user.profileSeenAt!).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}{' '}
               </span>
             </TooltipTrigger>
             <TooltipContent>

@@ -48,11 +48,9 @@ export default function UserProfileBanner(props: {
       <div className='w-full'>
         <CardContent>
           <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
-            <div className='flex items-start gap-4'>
-              <div>
-                <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
-                <Th2 className='ml-8'>{props.user!.neptun}</Th2>
-              </div>
+            <div>
+              <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+              <Th2>{props.user!.neptun}</Th2>
               <RoleBadge role={props.user!.role} />
             </div>
             <div className='flex gap-4 max-lg:flex-col lg:flex-row'>
