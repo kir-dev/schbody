@@ -11,7 +11,7 @@ export default function Header() {
 
   return (
     <header className='bg-amber-200'>
-      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 items-center justify-between'>
+      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-4 items-center justify-between'>
         <TTitle>
           <Link href='/'>SCHBody</Link>
         </TTitle>

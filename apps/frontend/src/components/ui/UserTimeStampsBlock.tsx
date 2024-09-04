@@ -6,7 +6,7 @@ import { UserEntity } from '@/types/user-entity';
 
 export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) {
   return (
-    <div className='flex max-md:justify-center max-md:gap-8 md:gap-16 mx-0 my-8 md:mx-8 font-mono mb-0'>
+    <div className='flex max-md:justify-center md:gap-16 max-md:hidden mx-0 my-8 md:mx-8 font-mono mb-0'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
