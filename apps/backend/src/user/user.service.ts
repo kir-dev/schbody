@@ -135,6 +135,7 @@ export class UserService {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           await this.prisma.profilePicture.create({ data });
+          return;
         }
       }
       throw e;
