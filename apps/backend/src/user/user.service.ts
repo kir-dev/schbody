@@ -4,8 +4,8 @@ import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
 import * as sharp from 'sharp';
 
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class UserService {
@@ -143,7 +143,7 @@ export class UserService {
   }
 
   private async optimizeImage(source: Buffer): Promise<{ image: Buffer; mimeType: string }> {
-    const image = sharp(source).jpeg({ mozjpeg: true });
+    const image = sharp(source).jpeg({ mozjpeg: true }).resize(650, 900, { fit: 'cover' });
     const metadata = await image.metadata();
     const mimeType = mime.lookup(metadata.format, 'image/jpeg');
     return { mimeType, image: await image.toBuffer() };
