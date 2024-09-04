@@ -32,27 +32,27 @@ export default function Page() {
 
   return (
     <>
-      <Th1>Jogosultságok kezelése</Th1>
-      <div className='flex flex-col gap-4'>
-        <div className='flex justify-end w-full'>
-          <Input
-            placeholder='Keresés név alapján...'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className='max-w-sm'
-          />
-        </div>
+      <div className='flex justify-between md:flex-row max-md:flex-col items-center'>
+        <Th1>Jogosultságok kezelése</Th1>
+        <Input
+          placeholder='Keresés név alapján...'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className='md:max-w-sm max-md:w-full'
+        />
+      </div>
+      <div className='flex flex-col gap-2'>
         {users.isLoading && !users.data && <LoadingCard />}
         {users.data &&
           users.data.users.map((user) => (
             <Card key={user.id}>
-              <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
-                <div className='max-md:w-full'>
+              <CardHeader className='flex flex-row w-full justify-between items-center p-4'>
+                <div>
                   <div className='flex gap-4'>
                     <CardTitle>{user.fullName}</CardTitle>
                     {user.neptun && <Badge variant='secondary'>{user.neptun}</Badge>}
                   </div>
-                  <CardDescription className='flex items-center gap-4 max-md:flex-col md:flex-row mt-2'>
+                  <CardDescription className='flex md:gap-4 max-md:gap-0 max-md:flex-col md:flex-row mt-2'>
                     <p className='flex items-center gap-2'>
                       <FiUser />
                       {new Date(user.createdAt).toLocaleDateString('hu-HU', {
