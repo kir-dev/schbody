@@ -15,7 +15,6 @@ CREATE TABLE "User" (
     "isSchResident" BOOLEAN NOT NULL,
     "isActiveVikStudent" BOOLEAN NOT NULL,
     "roomNumber" INTEGER,
-    "profileImage" BYTEA,
     "canHelpNoobs" BOOLEAN NOT NULL DEFAULT false,
     "publicDesc" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -23,6 +22,16 @@ CREATE TABLE "User" (
     "vikStatusUpdatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("authSchId")
+);
+
+-- CreateTable
+CREATE TABLE "ProfilePicture" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "mimeType" TEXT NOT NULL,
+    "profileImage" BYTEA NOT NULL,
+
+    CONSTRAINT "ProfilePicture_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -69,6 +78,12 @@ CREATE TABLE "Post" (
 CREATE UNIQUE INDEX "User_neptun_key" ON "User"("neptun");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ProfilePicture_userId_key" ON "ProfilePicture"("userId");
+
+-- CreateIndex
+CREATE INDEX "ProfilePicture_userId_idx" ON "ProfilePicture"("userId");
+
+-- CreateIndex
 CREATE INDEX "ApplicationPeriod_authorId_idx" ON "ApplicationPeriod"("authorId");
 
 -- CreateIndex
@@ -76,6 +91,9 @@ CREATE UNIQUE INDEX "Application_userId_applicationPeriodId_key" ON "Application
 
 -- CreateIndex
 CREATE INDEX "Post_authorId_idx" ON "Post"("authorId");
+
+-- AddForeignKey
+ALTER TABLE "ProfilePicture" ADD CONSTRAINT "ProfilePicture_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("authSchId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ApplicationPeriod" ADD CONSTRAINT "ApplicationPeriod_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("authSchId") ON DELETE RESTRICT ON UPDATE CASCADE;
