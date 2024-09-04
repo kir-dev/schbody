@@ -62,13 +62,12 @@ export default function Page() {
   };
 
   return (
-    <Card className='m-auto p-8 gap-4 flex h-96'>
+    <Card className='m-auto p-8 gap-4 flex h-96 w-fit'>
       <div className='h-full flex flex-col justify-between'>
         <Th1 className='m-0'>Profil kép feltöltése</Th1>
         <Input type='file' onChange={handleFileChange} accept='image/*' />
         <Button onClick={handleUpload}>Feltöltés</Button>
       </div>
-      {/*https://valentinh.github.io/react-easy-crop/*/}
       <div className='h-full w-96'>
         {imageSrc && (
           <div className='relative'>
