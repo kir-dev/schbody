@@ -115,9 +115,9 @@ export default function Rules() {
     <main>
       <CardTitle className='justify-center my-6'>Schönherz Body-Kör: Konditerem használati rendje</CardTitle>
 
-      <div className='grid grid-cols-1 gap-4'>
+      <div className='flex flex-col gap-4 items-center'>
         {rules.map((rule) => (
-          <Card key={rule.key} className='p-2 border'>
+          <Card key={rule.key} className='p-2 border w-2/3'>
             <p>{rule.rule}</p>
           </Card>
         ))}
