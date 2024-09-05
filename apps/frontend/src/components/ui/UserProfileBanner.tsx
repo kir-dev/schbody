@@ -21,7 +21,6 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
-  const [invalidProfilePic, setInvalidProfilePic] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
 
@@ -45,7 +44,6 @@ export default function UserProfileBanner(props: {
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = 'default_pfp.jpg';
-            setInvalidProfilePic(true);
           }}
         />
         <div className='w-full absolute flex bottom-2'>
