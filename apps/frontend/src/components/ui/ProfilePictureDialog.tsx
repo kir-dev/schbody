@@ -1,5 +1,6 @@
 'use client';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { AxiosError } from 'axios';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
@@ -10,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import getCroppedImg from '@/lib/cropImage';
 import { useToast } from '@/lib/use-toast';
 
-export default function ProfileImageUploadDialog({ onChange }: { onChange: () => Promise<void> }) {
+export default function ProfilePictureDialog({ onChange }: { onChange: () => void }) {
   const { toast } = useToast();
   const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -56,12 +57,13 @@ export default function ProfileImageUploadDialog({ onChange }: { onChange: () =>
         toast({ title: 'Profilkép feltöltése sikertelen!' });
       }
     } catch (e) {
-      console.error(e);
-      if (e.status === 413) {
-        toast({
-          title: 'A kép mérete túl nagy!',
-          description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
-        });
+      if (e instanceof AxiosError) {
+        if (e.status === 413) {
+          toast({
+            title: 'A kép mérete túl nagy!',
+            description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
+          });
+        }
       } else {
         toast({ title: 'Hiba a kép feldolgozása közben!' });
       }

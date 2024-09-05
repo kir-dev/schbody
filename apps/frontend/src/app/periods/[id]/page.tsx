@@ -19,7 +19,6 @@ export default function Page({ params }: { params: { id: number } }) {
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
-    /*todo make it dynamic by id, for that, we should get the right id from the api*/
     const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
     mutate();
     if (resp.status === 200) {
@@ -37,14 +36,18 @@ export default function Page({ params }: { params: { id: number } }) {
   const onExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
       const blob = await pdf(<PassExport applicationData={data} periodName={period.data.name} />).toBlob();
+      // eslint-disable-next-line no-undef
       const a = document.createElement('a');
       a.style.display = 'none';
+      // eslint-disable-next-line no-undef
       document.body.appendChild(a);
 
+      // eslint-disable-next-line no-undef
       const url = window.URL.createObjectURL(blob);
       a.href = url;
       a.download = `schbody_pass_export_${Date.now()}.pdf`;
       a.click();
+      // eslint-disable-next-line no-undef
       window.URL.revokeObjectURL(url);
     }
   };
