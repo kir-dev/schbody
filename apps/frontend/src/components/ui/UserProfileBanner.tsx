@@ -1,6 +1,5 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { useSWRConfig } from 'swr';
 
@@ -19,7 +18,6 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
-  const [invalidProfilePic, setInvalidProfilePic] = useState(false);
   const { mutate } = useSWRConfig();
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
@@ -38,7 +36,6 @@ export default function UserProfileBanner(props: {
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = 'default_pfp.jpg';
-            setInvalidProfilePic(true);
           }}
         />
         <div className='w-full absolute flex bottom-2'>
