@@ -5,10 +5,10 @@ import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
-import ProfileImageUploadDialog from '@/app/profile/image/page';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import ProfileImageUploadDialog from '@/components/ui/ProfileImageDialog';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';

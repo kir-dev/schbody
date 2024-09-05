@@ -1,5 +1,7 @@
 import { FilterFn } from '@tanstack/react-table';
 
+import { ApplicationEntity } from '@/types/application-entity';
+
 export const filterByDateRange: FilterFn<ApplicationEntity> = (row, columnId, filterValue) => {
   if (!filterValue?.start && !filterValue?.end) return true;
 

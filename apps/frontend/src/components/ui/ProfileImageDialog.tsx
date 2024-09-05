@@ -1,5 +1,6 @@
 'use client';
 import { DialogTrigger } from '@radix-ui/react-dialog';
+import { AxiosError } from 'axios';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
@@ -57,11 +58,13 @@ export default function ProfileImageUploadDialog({ onChange }: { onChange: () =>
       }
     } catch (e) {
       console.error(e);
-      if (e.status === 413) {
-        toast({
-          title: 'A kép mérete túl nagy!',
-          description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
-        });
+      if (e instanceof AxiosError) {
+        if (e.status === 413) {
+          toast({
+            title: 'A kép mérete túl nagy!',
+            description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
+          });
+        }
       } else {
         toast({ title: 'Hiba a kép feldolgozása közben!' });
       }
