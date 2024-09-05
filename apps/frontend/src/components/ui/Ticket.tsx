@@ -12,7 +12,11 @@ export default function Ticket({ user }: { user: UserEntity }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Card className='flex gap-2 p-2 bg-red-200 relative'>
-            <img src='bb.png' className='w-[65px] h-[90px] overflow-hidden rounded object-cover' alt='kep' />
+            <img
+              src={`${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture?cb=${Date.now()} `}
+              className='w-[65px] h-[90px] overflow-hidden rounded object-cover'
+              alt='kep'
+            />
             <div>
               <CardTitle>
                 <Th2 className='max-w-40 text-lg overflow-hidden whitespace-nowrap'>{user.fullName}</Th2>
