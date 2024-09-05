@@ -25,7 +25,7 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
       {applicationData.map((a) => (
         <View key={a.id}>
           <Image
-            src={process.env.NEXT_PUBLIC_PASS_BACKGROUND_URL}
+            src={process.env.NEXT_PUBLIC_PASS_BACKGROUND_URL ?? 'https://placehold.co/750x430/pink/white/jpeg'}
             style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
           />
 
@@ -65,7 +65,9 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
                 }}
               >
                 <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Szobaszám</Text>
-                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>{a.user.roomNumber}</Text>
+                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>
+                  {a.user.roomNumber || 'Külsős'}
+                </Text>
               </View>
               <View
                 style={{
