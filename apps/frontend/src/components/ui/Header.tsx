@@ -10,10 +10,15 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className='bg-amber-200'>
-      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-4 items-center justify-between'>
+    <header className='bg-amber-200 overflow-scroll'>
+      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-2 items-center justify-between'>
         <TTitle>
-          <Link href='/'>SCHBody</Link>
+          <Link className='md:hidden' href='/'>
+            Body
+          </Link>
+          <Link className='max-md:hidden' href='/'>
+            SCHBody
+          </Link>
         </TTitle>
 
         {/* Mobile view */}

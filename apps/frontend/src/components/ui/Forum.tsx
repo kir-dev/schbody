@@ -78,7 +78,7 @@ export default function Forum() {
                 setPageIndex(pageIndex - 1);
               }}
               aria-disabled={pageIndex <= 0}
-              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : undefined}
+              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : ''}
             >
               <PaginationPrevious href='#' />
             </PaginationItem>
@@ -90,7 +90,7 @@ export default function Forum() {
             <PaginationItem
               onClick={() => setPageIndex(pageIndex + 1)}
               aria-disabled={posts.limit >= pageIndex}
-              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : undefined}
+              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : ''}
             >
               <PaginationNext href='#' />
             </PaginationItem>
