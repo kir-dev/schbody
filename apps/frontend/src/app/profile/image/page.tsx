@@ -1,6 +1,5 @@
 'use client';
 import { DialogTrigger } from '@radix-ui/react-dialog';
-import { useRouter } from 'next/navigation';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
@@ -11,13 +10,13 @@ import { Input } from '@/components/ui/input';
 import getCroppedImg from '@/lib/cropImage';
 import { useToast } from '@/lib/use-toast';
 
-export default function ProfileImageUploadDialog() {
+export default function ProfileImageUploadDialog({ onChange }: { onChange: () => Promise<void> }) {
   const { toast } = useToast();
-  const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,21 +50,29 @@ export default function ProfileImageUploadDialog() {
 
       if (response.status >= 200 && response.status < 300) {
         toast({ title: 'Profilkép sikeresen feltöltve!' });
-        router.push('/profile');
+        setIsOpen(false);
+        onChange();
       } else {
         toast({ title: 'Profilkép feltöltése sikertelen!' });
       }
     } catch (e) {
       console.error(e);
-      toast({ title: 'Hiba a kép feldolgozása közben!' });
+      if (e.status === 413) {
+        toast({
+          title: 'A kép mérete túl nagy!',
+          description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
+        });
+      } else {
+        toast({ title: 'Hiba a kép feldolgozása közben!' });
+      }
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DialogTrigger asChild className='w-full'>
-        <Button className='m-auto w-fit' variant='secondary'>
-          Profilkép feltöltése
+        <Button className='m-auto w-fit' variant='secondary' onClick={() => setIsOpen(true)}>
+          Kép szerkesztése
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>

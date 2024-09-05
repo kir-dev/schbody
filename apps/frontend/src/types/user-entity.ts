@@ -15,6 +15,7 @@ export type UserEntity = {
   role: Role;
   isSchResident: boolean;
   roomNumber: number | null;
+  isActiveVikStudent: boolean;
   canHelpNoobs: boolean;
   publicDesc: string | null;
   createdAt: string;
