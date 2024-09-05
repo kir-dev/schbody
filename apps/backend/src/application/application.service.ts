@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { Application, Prisma, Role, User } from '@prisma/client';
@@ -30,6 +31,12 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
+      const currentUser = await this.prisma.user.findUnique({
+        where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
+      });
+      if (!currentUser) {
+        throw new NotAcceptableException('Profilkép feltöltése kötelező');
+      }
       return await this.prisma.application.create({
         data: {
           user: {
@@ -52,7 +59,7 @@ export class ApplicationService {
           throw new NotFoundException('Nem található időszak');
         }
       }
-      if (e instanceof BadRequestException) {
+      if (e instanceof BadRequestException || e instanceof NotAcceptableException) {
         throw e;
       }
       throw new BadRequestException('Nem sikerült létrehozni');
