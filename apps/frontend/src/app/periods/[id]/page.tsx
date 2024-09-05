@@ -8,13 +8,13 @@ import LoadingCard from '@/components/ui/LoadingCard';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
 import { toast } from '@/lib/use-toast';
-import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
 
-  const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
+  const handleStatusChange = async (application: ApplicationEntity2, status: ApplicationStatus) => {
     const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
     mutate();
     if (resp.status === 200) {
