@@ -12,9 +12,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { filterByDateRange } from '@/lib/customFilters';
-import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
-function SortableFilterableHeader(column: Column<ApplicationEntity2>) {
+function SortableFilterableHeader(column: Column<ApplicationEntity>) {
   return (
     <div className=' flex items-center justify-start'>
       {column.id}
@@ -52,7 +52,7 @@ function SortableFilterableHeader(column: Column<ApplicationEntity2>) {
   );
 }
 
-function DateSortableFilterableHeader(column: Column<ApplicationEntity2>) {
+function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const [start, setStart] = useState(column.getFilterValue()?.start || '2024-01-01T00:00');
@@ -129,8 +129,8 @@ function DateSortableFilterableHeader(column: Column<ApplicationEntity2>) {
 }
 
 export const columns: (
-  onStatusChange: (row: ApplicationEntity2, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity2>[] = (onStatusChange) => [
+  onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
+) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
   {
     id: 'Választ',
     enableResizing: false, // Disable resizing

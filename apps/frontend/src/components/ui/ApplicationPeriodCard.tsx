@@ -57,7 +57,7 @@ export function ApplicationPeriodCard(props: { period: ApplicationPeriodEntity }
             })}
           </p>
           <p>
-            Jelentkezés kezdete:{' '}
+            Jelentkezés vége:{' '}
             {new Date(props.period.applicationPeriodEndAt).toLocaleDateString('hu-HU', {
               day: '2-digit',
               month: 'short',
