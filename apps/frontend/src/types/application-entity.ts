@@ -21,6 +21,7 @@ export type ApplicationEntity = {
 export type ApplicationEntity2 = {
   id: number;
   userId: string;
+  user: UserEntity;
   applicationPeriodId: number;
   status: ApplicationStatus;
   createdAt: Date;

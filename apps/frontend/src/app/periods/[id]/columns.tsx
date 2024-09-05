@@ -2,6 +2,7 @@
 import { Column, ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
 import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-icons/md';
+import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -9,6 +10,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { filterByDateRange } from '@/lib/customFilters';
 import { ApplicationEntity2, ApplicationStatus } from '@/types/application-entity';
 
@@ -103,7 +105,7 @@ function DateSortableFilterableHeader(column: Column<ApplicationEntity2>) {
               <p className='mb-2'>Kezdő dátum</p>
               <Input
                 type='datetime-local'
-                value={start}
+                value={start.toString()}
                 onChange={handleStartChange}
                 className='date-input'
                 placeholder='Szűrés dátum alapján'
@@ -113,7 +115,7 @@ function DateSortableFilterableHeader(column: Column<ApplicationEntity2>) {
               <p className='mb-2'>Vég dátum</p>
               <Input
                 type='datetime-local'
-                value={end}
+                value={end.toString()}
                 onChange={handleEndChange}
                 className='date-input'
                 placeholder='Szűrés dátum alapján'
@@ -155,6 +157,27 @@ export const columns: (
     size: 150, // Fixed size for consistency
     header: ({ column }) => {
       return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      return (
+        <div className='flex items-center gap-2'>
+          {row.original.user.fullName}
+          {row.original.user.isActiveVikStudent && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <RiVerifiedBadgeLine />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-sans'>Igazolt VIK hallgató</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
+      );
     },
   },
   {
