@@ -115,6 +115,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           title: 'Már jelentkeztél erre az időszakra!',
           variant: 'destructive',
         });
+      } else if (error.response.status === 406) {
+        router.push('/profile');
+        toast({
+          title: 'Nem vagy jogosult a jelentkezésre!',
+          description: 'Kérlek tölts fel egy profilképet, hogy jelentkezhess!',
+          variant: 'destructive',
+        });
       }
     }
   }

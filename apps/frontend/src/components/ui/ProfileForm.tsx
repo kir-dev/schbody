@@ -77,10 +77,13 @@ export default function ProfileForm() {
 
   const { data: user, error, isLoading } = useProfile();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit({ roomNumber, ...values }: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
     try {
-      const response = await api.patch('/users/me', JSON.stringify(values));
+      const response = await api.patch(
+        '/users/me',
+        JSON.stringify(values.isSchResident ? { ...values, roomNumber } : values)
+      );
       if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',

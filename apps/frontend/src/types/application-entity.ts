@@ -9,7 +9,7 @@ export enum ApplicationStatus {
   FINISHED = 'Kiosztott',
 }
 
-export type ApplicationEntity = {
+export type ApplicationEntityWithPeriod = {
   id: number;
   user: UserEntity;
   period: ApplicationPeriodEntity;
@@ -18,7 +18,7 @@ export type ApplicationEntity = {
   updatedAt: Date;
 };
 
-export type ApplicationEntity2 = {
+export type ApplicationEntity = {
   id: number;
   userId: string;
   user: UserEntity;

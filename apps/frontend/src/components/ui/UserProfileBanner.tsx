@@ -1,14 +1,16 @@
 'use client';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
+import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
+import ProfileImageUploadDialog from '@/app/profile/image/page';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
 
@@ -19,7 +21,12 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
+
+  const handleProfilePictureUpload = async () => {
+    setCacheBuster(Date.now());
+  };
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
       mutate(() => true, undefined, { revalidate: false });
@@ -27,56 +34,66 @@ export default function UserProfileBanner(props: {
     });
   };
   if (!props.user) return null;
-
   return (
-    <Card className='flex max-md:flex-col md:flex-row max-md:items-center'>
-      <div className='min-w-44 min-h-44 w-1/4 h-full aspect-square relative'>
-        <Image
-          src='https://mozsarmate.me/marci.jpg'
-          placeholder='blur'
-          blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkAAIAAAoAAv/lxKUAAAAASUVORK5CYII='
+    <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>
+      <div className='min-w-44 min-h-44 md:w-1/5 max-md:w-44 h-full relative'>
+        <img
+          src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
           alt='PROFIL KEP'
-          fill
           className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; // prevents looping
+            currentTarget.src = 'default_pfp.jpg';
+          }}
         />
         <div className='w-full absolute flex bottom-2'>
-          <Button variant='secondary' className='block m-auto'>
-            Profilkép módosítása
-          </Button>
+          <ProfileImageUploadDialog onChange={() => handleProfilePictureUpload()} />
         </div>
       </div>
-      <div className='w-full'>
-        <CardContent>
-          <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between'>
-            <div className='flex items-start gap-4'>
-              <div>
-                <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
-                <Th2 className='ml-8'>{props.user!.neptun}</Th2>
-              </div>
-              <RoleBadge role={props.user!.role} />
-            </div>
-            <div className='flex gap-4 max-lg:flex-col lg:flex-row'>
-              {!props.editingIsOn && (
-                <Button variant='secondary' onClick={props.onClick}>
-                  <FiEdit2 />
-                  Adatok szerkesztése
-                </Button>
+      <CardContent className='w-full md:ml-4'>
+        <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between '>
+          <div className='max-md:flex max-md:flex-col max-md:items-center'>
+            <div className='flex gap-2 items-start'>
+              <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
+              {props.user.isActiveVikStudent && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <RiVerifiedBadgeLine size={36} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className='font-sans'>Igazolt VIK hallgató</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
-              {props.editingIsOn && (
-                <Button type='submit'>
-                  <FiSave />
-                  Mentés
-                </Button>
-              )}
-              <Button variant='destructive' onClick={onLogout}>
-                <FiLogOut />
-                Kijelenkezés
-              </Button>
             </div>
+            <Th2>{props.user!.neptun}</Th2>
+            <RoleBadge role={props.user!.role} />
           </div>
-          <UserTimeStampsBlock user={props.user} />
-        </CardContent>
-      </div>
+          <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
+            {!props.editingIsOn && (
+              <Button variant='secondary' onClick={props.onClick}>
+                <FiEdit2 />
+                Adatok szerkesztése
+              </Button>
+            )}
+            {props.editingIsOn && (
+              <Button type='submit'>
+                <FiSave />
+                Mentés
+              </Button>
+            )}
+            <Button variant='destructive' onClick={onLogout}>
+              <FiLogOut />
+              Kijelenkezés
+            </Button>
+          </div>
+        </div>
+        <UserTimeStampsBlock user={props.user} />
+      </CardContent>
     </Card>
   );
 }
