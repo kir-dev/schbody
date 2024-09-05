@@ -26,6 +26,8 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
         <View key={a.id}>
           <Image
             src={process.env.NEXT_PUBLIC_PASS_BACKGROUND_URL}
+            fill
+            width={40}
             style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
           />
 
@@ -39,6 +41,8 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
             }}
           >
             <Image
+              fill
+              width={40}
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`}
               style={{ width: '2.6cm', height: '3.5cm', borderRadius: '5%' }}
             />
