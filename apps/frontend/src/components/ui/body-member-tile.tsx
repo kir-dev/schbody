@@ -23,7 +23,7 @@ export function BodyMemberTile({ userEntity }: Props) {
       <div className='flex flex-col gap-4'>
         <div>
           <CardTitle>{userEntity.nickName}</CardTitle>
-          <CardDescription>{userEntity.fullName}</CardDescription>
+          <CardDescription className='mt-1'>{userEntity.fullName}</CardDescription>
         </div>
         <a href={`mailto:${userEntity.email}`} className='flex flex-row gap-2 items-center text-sm'>
           <Mail size={16} />
