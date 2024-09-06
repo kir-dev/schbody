@@ -10,12 +10,12 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 
 import api from '../network/apiSetup';
+import MemberProfileData from './MemberProfileData';
 
 const formSchema = z
   .object({
@@ -251,60 +251,7 @@ export default function ProfileForm() {
           </CardContent>
         </Card>
         {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN' || user.role === 'SUPERUSER') && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Körtag beállítások</CardTitle>
-            </CardHeader>
-            <CardContent className='md:grid-cols-2 grid gap-4'>
-              <FormField
-                control={form.control}
-                name='canHelpNoobs'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
-                      <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Switch
-                        disabled={!editingIsOn}
-                        checked={field.value}
-                        onCheckedChange={(data) => {
-                          field.onChange(data);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='publicDesc'
-                render={({ field }) => (
-                  <FormItem
-                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('canHelpNoobs') ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    <div className='space-y-0.5'>
-                      <FormLabel>Leírás</FormLabel>
-                      <FormDescription>
-                        A tagokat listázó oldalon ez a szöveg fog megjelenni a neved alatt
-                      </FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Textarea
-                        placeholder='...'
-                        className='resize-none'
-                        {...field}
-                        disabled={!editingIsOn || !form.watch('canHelpNoobs')}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+          <MemberProfileData form={form} editingIsOn={editingIsOn} />
         )}
       </form>
     </Form>
