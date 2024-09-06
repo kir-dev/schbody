@@ -1,4 +1,8 @@
-import { Card, CardTitle } from '@/components/ui/card';
+import React from 'react';
+
+import Th1 from '@/components/typography/typography';
+import { Card, CardContent } from '@/components/ui/card';
+
 type Rule = {
   rule: string;
   key: string;
@@ -112,16 +116,18 @@ export default function Rules() {
   ];
 
   return (
-    <main>
-      <CardTitle className='justify-center my-6'>Schönherz Body-Kör: Konditerem használati rendje</CardTitle>
+    <>
+      <Th1>Konditerem használati rendje</Th1>
 
-      <div className='flex flex-col gap-4 items-center'>
+      <div className='flex flex-col gap-4 w-full'>
         {rules.map((rule) => (
-          <Card key={rule.key} className='p-2 border w-2/3'>
-            <p>{rule.rule}</p>
+          <Card key={rule.key}>
+            <CardContent className='p-4'>
+              <p>{rule.rule}</p>
+            </CardContent>
           </Card>
         ))}
       </div>
-    </main>
+    </>
   );
 }

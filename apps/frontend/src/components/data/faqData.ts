@@ -1,4 +1,5 @@
 import { faqEntity } from '@/types/faq-entity';
+
 export const faqData: faqEntity[] = [
   {
     key: 'eligible_users',
@@ -63,12 +64,6 @@ export const faqData: faqEntity[] = [
     question: 'Milyen fényképet töltsek fel?',
     answer:
       'Minél újabb, éles jó minőségű igazolványképet. Kerüld a napszemüveges, egész alakos, oldalról készült, régi vagy homályos képeket.',
-  },
-  {
-    key: 'entry_codes',
-    question: 'Mit jelent az ÁB, KB, DO és KDO?',
-    answer:
-      'KDO: minden külsősnek ezt kell kiválasztani.\nDO: minden kollégista, aki nem kapott színes belépőt.\nKB: öntevékeny körben végzett munkáért kapott színes belépő.\nÁB: öntevékeny körben végzett munkáért kapott színes belépő.',
   },
   {
     key: 'student_id',
