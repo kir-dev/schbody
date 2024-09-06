@@ -14,7 +14,7 @@ export default function Ticket({ user }: { user: UserEntity }) {
           <Card className='flex gap-2 p-2 bg-red-200 relative'>
             <img
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture?cb=${Date.now()} `}
-              className='w-[65px] h-[90px] overflow-hidden rounded object-cover'
+              className='min-w-[65px] w-[65px] h-[90px] overflow-hidden rounded object-cover'
               alt='kep'
             />
             <div>

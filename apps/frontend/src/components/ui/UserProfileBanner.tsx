@@ -72,7 +72,7 @@ export default function UserProfileBanner(props: {
                 </TooltipProvider>
               )}
             </div>
-            <Th2>{props.user!.neptun}</Th2>
+            <Th2 className='mb-4'>{props.user!.neptun}</Th2>
             <RoleBadge role={props.user!.role} />
           </div>
           <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>

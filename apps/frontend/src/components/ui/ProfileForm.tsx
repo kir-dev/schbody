@@ -24,6 +24,7 @@ const formSchema = z
       invalid_type_error: 'String, tesó!',
     }),
     email: z.string().email(),
+    neptun: z.string().length(6, 'Neptun kód 6 karakter hosszú kell legyen!'),
     isSchResident: z.boolean().optional(),
     roomNumber: z
       .union([
@@ -68,6 +69,7 @@ export default function ProfileForm() {
     defaultValues: {
       nickName: '',
       email: '',
+      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       canHelpNoobs: false,
@@ -75,7 +77,7 @@ export default function ProfileForm() {
     },
   });
 
-  const { data: user, error, isLoading } = useProfile();
+  const { data: user, error, isLoading, mutate } = useProfile();
 
   async function onSubmit({ roomNumber, ...values }: z.infer<typeof formSchema>) {
     setEditingIsOn(false);
@@ -88,6 +90,7 @@ export default function ProfileForm() {
         toast({
           title: 'Sikeres módosítás!',
         });
+        mutate();
       } else {
         toast({
           title: 'Hiba történt!',
@@ -109,6 +112,7 @@ export default function ProfileForm() {
       reset({
         nickName: user.nickName || '',
         email: user.email || '',
+        neptun: user.neptun || '',
         isSchResident: user.isSchResident || false,
         roomNumber: user.roomNumber || 0,
         canHelpNoobs: user.canHelpNoobs || false,
@@ -139,6 +143,19 @@ export default function ProfileForm() {
             </div>
           </CardHeader>
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+            <FormField
+              control={form.control}
+              name='neptun'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NEPTUN</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!editingIsOn} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='nickName'

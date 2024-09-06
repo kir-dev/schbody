@@ -27,6 +27,7 @@ const formSchema = z
       invalid_type_error: 'String, tesó!',
     }),
     email: z.string().email(),
+    neptun: z.string().length(6, { message: 'A Neptun kód 6 karakter hosszú kell legyen' }),
     isSchResident: z.boolean().optional(),
     roomNumber: z
       .union([
@@ -69,24 +70,27 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nickName: 'Bujdi Bohoc',
-      email: 'email@gmail.com',
+      nickName: '',
+      email: '',
+      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       terms: false,
     },
   });
 
+  const { reset } = form;
   useEffect(() => {
-    if (user && !effectCalledRef.current) {
-      effectCalledRef.current = true;
-      form.setValue('nickName', user.data?.nickName || '');
-      form.setValue('email', user.data?.email || '');
-      form.setValue('isSchResident', user.data?.isSchResident || false);
-      form.setValue('roomNumber', user.data?.roomNumber || 0);
-      effectCalledRef.current = false;
+    if (user.data && !effectCalledRef.current) {
+      reset({
+        nickName: user.data.nickName || '',
+        email: user.data.email || '',
+        neptun: user.data.neptun || '',
+        isSchResident: user.data.isSchResident || false,
+        roomNumber: user.data.roomNumber || 0,
+      });
     }
-  }, [user.data]);
+  }, [user.data, reset]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
@@ -126,6 +130,8 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
     }
   }
 
+  if (!user.data) return null;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -137,12 +143,21 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           <CardContent className='md:grid-cols-4 grid gap-4'>
             <FormItem>
               <FormLabel>Név</FormLabel>
-              <Input disabled value={user.data?.fullName} />
+              <Input disabled value={user.data.fullName} />
             </FormItem>
-            <FormItem>
-              <FormLabel>Neptun</FormLabel>
-              <Input disabled value={user.data?.neptun} />
-            </FormItem>
+            <FormField
+              control={form.control}
+              name='neptun'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Neptun</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='nickName'
