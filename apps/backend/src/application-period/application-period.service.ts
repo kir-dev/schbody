@@ -116,9 +116,15 @@ export class ApplicationPeriodService {
         throw e;
       }
     }
+    const startDate = new Date(createApplicationPeriodDto.applicationPeriodStartAt);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(createApplicationPeriodDto.applicationPeriodEndAt);
+    endDate.setHours(23, 59, 59, 999);
     return this.prisma.applicationPeriod.create({
       data: {
         ...createApplicationPeriodDto,
+        applicationPeriodStartAt: startDate,
+        applicationPeriodEndAt: endDate,
         author: {
           connect: {
             authSchId: user.authSchId,
