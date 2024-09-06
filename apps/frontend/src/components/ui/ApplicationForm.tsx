@@ -19,77 +19,40 @@ import { Switch } from '@/components/ui/switch';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
+import { ApplicationFormSchema } from '@/zod-form-schemas/ApplicationFormSchema';
 
-const formSchema = z
-  .object({
-    nickName: z.string({
-      required_error: 'Ez a mező kötelező',
-      invalid_type_error: 'String, tesó!',
-    }),
-    email: z.string().email(),
-    isSchResident: z.boolean().optional(),
-    roomNumber: z
-      .union([
-        z.literal(0 && NaN),
-        z
-          .number()
-          .int()
-          .gte(201, { message: 'Ilyen szoba nem létezik' })
-          .lte(1816, { message: 'Ilyen szoba nem létezik' }),
-      ])
-      .optional()
-      .nullable()
-      .refine(
-        (data) => {
-          if (!data) return true;
-          const lastTwoDigits = data! % 100;
-          return lastTwoDigits >= 1 && lastTwoDigits <= 16;
-        },
-        { message: 'Cseles, de ilyen szoba nem létezik' }
-      ),
-    terms: z.boolean().refine((data) => data, { message: 'A szabályzatot el kell fogadnod' }),
-  })
-  .refine(
-    (data) => {
-      if (data.isSchResident) {
-        return data.roomNumber !== 0 && data.roomNumber !== undefined;
-      }
-      return true;
-    },
-    {
-      path: ['room_number'],
-      message: 'A szoba szám megadása kötelező, ha kolis vagy.',
-    }
-  );
 export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
   const user = useProfile();
   const { toast } = useToast();
   const effectCalledRef = useRef(false);
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ApplicationFormSchema>>({
+    resolver: zodResolver(ApplicationFormSchema),
     defaultValues: {
-      nickName: 'Bujdi Bohoc',
-      email: 'email@gmail.com',
+      nickName: '',
+      email: '',
+      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       terms: false,
     },
   });
 
+  const { reset } = form;
   useEffect(() => {
-    if (user && !effectCalledRef.current) {
-      effectCalledRef.current = true;
-      form.setValue('nickName', user.data?.nickName || '');
-      form.setValue('email', user.data?.email || '');
-      form.setValue('isSchResident', user.data?.isSchResident || false);
-      form.setValue('roomNumber', user.data?.roomNumber || 0);
-      effectCalledRef.current = false;
+    if (user.data && !effectCalledRef.current) {
+      reset({
+        nickName: user.data.nickName || '',
+        email: user.data.email || '',
+        neptun: user.data.neptun || '',
+        isSchResident: user.data.isSchResident || false,
+        roomNumber: user.data.roomNumber || 0,
+      });
     }
-  }, [user.data]);
+  }, [user.data, reset]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
+  async function onSubmit({ terms, ...values }: z.infer<typeof ApplicationFormSchema>) {
     try {
       const updateResponse = await api.patch('/users/me', values); //these cannot run in parallel, because the application needs a neptun code
       const response = await api.post('/application', {
@@ -126,6 +89,8 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
     }
   }
 
+  if (!user.data) return null;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -137,12 +102,21 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           <CardContent className='md:grid-cols-4 grid gap-4'>
             <FormItem>
               <FormLabel>Név</FormLabel>
-              <Input disabled value={user.data?.fullName} />
+              <Input disabled value={user.data.fullName} />
             </FormItem>
-            <FormItem>
-              <FormLabel>Neptun</FormLabel>
-              <Input disabled value={user.data?.neptun} />
-            </FormItem>
+            <FormField
+              control={form.control}
+              name='neptun'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Neptun</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='nickName'

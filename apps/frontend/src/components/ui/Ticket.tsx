@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Th2 } from '@/components/typography/typography';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserEntity } from '@/types/user-entity';
 
@@ -14,13 +13,11 @@ export default function Ticket({ user }: { user: UserEntity }) {
           <Card className='flex gap-2 p-2 bg-red-200 relative'>
             <img
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture?cb=${Date.now()} `}
-              className='w-[65px] h-[90px] overflow-hidden rounded object-cover'
+              className='min-w-[65px] w-[65px] h-[90px] overflow-hidden rounded object-cover'
               alt='kep'
             />
             <div>
-              <CardTitle>
-                <Th2 className='max-w-40 text-lg overflow-hidden whitespace-nowrap'>{user.fullName}</Th2>
-              </CardTitle>
+              <CardTitle className='max-w-40 text-lg overflow-hidden whitespace-nowrap'>{user.fullName}</CardTitle>
               <CardContent className='p-0'>
                 <div className='bg-gray-200 rounded px-1 py-0 text-xs w-fit mt-1'>
                   <p>{user.isSchResident ? user.roomNumber : 'Külsős'}</p>

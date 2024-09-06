@@ -10,64 +10,23 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
+import { ProfileFormSchema } from '@/zod-form-schemas/ProfileFormSchema';
 
 import api from '../network/apiSetup';
-
-const formSchema = z
-  .object({
-    nickName: z.string({
-      required_error: 'Ez a mező kötelező',
-      invalid_type_error: 'String, tesó!',
-    }),
-    email: z.string().email(),
-    isSchResident: z.boolean().optional(),
-    roomNumber: z
-      .union([
-        z.literal(0 && NaN),
-        z
-          .number()
-          .int()
-          .gte(201, { message: 'Ilyen szoba nem létezik' })
-          .lte(1816, { message: 'Ilyen szoba nem létezik' }),
-      ])
-      .optional()
-      .nullable()
-      .refine(
-        (data) => {
-          if (!data) return true;
-          const lastTwoDigits = data! % 100;
-          return lastTwoDigits >= 1 && lastTwoDigits <= 16;
-        },
-        { message: 'Cseles, de ilyen szoba nem létezik' }
-      ),
-    canHelpNoobs: z.boolean(),
-    publicDesc: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.isSchResident) {
-        return data.roomNumber !== 0 && data.roomNumber !== undefined;
-      }
-      return true;
-    },
-    {
-      path: ['room_number'],
-      message: 'A szoba szám megadása kötelező, ha kolis vagy.',
-    }
-  );
+import MemberProfileData from './MemberProfileData';
 
 export default function ProfileForm() {
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ProfileFormSchema>>({
+    resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
       nickName: '',
       email: '',
+      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       canHelpNoobs: false,
@@ -75,9 +34,9 @@ export default function ProfileForm() {
     },
   });
 
-  const { data: user, error, isLoading } = useProfile();
+  const { data: user, error, isLoading, mutate } = useProfile();
 
-  async function onSubmit({ roomNumber, ...values }: z.infer<typeof formSchema>) {
+  async function onSubmit({ roomNumber, ...values }: z.infer<typeof ProfileFormSchema>) {
     setEditingIsOn(false);
     try {
       const response = await api.patch(
@@ -88,6 +47,7 @@ export default function ProfileForm() {
         toast({
           title: 'Sikeres módosítás!',
         });
+        mutate();
       } else {
         toast({
           title: 'Hiba történt!',
@@ -109,6 +69,7 @@ export default function ProfileForm() {
       reset({
         nickName: user.nickName || '',
         email: user.email || '',
+        neptun: user.neptun || '',
         isSchResident: user.isSchResident || false,
         roomNumber: user.roomNumber || 0,
         canHelpNoobs: user.canHelpNoobs || false,
@@ -139,6 +100,19 @@ export default function ProfileForm() {
             </div>
           </CardHeader>
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+            <FormField
+              control={form.control}
+              name='neptun'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>NEPTUN</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!editingIsOn} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='nickName'
@@ -234,60 +208,7 @@ export default function ProfileForm() {
           </CardContent>
         </Card>
         {user && (user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN' || user.role === 'SUPERUSER') && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Körtag beállítások</CardTitle>
-            </CardHeader>
-            <CardContent className='md:grid-cols-2 grid gap-4'>
-              <FormField
-                control={form.control}
-                name='canHelpNoobs'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
-                    <div className='space-y-0.5'>
-                      <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
-                      <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Switch
-                        disabled={!editingIsOn}
-                        checked={field.value}
-                        onCheckedChange={(data) => {
-                          field.onChange(data);
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='publicDesc'
-                render={({ field }) => (
-                  <FormItem
-                    className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('canHelpNoobs') ? 'opacity-100' : 'opacity-0'}`}
-                  >
-                    <div className='space-y-0.5'>
-                      <FormLabel>Leírás</FormLabel>
-                      <FormDescription>
-                        A tagokat listázó oldalon ez a szöveg fog megjelenni a neved alatt
-                      </FormDescription>
-                      <FormMessage />
-                    </div>
-                    <FormControl>
-                      <Textarea
-                        placeholder='...'
-                        className='resize-none'
-                        {...field}
-                        disabled={!editingIsOn || !form.watch('canHelpNoobs')}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+          <MemberProfileData form={form} editingIsOn={editingIsOn} />
         )}
       </form>
     </Form>

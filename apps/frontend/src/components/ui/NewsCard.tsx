@@ -21,11 +21,11 @@ export default function NewsCard({
           <CardHeader className='relative overflow-hidden'>
             <CardTitle>{post.title}</CardTitle>
             <CardDescription className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row'>
-              <p className='flex items-center gap-2'>
+              <span className='flex items-center gap-2'>
                 <FiUser />
                 {post.author.fullName}
-              </p>
-              <p className='flex items-center gap-2'>
+              </span>
+              <span className='flex items-center gap-2'>
                 <FiType />
                 {new Date(post.createdAt).toLocaleDateString('hu-HU', {
                   minute: 'numeric',
@@ -34,9 +34,9 @@ export default function NewsCard({
                   month: 'short',
                   year: 'numeric',
                 })}{' '}
-              </p>
+              </span>
               {post.createdAt !== post.updatedAt && (
-                <p className='flex items-center gap-2'>
+                <span className='flex items-center gap-2'>
                   <FiEdit2 />
                   {new Date(post.updatedAt).toLocaleDateString('hu-HU', {
                     minute: 'numeric',
@@ -45,7 +45,7 @@ export default function NewsCard({
                     month: 'short',
                     year: 'numeric',
                   })}{' '}
-                </p>
+                </span>
               )}
             </CardDescription>
           </CardHeader>
