@@ -31,8 +31,10 @@ export default function UserProfileBanner(props: {
     fetch('/auth/logout').then(() => {
       mutate(() => true, undefined, { revalidate: false });
       router.refresh();
+      router.push('/');
     });
   };
+
   if (!props.user) return null;
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>

@@ -121,6 +121,8 @@ export default function ProfileForm() {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading profile.</p>;
 
+  if (!user) return null;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
