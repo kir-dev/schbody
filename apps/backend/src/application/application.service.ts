@@ -34,8 +34,8 @@ export class ApplicationService {
       const currentUser = await this.prisma.user.findUnique({
         where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
       });
-      if (!currentUser) {
-        throw new NotAcceptableException('Profilkép feltöltése kötelező');
+      if (!currentUser || currentUser.neptun === null) {
+        throw new NotAcceptableException('Hiányos profil');
       }
       return await this.prisma.application.create({
         data: {

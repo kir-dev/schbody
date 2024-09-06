@@ -91,7 +91,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
     try {
-      const updateResponse = await api.patch('/users/me', values);
+      const updateResponse = await api.patch('/users/me', values); //these cannot run in parallel, because the application needs a neptun code
       const response = await api.post('/application', {
         applicationPeriodId: currentPeriod.id,
       });
@@ -119,7 +119,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
         router.push('/profile');
         toast({
           title: 'Nem vagy jogosult a jelentkezésre!',
-          description: 'Kérlek tölts fel egy profilképet, hogy jelentkezhess!',
+          description: 'Kérlek töltsd ki a profilodat, hogy jelentkezhess!',
           variant: 'destructive',
         });
       }
