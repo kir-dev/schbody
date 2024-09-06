@@ -58,12 +58,11 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
       }
     } catch (e) {
       if (e instanceof AxiosError) {
-        if (e.status === 413) {
-          toast({
-            title: 'A kép mérete túl nagy!',
-            description: 'Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
-          });
-        }
+        toast({
+          title: 'Valami nincs rendben!',
+          description:
+            'Előfordulhat, hogy a kép mérete túl nagy. Nagyíts bele jobban, méretezd le, vagy válassz másik képet!',
+        });
       } else {
         toast({ title: 'Hiba a kép feldolgozása közben!' });
       }
