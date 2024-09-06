@@ -59,12 +59,22 @@ export class UserService {
   }
 
   findMembers(page: number, pageSize: number) {
+    const hasPagination = page !== -1 && pageSize !== -1;
     return this.prisma.user.findMany({
       orderBy: { fullName: 'asc' },
-      skip: page * pageSize,
-      take: pageSize,
-      where: {
+      skip: hasPagination ? page * pageSize : undefined,
+      take: hasPagination ? pageSize : undefined,
+      select: {
+        authSchId: true,
+        fullName: true,
+        nickName: true,
+        email: true,
         canHelpNoobs: true,
+        role: true,
+        createdAt: true,
+        publicDesc: true,
+      },
+      where: {
         OR: [{ role: 'BODY_MEMBER' }, { role: 'BODY_ADMIN' }],
       },
     });
