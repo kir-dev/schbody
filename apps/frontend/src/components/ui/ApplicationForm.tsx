@@ -19,56 +19,15 @@ import { Switch } from '@/components/ui/switch';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
+import { ApplicationFormSchema } from '@/zod-form-schemas/ApplicationFormSchema';
 
-const formSchema = z
-  .object({
-    nickName: z.string({
-      required_error: 'Ez a mező kötelező',
-      invalid_type_error: 'String, tesó!',
-    }),
-    email: z.string().email(),
-    neptun: z.string().length(6, { message: 'A Neptun kód 6 karakter hosszú kell legyen' }),
-    isSchResident: z.boolean().optional(),
-    roomNumber: z
-      .union([
-        z.literal(0 && NaN),
-        z
-          .number()
-          .int()
-          .gte(201, { message: 'Ilyen szoba nem létezik' })
-          .lte(1816, { message: 'Ilyen szoba nem létezik' }),
-      ])
-      .optional()
-      .nullable()
-      .refine(
-        (data) => {
-          if (!data) return true;
-          const lastTwoDigits = data! % 100;
-          return lastTwoDigits >= 1 && lastTwoDigits <= 16;
-        },
-        { message: 'Cseles, de ilyen szoba nem létezik' }
-      ),
-    terms: z.boolean().refine((data) => data, { message: 'A szabályzatot el kell fogadnod' }),
-  })
-  .refine(
-    (data) => {
-      if (data.isSchResident) {
-        return data.roomNumber !== 0 && data.roomNumber !== undefined;
-      }
-      return true;
-    },
-    {
-      path: ['room_number'],
-      message: 'A szoba szám megadása kötelező, ha kolis vagy.',
-    }
-  );
 export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
   const user = useProfile();
   const { toast } = useToast();
   const effectCalledRef = useRef(false);
   const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ApplicationFormSchema>>({
+    resolver: zodResolver(ApplicationFormSchema),
     defaultValues: {
       nickName: '',
       email: '',
@@ -93,7 +52,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
   }, [user.data, reset]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
+  async function onSubmit({ terms, ...values }: z.infer<typeof ApplicationFormSchema>) {
     try {
       const updateResponse = await api.patch('/users/me', values); //these cannot run in parallel, because the application needs a neptun code
       const response = await api.post('/application', {
