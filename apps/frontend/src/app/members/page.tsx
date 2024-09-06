@@ -16,11 +16,11 @@ export default function MembersPage() {
 
   return (
     <main>
-      <h1 className='text-3xl font-bold my-4'>Body körtagok:</h1>
+      <h1 className='text-3xl font-bold my-4'>Body körtagok</h1>
       {isLoading && <LoadingCard />}
 
       {/*canhelpnoobs*/}
-      <h2 className='text-2xl font-bold my-4'>Vállal személyes mentorálást</h2>
+      <h2 className='text-2xl font-bold my-4'>Vállal személyes mentorálást:</h2>
       <div className='grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4 border-b-2 pb-4 border-black'>
         {canHelpNoobsUsers.map((u) => (
           <BodyMemberTile userEntity={u} key={u.authSchId} />
@@ -28,6 +28,7 @@ export default function MembersPage() {
       </div>
 
       {/*cant help noobs*/}
+      <h2 className='text-2xl font-bold my-4'>További körtagok:</h2>
       <div className='grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4'>
         {cannotHelpNoobsUsers.map((u) => (
           <BodyMemberTile key={u.authSchId} userEntity={u} />

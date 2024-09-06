@@ -30,9 +30,9 @@ export default function Header() {
         {/* Mobile menu */}
         {isOpen && (
           <div className='absolute top-14 left-0 right-0 bg-amber-200 flex flex-col items-start lg:hidden z-50 pl-8 pb-4'>
-            <THeaderLink>
+            {/* <THeaderLink>
               <Link href='/gym'>Terem</Link>
-            </THeaderLink>
+            </THeaderLink> */}
             <THeaderLink>
               <Link href='/rules'>Szabályzat</Link>
             </THeaderLink>
@@ -47,9 +47,9 @@ export default function Header() {
 
         {/* Desktop view */}
         <div className='hidden lg:flex items-center gap-2 h-full'>
-          <THeaderLink>
+          {/* <THeaderLink>
             <Link href='/gym'>Terem</Link>
-          </THeaderLink>
+          </THeaderLink> */}
           <THeaderLink>
             <Link href='/rules'>Szabályzat</Link>
           </THeaderLink>
