@@ -30,7 +30,7 @@ export default function PeriodCreateOrEditDialog(props: props) {
     from: new Date(),
     to: addDays(new Date(), 20),
   });
-  const { mutate: mutateCur } = usePeriod(props.period ? props.period.id : 0);
+  const period = usePeriod(props.period ? props.period.id : -1);
   const { mutate: mutateAll } = useApplicationPeriods(0);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function PeriodCreateOrEditDialog(props: props) {
           return toast({ title: 'Hiba történt!', description: error.response?.data?.message || 'Ismeretlen hiba' });
         });
 
-      await mutateCur();
+      await period?.mutate();
       setOpen(false);
       return;
     }
@@ -77,7 +77,9 @@ export default function PeriodCreateOrEditDialog(props: props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>{props.period ? 'Szerkesztés' : '+ Új jelentkezési időszak létrehozása'}</Button>
+        <Button className='max-md:w-full'>
+          {props.period ? 'Szerkesztés' : '+ Új jelentkezési időszak létrehozása'}
+        </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader className='mb-4'>

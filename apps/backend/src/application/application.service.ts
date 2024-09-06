@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { Application, Prisma, Role, User } from '@prisma/client';
@@ -30,6 +31,12 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
+      const currentUser = await this.prisma.user.findUnique({
+        where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
+      });
+      if (!currentUser || currentUser.neptun === null) {
+        throw new NotAcceptableException('Hiányos profil');
+      }
       return await this.prisma.application.create({
         data: {
           user: {
@@ -52,7 +59,7 @@ export class ApplicationService {
           throw new NotFoundException('Nem található időszak');
         }
       }
-      if (e instanceof BadRequestException) {
+      if (e instanceof BadRequestException || e instanceof NotAcceptableException) {
         throw e;
       }
       throw new BadRequestException('Nem sikerült létrehozni');
@@ -60,15 +67,15 @@ export class ApplicationService {
   }
 
   async findAll(page: number, pageSize: number): Promise<PaginationDto<Application>> {
-    const skip = page * pageSize;
+    const hasPagination = page !== -1 && pageSize !== -1;
     const applications = this.prisma.application.findMany({
-      skip,
-      take: pageSize,
+      skip: hasPagination ? page * pageSize : undefined,
+      take: hasPagination ? pageSize : undefined,
     });
     const total = this.prisma.post.count();
     return Promise.all([applications, total])
       .then(([data, total]) => {
-        const limit = Math.floor(total / pageSize);
+        const limit = hasPagination ? Math.floor(total / pageSize) : 0;
         return {
           data,
           total,
@@ -149,7 +156,12 @@ export class ApplicationService {
     if (!application) {
       throw new NotFoundException('A keresett jelentkezés nem található');
     }
-    if (application.userId === user.authSchId || user.role === Role.BODY_ADMIN || user.role === Role.BODY_MEMBER) {
+    if (
+      application.userId === user.authSchId ||
+      user.role === Role.BODY_ADMIN ||
+      user.role === Role.BODY_MEMBER ||
+      user.role === Role.SUPERUSER
+    ) {
       const applicationPeriod = await this.prisma.applicationPeriod.findUnique({
         where: {
           id: application.applicationPeriodId,

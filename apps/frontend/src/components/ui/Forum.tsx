@@ -57,10 +57,12 @@ export default function Forum() {
   return (
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
-      {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER') && (
-        <Button onClick={() => setIsEditing(undefined)}>
-          <FiMessageSquare /> Új hír közzététele
-        </Button>
+      {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER' || user.role === 'SUPERUSER') && (
+        <div className='flex w-full justify-end mt-4'>
+          <Button className='max-md:w-full' onClick={() => setIsEditing(undefined)}>
+            <FiMessageSquare /> Új hír közzététele
+          </Button>
+        </div>
       )}
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts?.data &&
@@ -76,7 +78,7 @@ export default function Forum() {
                 setPageIndex(pageIndex - 1);
               }}
               aria-disabled={pageIndex <= 0}
-              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : undefined}
+              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : ''}
             >
               <PaginationPrevious href='#' />
             </PaginationItem>
@@ -88,7 +90,7 @@ export default function Forum() {
             <PaginationItem
               onClick={() => setPageIndex(pageIndex + 1)}
               aria-disabled={posts.limit >= pageIndex}
-              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : undefined}
+              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : ''}
             >
               <PaginationNext href='#' />
             </PaginationItem>

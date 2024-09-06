@@ -91,7 +91,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit({ terms, ...values }: z.infer<typeof formSchema>) {
     try {
-      const updateResponse = await api.patch('/users/me', values);
+      const updateResponse = await api.patch('/users/me', values); //these cannot run in parallel, because the application needs a neptun code
       const response = await api.post('/application', {
         applicationPeriodId: currentPeriod.id,
       });
@@ -100,7 +100,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           title: 'Sikeres jelentkezés!',
           description: 'Köszönjük, hogy kitöltötted a jelentkezési lapot!',
         });
-        mutate('/application/my');
+        await mutate('/application/my');
         router.push('/');
       } else {
         toast({
@@ -113,6 +113,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
       if (error.response.status === 400) {
         toast({
           title: 'Már jelentkeztél erre az időszakra!',
+          variant: 'destructive',
+        });
+      } else if (error.response.status === 406) {
+        router.push('/profile');
+        toast({
+          title: 'Nem vagy jogosult a jelentkezésre!',
+          description: 'Kérlek töltsd ki a profilodat, hogy jelentkezhess!',
           variant: 'destructive',
         });
       }
@@ -256,9 +263,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
             />
           </CardContent>
         </Card>
-        <Button className='float-right w-60 h-16' type='submit'>
-          Jelentkezés leadása
-        </Button>
+        <Button type='submit'>Jelentkezés leadása</Button>
       </form>
     </Form>
   );

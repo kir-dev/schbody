@@ -13,7 +13,6 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
-import ColoredBadge from '@/components/ui/ColoredBadge';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -27,6 +26,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApplicationStatus } from '@/types/application-entity';
 
@@ -34,13 +34,19 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
+  onExportClicked: (data: TData[]) => void;
 }
 
-export function DataTable<TData, TValue>({ columns, data, onStatusChange }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  onStatusChange,
+  onExportClicked,
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState<Record<number, boolean>>({});
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
 
   const table = useReactTable({
@@ -73,6 +79,15 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
     selectedRows.map((row) => onStatusChange(row.original, value));
   }
 
+  function selectGivenStatuses(value: ApplicationStatus) {
+    table.getRowModel().rows.map((row) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
+      else row.toggleSelected(false);
+    });
+  }
+
   return (
     <div>
       <div className='flex items-center justify-between py-4 gap-4'>
@@ -82,17 +97,30 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
             <MenubarContent>
               <MenubarItem onClick={() => table.toggleAllPageRowsSelected(true)}>Összes kijelölése</MenubarItem>
               <MenubarItem onClick={selectAllFiltered}>Kiszűrtek kijelölése</MenubarItem>
+
               <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
               <MenubarItem onClick={() => table.toggleAllPageRowsSelected(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
-
+              <MenubarSub>
+                <MenubarSubTrigger>Adott státuszúak kijelölése</MenubarSubTrigger>
+                <MenubarSubContent>
+                  {Object.keys(ApplicationStatus).map((key) => {
+                    return (
+                      <MenubarItem key={key} onClick={() => selectGivenStatuses(key as ApplicationStatus)}>
+                        <StatusBadge status={key as ApplicationStatus} /> -k kijelölése
+                      </MenubarItem>
+                    );
+                  })}
+                </MenubarSubContent>
+              </MenubarSub>
               <MenubarSub>
                 <MenubarSubTrigger>Kijelöltek státuszának megváltoztatása</MenubarSubTrigger>
                 <MenubarSubContent>
                   {Object.keys(ApplicationStatus).map((key) => {
                     return (
                       <MenubarItem key={key} onClick={() => setSelectedToStatus(key as ApplicationStatus)}>
-                        <ColoredBadge status={key as ApplicationStatus} />
+                        <StatusBadge status={key as ApplicationStatus} />
+                        -ra/re állítása
                       </MenubarItem>
                     );
                   })}
@@ -116,8 +144,10 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
           <MenubarMenu>
             <MenubarTrigger>Exportálás</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem>Kijelöltek exportálása</MenubarItem>
-              <MenubarItem>Minden exportálása</MenubarItem>
+              <MenubarItem onClick={() => onExportClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltek exportálása
+              </MenubarItem>
+              <MenubarItem onClick={() => onExportClicked(data)}>Minden exportálása</MenubarItem>
             </MenubarContent>
           </MenubarMenu>
           <MenubarMenu>
@@ -149,7 +179,7 @@ export function DataTable<TData, TValue>({ columns, data, onStatusChange }: Data
         />
       </div>
       <div className='rounded-md border'>
-        <Table className='w-full'>
+        <Table className='w-full bg-white rounded'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -16,4 +16,16 @@ export class UpdateUserDto {
   @IsEmail()
   @IsOptional()
   email: string;
+
+  @IsBoolean()
+  @IsOptional()
+  canHelpNoobs: boolean;
+
+  @IsString()
+  @IsOptional()
+  publicDesc: string;
+
+  @IsString()
+  @IsOptional()
+  neptun: string;
 }

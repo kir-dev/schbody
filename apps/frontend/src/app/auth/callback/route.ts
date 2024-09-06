@@ -12,5 +12,5 @@ export async function GET(request: NextRequest) {
 
   cookies().set('jwt', jwt, { path: '/' });
 
-  return NextResponse.redirect(new URL('/', request.url));
+  return NextResponse.redirect(new URL('/profile', request.url));
 }

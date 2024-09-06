@@ -2,6 +2,7 @@ export enum Role {
   BODY_ADMIN = 'BODY_ADMIN',
   BODY_MEMBER = 'BODY_MEMBER',
   USER = 'USER',
+  SUPERUSER = 'SUPERUSER',
 }
 
 export type UserEntity = {
@@ -15,6 +16,7 @@ export type UserEntity = {
   isSchResident: boolean;
   roomNumber: number | null;
   canHelpNoobs: boolean;
+  isActiveVikStudent: boolean;
   publicDesc: string | null;
   createdAt: string;
   updatedAt: string;

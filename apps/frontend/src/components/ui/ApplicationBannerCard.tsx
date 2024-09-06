@@ -4,6 +4,9 @@ import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import StatusBadge from '@/components/ui/StatusBadge';
+import Ticket from '@/components/ui/Ticket';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
 import useProfile from '@/hooks/useProfile';
@@ -13,34 +16,54 @@ export default function ApplicationBannerCard() {
   const currentPeriod = useCurrentPeriod();
   const user = useProfile();
   const application = useCurrentApplication();
-  if (
-    !currentPeriod ||
-    application.data !== undefined ||
-    !user.data ||
-    user.isLoading ||
-    application.isLoading ||
-    currentPeriod.isLoading
-  ) {
+  if (!currentPeriod.data || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
     return null;
   }
-  return (
-    <div className='flex mt-8'>
-      <Card className='w-full bg-amber-100'>
-        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
-          <div>
-            <CardTitle> Jelentkezés </CardTitle>
-            <CardDescription>
-              {' '}
-              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
-              időszak!
-            </CardDescription>
+  if (application.data) {
+    return (
+      <Card className='w-full'>
+        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
+          <div className='flex flex-col gap-4 justify-start'>
+            <CardTitle> Leadott jelentkezés </CardTitle>
+            <p>
+              A most zajló, <span className='font-bold'>{currentPeriod.data?.name}</span> időszakra már sikeresen
+              jelentkeztél!
+            </p>
           </div>
-          <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
-            <FiFastForward />
-            Jelentkezés
-          </Button>
+          <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
+            <Ticket user={user.data} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  {/*todo tooltip does not work */}
+                  <StatusBadge status={application.data.status} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </CardHeader>
       </Card>
-    </div>
+    );
+  }
+  return (
+    <Card className='w-full'>
+      <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
+        <div>
+          <CardTitle> Jelentkezés </CardTitle>
+          <CardDescription>
+            {' '}
+            Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
+            időszak!
+          </CardDescription>
+        </div>
+        <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
+          <FiFastForward />
+          Jelentkezés
+        </Button>
+      </CardHeader>
+    </Card>
   );
 }

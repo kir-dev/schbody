@@ -11,7 +11,7 @@ import { Toaster } from '@/components/ui/toaster';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '💪SCHBody',
+  title: 'SCHBody💪',
   description: 'A Schönherz koli konditerme',
 };
 
@@ -22,10 +22,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='hu'>
-      <body className={`${inter.className} min-h-dvh flex flex-col justify-between`}>
+      <body
+        className={`${inter.className} min-h-dvh flex flex-col justify-between`}
+        style={{
+          background: "url('bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'overlay',
+          backgroundColor: 'rgb(238,238,238)',
+        }}
+      >
         <div>
           <Header />
-          <div className='space-y-4 py-16 2xl:mx-64 xl:mx-32 max-xl:mx-8'>{children}</div>
+          <div className='space-y-4 py-8 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-4'>{children}</div>
         </div>
         <Toaster />
         <Footer />

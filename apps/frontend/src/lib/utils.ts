@@ -46,3 +46,7 @@ export function getStatusName(status: ApplicationStatus): string {
   }
   return 'Ismeretlen státusz';
 }
+
+export function statusConvert(status: ApplicationStatus): keyof typeof ApplicationStatus {
+  return status as unknown as keyof typeof ApplicationStatus;
+}

@@ -16,7 +16,7 @@ export default function Page() {
   return (
     <>
       <Th1>
-        Jelentkezés <b>{currentPeriod?.name}</b> időszakra -{' '}
+        Jelentkezés <b>{currentPeriod?.name}</b> időszakra
       </Th1>
       <ApplicationForm currentPeriod={currentPeriod} />
     </>

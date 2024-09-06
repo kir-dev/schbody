@@ -9,6 +9,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "concurrently \"yarn start:backend\" \"yarn start:frontend\"",
     "start:backend": "cd apps/backend && yarn start:dev",
     "start:frontend": "cd apps/frontend && yarn dev",
     "build:backend": "cd apps/backend && yarn build",
@@ -19,6 +20,7 @@
     "format:check": "prettier --check apps"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.2",
     "eslint-config-prettier": "^9.1.0",

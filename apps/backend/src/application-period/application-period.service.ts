@@ -9,11 +9,11 @@ import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto'
 @Injectable()
 export class ApplicationPeriodService {
   constructor(private readonly prisma: PrismaService) {}
-  findAll(page: number, pageSize: number): Promise<PaginationDto<ApplicationPeriod>> {
-    const skip = page * pageSize;
+  findAll(page?: number, pageSize?: number): Promise<PaginationDto<ApplicationPeriod>> {
+    const hasPagination = page !== -1 && pageSize !== -1;
     const periods = this.prisma.applicationPeriod.findMany({
-      skip,
-      take: Number(pageSize),
+      skip: hasPagination ? page * pageSize : undefined,
+      take: hasPagination ? pageSize : undefined,
       orderBy: {
         applicationPeriodStartAt: 'desc',
       },
@@ -29,7 +29,7 @@ export class ApplicationPeriodService {
     const total = this.prisma.post.count();
     return Promise.all([periods, total])
       .then(([data, total]) => {
-        const limit = Math.floor(total / pageSize);
+        const limit = hasPagination ? Math.floor(total / pageSize) : 0;
         return {
           data,
           total,
@@ -49,10 +49,12 @@ export class ApplicationPeriodService {
       include: {
         user: {
           select: {
+            authSchId: true,
             fullName: true,
             neptun: true,
             isActiveVikStudent: true,
             email: true,
+            roomNumber: true,
           },
         },
       },

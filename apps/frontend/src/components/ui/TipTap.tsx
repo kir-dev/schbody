@@ -23,6 +23,7 @@ export default function TipTap({ content, onChange }: { content: string; onChang
         openOnClick: false,
         autolink: true,
         defaultProtocol: 'https',
+        HTMLAttributes: { class: 'text-red underline' },
       }),
       BulletList.configure({ HTMLAttributes: { class: 'list-disc ml-4' } }),
       ListItem,
@@ -32,7 +33,7 @@ export default function TipTap({ content, onChange }: { content: string; onChang
     content: content,
     editorProps: {
       attributes: {
-        class: 'rounded border border-input bg-back focus:outline h-20 p-2 min-h-40 h-auto',
+        class: 'rounded border border-input bg-back focus:outline h-20 p-2 min-h-40 h-auto max-h-72 overflow-scroll',
       },
     },
     onUpdate: ({ editor }) => {

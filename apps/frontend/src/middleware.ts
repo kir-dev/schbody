@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith('/periods')) {
-    if (role === 'BODY_MEMBER' || role === 'BODY_ADMIN') {
+    if (role === 'BODY_MEMBER' || role === 'BODY_ADMIN' || role === 'SUPERUSER') {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/', request.url));
