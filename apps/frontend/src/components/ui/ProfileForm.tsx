@@ -36,7 +36,7 @@ export default function ProfileForm() {
 
   const { data: user, error, isLoading, mutate } = useProfile();
 
-  async function onSubmit({ roomNumber, ...values }: z.infer<typeof formSchema>) {
+  async function onSubmit({ roomNumber, ...values }: z.infer<typeof ProfileFormSchema>) {
     setEditingIsOn(false);
     try {
       const response = await api.patch(
