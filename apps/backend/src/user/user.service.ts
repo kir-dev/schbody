@@ -4,8 +4,8 @@ import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
 import * as sharp from 'sharp';
 
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -99,7 +99,7 @@ export class UserService {
       updateData.canHelpNoobs = false;
       updateData.publicDesc = '';
     }
-    if (!updateData.isSchResident) {
+    if (updateData.isSchResident === false) {
       updateData.roomNumber = null;
     }
 
