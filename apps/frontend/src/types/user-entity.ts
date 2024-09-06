@@ -28,3 +28,13 @@ export type UserEntityPagination = {
   totalUsers: number;
   pageNumber: number;
 };
+export type MemberEntity = {
+  authSchId: string;
+  fullName: string;
+  nickName: string;
+  email: string;
+  canHelpNoobs: boolean;
+  role: Role;
+  createdAt: Date;
+  publicDesc?: string;
+};

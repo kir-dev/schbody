@@ -1,23 +1,24 @@
 import { Mail } from 'lucide-react';
-import Image from 'next/image';
 
-import { UserEntity } from '@/types/user-entity';
+import { MemberEntity } from '@/types/user-entity';
 
 import { Card, CardContent, CardTitle } from './card';
 
 type Props = {
-  userEntity: UserEntity;
+  userEntity: MemberEntity;
 };
 
 export function BodyMemberTile({ userEntity }: Props) {
   return (
     <Card className='p-5 flex w-full'>
-      <Image
-        src='https://mozsarmate.me/marci.jpg'
-        width={100}
-        height={100}
-        alt='@shadcn'
-        className='w-28 h-28 aspect-square object-cover'
+      <img
+        src={`${process.env.NEXT_PUBLIC_API_URL}/users/${userEntity.authSchId}/profile-picture`}
+        alt='PROFIL KEP'
+        className='h-36'
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null; // prevents looping
+          currentTarget.src = 'default_pfp.jpg';
+        }}
       />
       <div className='flex gap-3 mx-5 flex-col'>
         <CardTitle className='font-bold flex flex-col'>
