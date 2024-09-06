@@ -82,7 +82,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
         router.push('/profile');
         toast({
           title: 'Nem vagy jogosult a jelentkezésre!',
-          description: 'Kérlek töltsd ki a profilodat, hogy jelentkezhess!',
+          description: 'Kérlek egészítsd ki a profilodat és töltsd fel a profilképed, hogy jelentkezhess!',
           variant: 'destructive',
         });
       }

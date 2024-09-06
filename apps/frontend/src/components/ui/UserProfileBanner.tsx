@@ -42,7 +42,7 @@ export default function UserProfileBanner(props: {
         <img
           src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
           alt='PROFIL KEP'
-          className='md:rounded-l-xl max-md:rounded-xl max-md:my-4'
+          className='md:rounded-l max-md:rounded-xl max-md:my-4'
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = 'default_pfp.jpg';
