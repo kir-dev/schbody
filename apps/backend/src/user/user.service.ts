@@ -4,8 +4,8 @@ import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
 import * as sharp from 'sharp';
 
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class UserService {
