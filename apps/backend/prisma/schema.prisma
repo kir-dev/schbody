@@ -59,17 +59,28 @@ model ProfilePicture {
   @@index([userId])
 }
 
+model PassBackgroundPicture {
+  id              Int               @id @default(autoincrement())
+  period          ApplicationPeriod @relation(fields: [periodId], references: [id])
+  periodId        Int               @unique
+  mimeType        String
+  backgroundImage Bytes
+
+  @@index([periodId])
+}
+
 model ApplicationPeriod {
-  id                       Int           @id @default(autoincrement())
+  id                       Int                    @id @default(autoincrement())
   name                     String
   applicationPeriodStartAt DateTime
   applicationPeriodEndAt   DateTime
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
-  ticketsAreValid          Boolean       @default(false)
-  author                   User          @relation(fields: [authorId], references: [authSchId])
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  ticketsAreValid          Boolean                @default(false)
+  author                   User                   @relation(fields: [authorId], references: [authSchId])
   authorId                 String
   applications             Application[]
+  passBackgroundPicture    PassBackgroundPicture?
 
   @@index([authorId])
 }

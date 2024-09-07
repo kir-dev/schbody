@@ -1,23 +1,31 @@
 'use client';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { AxiosError } from 'axios';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, PropsWithChildren, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
-import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import getCroppedImg from '@/lib/cropImage';
 import { useToast } from '@/lib/use-toast';
 
-export default function ProfilePictureDialog({ onChange }: { onChange: () => void }) {
-  const { toast } = useToast();
+import api from '../network/apiSetup';
+
+type Props = {
+  onChange: () => void;
+  endpoint: string;
+  modalTitle: string;
+  aspectRatio: number;
+} & PropsWithChildren;
+
+export default function PictureUploadDialog({ children, aspectRatio, onChange, endpoint, modalTitle }: Props) {
   const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,7 +51,7 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
 
       const data = new FormData();
       data.append('image', croppedImageBlob);
-      const response = await api.post('/users/me/profile-picture', data, {
+      const response = await api.post(endpoint, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -51,8 +59,8 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
 
       if (response.status >= 200 && response.status < 300) {
         toast({ title: 'Profilkép sikeresen feltöltve!' });
-        setIsOpen(false);
         onChange();
+        setIsOpen(false);
       } else {
         toast({ title: 'Profilkép feltöltése sikertelen!' });
       }
@@ -71,15 +79,13 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger asChild className='w-full'>
-        <Button className='m-auto w-fit' variant='secondary' onClick={() => setIsOpen(true)}>
-          Kép szerkesztése
-        </Button>
+      <DialogTrigger asChild onClick={() => setIsOpen(true)}>
+        {children}
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader className='h-fit w-fit'>
           <div className='h-full flex-col justify-between items-center gap-4'>
-            <DialogTitle>Profilkép feltöltése</DialogTitle>
+            <DialogTitle>{modalTitle}</DialogTitle>
             <DialogDescription>Válassz egy képet és vágd ki a megfelelő részt!</DialogDescription>
             <Input type='file' onChange={handleFileChange} accept='image/*' className='my-8' />
             {imageSrc && (
@@ -91,7 +97,7 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
                   image={imageSrc.toString()}
                   crop={crop}
                   zoom={zoom}
-                  aspect={650 / 900}
+                  aspect={aspectRatio}
                   onCropChange={setCrop}
                   onCropComplete={onCropComplete}
                   onZoomChange={setZoom}

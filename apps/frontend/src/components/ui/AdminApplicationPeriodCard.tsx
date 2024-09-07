@@ -1,8 +1,10 @@
 'use client';
+import { pdf } from '@react-pdf/renderer';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useState } from 'react';
 import { mutate } from 'swr';
 
+import { PassExport } from '@/app/periods/[id]/pass-export';
 import api from '@/components/network/apiSetup';
 import {
   AlertDialog,
@@ -16,14 +18,19 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/lib/use-toast';
+import { mockApplication } from '@/lib/utils';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
+import { Th2 } from '../typography/typography';
+import PictureUploadDialog from './PictureUploadDialog';
+
 export default function AdminApplicationPeriodCard({ period }: { period: ApplicationPeriodEntity }) {
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
   const router = useRouter();
   const deleteApplicationPeriod = async () => {
     const response = await api.delete(`/application-periods/${period.id}`).catch((e) => {
@@ -52,6 +59,31 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
     await mutate(`/application-periods/${period.id}`);
   };
 
+  const onDummyExport = async () => {
+    const now = new Date();
+    const blob = await pdf(
+      <PassExport
+        mock
+        periodId={period.id}
+        applicationData={[mockApplication]}
+        periodName={`${now.getFullYear()}. ${now.getMonth() < 7 ? 'tavasz' : 'ősz'}`}
+      />
+    ).toBlob();
+    // eslint-disable-next-line no-undef
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    // eslint-disable-next-line no-undef
+    document.body.appendChild(a);
+
+    // eslint-disable-next-line no-undef
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = `schbody_pass_mock_export_${Date.now()}.pdf`;
+    a.click();
+    // eslint-disable-next-line no-undef
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <Card>
       <CardHeader className='flex md:flex-row max-md:flex-col w-full justify-between items-center'>
@@ -71,11 +103,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
             })}
           </CardDescription>
         </div>
-        <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-4'>
-          <div className='flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4'>
-            <Label htmlFor='tickets-are-valid-now'>Az itt kiosztott belépők jelenleg érvényesek</Label>
-            <Switch id='tickets-are-valid-now' onCheckedChange={onActiveChange} checked={period.ticketsAreValid} />
-          </div>
+        <div className='flex md:flex-row max-md:flex-col max-md:w-full items-center gap-6'>
           <PeriodCreateOrEditDialog period={period} />
           <AlertDialog>
             <AlertDialogTrigger asChild className='max-md:w-full'>
@@ -96,6 +124,42 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
           </AlertDialog>
         </div>
       </CardHeader>
+      <CardContent>
+        <div className='flex max-md:flex-col md:flex-row justify-between w-full items-center'>
+          <Th2 className='max-md:order-2 max-md:my-2 mb-2 text-center'>Belépő háttér</Th2>
+
+          <div className='max-md:order-1 flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4'>
+            <Label htmlFor='tickets-are-valid-now'>Az itt kiosztott belépők jelenleg érvényesek</Label>
+            <Switch id='tickets-are-valid-now' onCheckedChange={onActiveChange} checked={period.ticketsAreValid} />
+          </div>
+        </div>
+        <div className='flex max-md:flex-col md:flex-row gap-4 max-md:items-center md:items-end'>
+          <img
+            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`}
+            width={75 * 4}
+            height={43 * 4}
+            alt='BELEPO HATTER'
+            className='rounded-xl'
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src = 'https://placehold.co/750x430/pink/white/jpeg';
+            }}
+          />
+          <PictureUploadDialog
+            aspectRatio={75 / 43}
+            endpoint={`/application-periods/${period.id}/pass-bg`}
+            modalTitle='Belépő háttér feltöltése'
+            onChange={() => setCacheBuster(Date.now())}
+          >
+            <Button variant='secondary' className='max-md:w-full'>
+              Szerkesztés
+            </Button>
+          </PictureUploadDialog>
+          <Button variant='secondary' className='max-md:w-full' onClick={onDummyExport}>
+            Minta belépő generálása
+          </Button>
+        </div>
+      </CardContent>
     </Card>
   );
 }

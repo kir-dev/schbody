@@ -3,9 +3,7 @@ import {
   Body,
   Controller,
   Get,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -19,7 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
-import { Express } from 'express';
+import { ImageParserPipe } from 'src/util';
 
 import { Roles } from '../auth/decorators/Roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -27,10 +25,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-
-const ImageParserPipe = new ParseFilePipe({
-  validators: [new MaxFileSizeValidator({ maxSize: 2_000_000 })], // 2mb
-});
 
 @ApiTags('users')
 @Controller('users')

@@ -35,7 +35,9 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const onExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
-      const blob = await pdf(<PassExport applicationData={data} periodName={period.data.name} />).toBlob();
+      const blob = await pdf(
+        <PassExport applicationData={data} periodName={period.data.name} periodId={period.data.id} />
+      ).toBlob();
       // eslint-disable-next-line no-undef
       const a = document.createElement('a');
       a.style.display = 'none';

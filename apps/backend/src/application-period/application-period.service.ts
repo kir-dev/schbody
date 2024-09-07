@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { ApplicationPeriod, Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { PaginationDto } from 'src/dto/pagination.dto';
+import { optimizeImage } from 'src/util';
 
 import { CreateApplicationPeriodDto } from './dto/create-application-period.dto';
 import { UpdateApplicationPeriodDto } from './dto/update-application-period.dto';
@@ -89,6 +90,14 @@ export class ApplicationPeriodService {
     }
     return period;
   }
+  async findPassBackground(periodId: number): Promise<Buffer> {
+    try {
+      const profilePic = await this.prisma.passBackgroundPicture.findUniqueOrThrow({ where: { periodId } });
+      return profilePic.backgroundImage;
+    } catch (error) {
+      throw new NotFoundException(`Period with id ${periodId} not found`);
+    }
+  }
 
   async create(createApplicationPeriodDto: CreateApplicationPeriodDto, user: User): Promise<ApplicationPeriod> {
     try {
@@ -132,6 +141,40 @@ export class ApplicationPeriodService {
         },
       },
     });
+  }
+
+  async savePassBg(periodId: number, buffer: Buffer, mimetype: string) {
+    if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
+      throw new BadRequestException('Invalid image format');
+    }
+    try {
+      await this.createOrUpdatePassBg(periodId, buffer);
+    } catch (error) {
+      throw new NotFoundException(`Period with id ${periodId} not found`);
+    }
+  }
+
+  private async createOrUpdatePassBg(periodId: number, backgroundImage: Buffer) {
+    const { image, mimeType } = await optimizeImage(backgroundImage, false);
+    const data = {
+      periodId,
+      backgroundImage: image,
+      mimeType,
+    };
+    try {
+      await this.prisma.passBackgroundPicture.update({
+        where: { periodId },
+        data,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          await this.prisma.passBackgroundPicture.create({ data });
+          return;
+        }
+      }
+      throw e;
+    }
   }
 
   async delete(id: number): Promise<ApplicationPeriod> {

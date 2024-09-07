@@ -2,7 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import { twMerge } from 'tailwind-merge';
 
-import { ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { Role } from '@/types/user-entity';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,3 +51,29 @@ export function getStatusName(status: ApplicationStatus): string {
 export function statusConvert(status: ApplicationStatus): keyof typeof ApplicationStatus {
   return status as unknown as keyof typeof ApplicationStatus;
 }
+
+export const mockApplication: ApplicationEntity = {
+  id: 1,
+  applicationPeriodId: 1,
+  createdAt: new Date(),
+  status: ApplicationStatus.ACCEPTED,
+  updatedAt: new Date(),
+  userId: 'abc',
+  user: {
+    authSchId: 'abcd',
+    fullName: 'Példa Béla',
+    roomNumber: 1319,
+    canHelpNoobs: false,
+    createdAt: '',
+    email: 'a@d.c',
+    id: 2,
+    isActiveVikStudent: true,
+    isSchResident: true,
+    neptun: 'XXXXXX',
+    nickName: 'Bélus',
+    profileSeenAt: '',
+    publicDesc: '',
+    role: Role.USER,
+    updatedAt: '',
+  },
+};
