@@ -34,14 +34,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
-  onExportClicked: (data: TData[]) => void;
+  onExportPassClicked: (data: TData[]) => void;
+  onExportApplicationsClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onStatusChange,
-  onExportClicked,
+  onExportApplicationsClicked,
+  onExportPassClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -144,10 +146,16 @@ export function DataTable<TData, TValue>({
           <MenubarMenu>
             <MenubarTrigger>Exportálás</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => onExportClicked(data.filter((_, i) => rowSelection[i]))}>
-                Kijelöltek exportálása
+              <MenubarItem onClick={() => onExportPassClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltekhez belépők exportálása
               </MenubarItem>
-              <MenubarItem onClick={() => onExportClicked(data)}>Minden exportálása</MenubarItem>
+              <MenubarItem onClick={() => onExportPassClicked(data)}>Minden belépő exportálása</MenubarItem>
+              <MenubarItem onClick={() => onExportApplicationsClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltekhez lista exportálása (csak kiosztott)
+              </MenubarItem>
+              <MenubarItem onClick={() => onExportApplicationsClicked(data)}>
+                Teljes lista exportálása (csak kiosztott)
+              </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
           <MenubarMenu>
