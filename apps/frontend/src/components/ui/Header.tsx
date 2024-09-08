@@ -9,6 +9,14 @@ import LoginButton from '@/components/ui/LoginButton';
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const commenHeaderItems = (
+    <>
+      <THeaderLink href='/rules' title='Szabályzat' />
+      <THeaderLink href='/members' title='Körtagok' />
+      <THeaderLink href='/faq' title='GYIK' />
+    </>
+  );
+
   return (
     <header className='bg-amber-200 overflow-hidden'>
       <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-2 items-center justify-between'>
@@ -33,15 +41,7 @@ export default function Header() {
             {/* <THeaderLink>
               <Link href='/gym'>Terem</Link>
             </THeaderLink> */}
-            <THeaderLink>
-              <Link href='/rules'>Szabályzat</Link>
-            </THeaderLink>
-            <THeaderLink>
-              <Link href='/members'>Körtagok</Link>
-            </THeaderLink>
-            <THeaderLink>
-              <Link href='/faq'>GYIK</Link>
-            </THeaderLink>
+            {commenHeaderItems}
           </div>
         )}
 
@@ -50,15 +50,7 @@ export default function Header() {
           {/* <THeaderLink>
             <Link href='/gym'>Terem</Link>
           </THeaderLink> */}
-          <THeaderLink>
-            <Link href='/rules'>Szabályzat</Link>
-          </THeaderLink>
-          <THeaderLink>
-            <Link href='/members'>Körtagok</Link>
-          </THeaderLink>
-          <THeaderLink>
-            <Link href='/faq'>GYIK</Link>
-          </THeaderLink>
+          {commenHeaderItems}
           <LoginButton version={1} />
         </div>
       </div>
