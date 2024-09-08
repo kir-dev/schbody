@@ -9,11 +9,17 @@ import LoginButton from '@/components/ui/LoginButton';
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const commenHeaderItems = (
+  const links = [
+    { href: '/rules', title: 'Szabályzat' },
+    { href: '/members', title: 'Körtagok' },
+    { href: '/faq', title: 'GYIK' },
+  ];
+
+  const commonHeaderItems = (
     <>
-      <THeaderLink href='/rules' title='Szabályzat' />
-      <THeaderLink href='/members' title='Körtagok' />
-      <THeaderLink href='/faq' title='GYIK' />
+      {links.map((link) => (
+        <THeaderLink key={link.href} href={link.href} title={link.title} onClick={() => setIsOpen(false)} />
+      ))}
     </>
   );
 
@@ -21,10 +27,10 @@ export default function Header() {
     <header className='bg-amber-200 overflow-hidden'>
       <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-2 items-center justify-between'>
         <TTitle>
-          <Link className='md:hidden' href='/'>
+          <Link className='md:hidden' href='/' onClick={() => setIsOpen(false)}>
             Body
           </Link>
-          <Link className='max-md:hidden' href='/'>
+          <Link className='max-md:hidden' href='/' onClick={() => setIsOpen(false)}>
             SCHBody
           </Link>
         </TTitle>
@@ -41,7 +47,7 @@ export default function Header() {
             {/* <THeaderLink>
               <Link href='/gym'>Terem</Link>
             </THeaderLink> */}
-            {commenHeaderItems}
+            {commonHeaderItems}
           </div>
         )}
 
@@ -50,7 +56,7 @@ export default function Header() {
           {/* <THeaderLink>
             <Link href='/gym'>Terem</Link>
           </THeaderLink> */}
-          {commenHeaderItems}
+          {commonHeaderItems}
           <LoginButton version={1} />
         </div>
       </div>

@@ -5,11 +5,12 @@ interface THeaderLinkProps {
   href: string;
   title: string;
   className?: string;
+  onClick?: () => void;
 }
 
-export function THeaderLink({ className, href, title }: THeaderLinkProps) {
+export function THeaderLink({ className, href, title, onClick }: THeaderLinkProps) {
   return (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       <h2
         className={`${className} text-md font-medium hover:bg-black hover:text-white transition px-4 rounded-md py-2 `}
       >
