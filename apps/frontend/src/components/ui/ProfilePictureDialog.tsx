@@ -1,7 +1,7 @@
 'use client';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { AxiosError } from 'axios';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import Cropper, { Area } from 'react-easy-crop';
 
 import api from '@/components/network/apiSetup';
@@ -76,8 +76,8 @@ export default function ProfilePictureDialog({ onChange }: { onChange: () => voi
           Kép szerkesztése
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
-        <DialogHeader className='h-fit w-fit'>
+      <DialogContent className='max-w-screen sm:max-w-[425px]'>
+        <DialogHeader className='h-fit'>
           <div className='h-full flex-col justify-between items-center gap-4'>
             <DialogTitle>Profilkép feltöltése</DialogTitle>
             <DialogDescription>Válassz egy képet és vágd ki a megfelelő részt!</DialogDescription>
