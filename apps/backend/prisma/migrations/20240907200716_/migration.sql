@@ -1,6 +1,3 @@
--- AlterEnum
-ALTER TYPE "Role" ADD VALUE 'SUPERUSER';
-
 -- CreateTable
 CREATE TABLE "PassBackgroundPicture" (
     "id" SERIAL NOT NULL,
