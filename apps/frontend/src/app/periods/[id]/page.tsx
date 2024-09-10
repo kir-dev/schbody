@@ -89,7 +89,7 @@ export default function Page({ params }: { params: { id: number } }) {
             columns={columns(handleStatusChange)}
             data={applications}
             onStatusChange={handleStatusChange}
-            onExportPassClicked={onPassExport}
+            onExportPassesClicked={onPassExport}
             onExportApplicationsClicked={onApplicationsExport}
           />
         )}
