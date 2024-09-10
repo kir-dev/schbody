@@ -26,6 +26,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApplicationStatus } from '@/types/application-entity';
@@ -34,14 +35,16 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
-  onExportClicked: (data: TData[]) => void;
+  onExportPassesClicked: (data: TData[]) => void;
+  onExportApplicationsClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onStatusChange,
-  onExportClicked,
+  onExportApplicationsClicked,
+  onExportPassesClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -144,10 +147,17 @@ export function DataTable<TData, TValue>({
           <MenubarMenu>
             <MenubarTrigger>Exportálás</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => onExportClicked(data.filter((_, i) => rowSelection[i]))}>
-                Kijelöltek exportálása
+              <MenubarItem onClick={() => onExportPassesClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltekhez belépők exportálása
               </MenubarItem>
-              <MenubarItem onClick={() => onExportClicked(data)}>Minden exportálása</MenubarItem>
+              <MenubarItem onClick={() => onExportPassesClicked(data)}>Minden belépő exportálása</MenubarItem>
+              <Separator />
+              <MenubarItem onClick={() => onExportApplicationsClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltekhez lista exportálása (csak kiosztott)
+              </MenubarItem>
+              <MenubarItem onClick={() => onExportApplicationsClicked(data)}>
+                Teljes lista exportálása (csak kiosztott)
+              </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
           <MenubarMenu>
