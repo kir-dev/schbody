@@ -1,5 +1,4 @@
 'use client';
-import { pdf } from '@react-pdf/renderer';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { mutate } from 'swr';
@@ -23,7 +22,7 @@ import { Label } from '@/components/ui/label';
 import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/lib/use-toast';
-import { mockApplication } from '@/lib/utils';
+import { downloadPdf, mockApplication } from '@/lib/utils';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 import { Th2 } from '../typography/typography';
@@ -61,27 +60,15 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
 
   const onDummyExport = async () => {
     const now = new Date();
-    const blob = await pdf(
+    downloadPdf(
       <PassExport
         mock
         periodId={period.id}
         applicationData={[mockApplication]}
         periodName={`${now.getFullYear()}. ${now.getMonth() < 7 ? 'tavasz' : 'ősz'}`}
-      />
-    ).toBlob();
-    // eslint-disable-next-line no-undef
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    // eslint-disable-next-line no-undef
-    document.body.appendChild(a);
-
-    // eslint-disable-next-line no-undef
-    const url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = `schbody_pass_mock_export_${Date.now()}.pdf`;
-    a.click();
-    // eslint-disable-next-line no-undef
-    window.URL.revokeObjectURL(url);
+      />,
+      `schbody_pass_mock_export_${Date.now()}.pdf`
+    );
   };
 
   return (
