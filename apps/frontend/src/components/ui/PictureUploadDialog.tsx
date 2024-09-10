@@ -82,8 +82,8 @@ export default function PictureUploadDialog({ children, aspectRatio, onChange, e
       <DialogTrigger asChild onClick={() => setIsOpen(true)}>
         {children}
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
-        <DialogHeader className='h-fit w-fit'>
+      <DialogContent className='max-w-screen sm:max-w-[425px]'>
+        <DialogHeader className='h-fit'>
           <div className='h-full flex-col justify-between items-center gap-4'>
             <DialogTitle>{modalTitle}</DialogTitle>
             <DialogDescription>Válassz egy képet és vágd ki a megfelelő részt!</DialogDescription>

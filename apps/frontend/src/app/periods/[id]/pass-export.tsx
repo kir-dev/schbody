@@ -72,7 +72,9 @@ export const PassExport = ({ applicationData, periodName, periodId, mock = false
                 }}
               >
                 <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Szobaszám</Text>
-                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>{a.user.roomNumber}</Text>
+                <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>
+                  {a.user.roomNumber || 'Külsős'}
+                </Text>
               </View>
               <View
                 style={{
