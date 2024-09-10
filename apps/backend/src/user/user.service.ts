@@ -109,6 +109,9 @@ export class UserService {
       updateData.canHelpNoobs = false;
       updateData.publicDesc = '';
     }
+    if (updateData.isSchResident === false) {
+      updateData.roomNumber = null;
+    }
 
     return this.prisma.user.update({ where: { authSchId: id }, data: updateData });
   }
