@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -8,11 +8,12 @@ import { useSWRConfig } from 'swr';
 import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import ProfilePictureDialog from '@/components/ui/ProfilePictureDialog';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
+
+import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
   user: UserEntity | undefined;
@@ -49,7 +50,16 @@ export default function UserProfileBanner(props: {
           }}
         />
         <div className='w-full absolute flex bottom-2'>
-          <ProfilePictureDialog onChange={() => handleProfilePictureUpload()} />
+          <PictureUploadDialog
+            aspectRatio={650 / 900}
+            modalTitle='Profilkép feltöltése'
+            onChange={handleProfilePictureUpload}
+            endpoint='/users/me/profile-picture'
+          >
+            <Button className='m-auto w-fit' variant='secondary'>
+              Kép szerkesztése
+            </Button>
+          </PictureUploadDialog>
         </div>
       </div>
       <CardContent className='w-full md:ml-4'>

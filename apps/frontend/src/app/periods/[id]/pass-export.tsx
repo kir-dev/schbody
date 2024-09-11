@@ -5,6 +5,8 @@ import { ApplicationEntity } from '@/types/application-entity';
 type Props = {
   applicationData: ApplicationEntity[];
   periodName: string;
+  periodId: number;
+  mock?: boolean;
 };
 
 Font.register({
@@ -12,7 +14,7 @@ Font.register({
   src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
 });
 
-export const PassExport = ({ applicationData, periodName }: Props) => (
+export const PassExport = ({ applicationData, periodName, periodId, mock = false }: Props) => (
   <Document>
     <Page
       size='A4'
@@ -25,7 +27,8 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
       {applicationData.map((a) => (
         <View key={a.id}>
           <Image
-            src={process.env.NEXT_PUBLIC_PASS_BACKGROUND_URL ?? 'https://placehold.co/750x430/pink/white/jpeg'}
+            cache={false}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${periodId}/pass-bg`}
             style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
           />
 
@@ -39,7 +42,11 @@ export const PassExport = ({ applicationData, periodName }: Props) => (
             }}
           >
             <Image
-              src={`${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`}
+              src={
+                mock
+                  ? 'https://placehold.co/650x900/jpeg'
+                  : `${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`
+              }
               style={{ width: '2.6cm', height: '3.5cm', borderRadius: '5%' }}
             />
             <View style={{ flexDirection: 'column' }}>

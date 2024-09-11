@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
-import * as mime from 'mime';
 import { PrismaService } from 'nestjs-prisma';
-import * as sharp from 'sharp';
+import { optimizeImage } from 'src/util';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
@@ -146,7 +145,7 @@ export class UserService {
   }
 
   private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer) {
-    const { image, mimeType } = await this.optimizeImage(profileImage);
+    const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
       await this.prisma.profilePicture.update({ where: { userId: userId }, data });
@@ -159,12 +158,5 @@ export class UserService {
       }
       throw e;
     }
-  }
-
-  private async optimizeImage(source: Buffer): Promise<{ image: Buffer; mimeType: string }> {
-    const image = sharp(source).jpeg({ mozjpeg: true }).resize(650, 900, { fit: 'cover' });
-    const metadata = await image.metadata();
-    const mimeType = mime.lookup(metadata.format, 'image/jpeg');
-    return { mimeType, image: await image.toBuffer() };
   }
 }
