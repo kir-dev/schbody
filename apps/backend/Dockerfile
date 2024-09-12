@@ -3,11 +3,14 @@
 FROM node:20-alpine AS build
 ENV NODE_ENV=development
 
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy package.json and yarn.lock to the container
-COPY package.json ./
+COPY package.json yarn.lock ./
 
 # Install the project dependencies using Yarn
 RUN yarn install
