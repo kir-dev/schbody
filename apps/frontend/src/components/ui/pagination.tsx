@@ -47,7 +47,12 @@ const PaginationLink = ({ className, isActive, size = 'icon', ...props }: Pagina
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink aria-label='Irány az előző oldal' size='default' className={cn('gap-1 pl-2.5', className)} {...props}>
+  <PaginationLink
+    aria-label='Irány az előző oldal'
+    size='default'
+    className={cn('gap-1 pl-2.5 select-none', className)}
+    {...props}
+  >
     <ChevronLeft className='h-4 w-4' />
     <span className='max-md:hidden'>Előző</span>
   </PaginationLink>
@@ -58,7 +63,7 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
   <PaginationLink
     aria-label='Irány az következő oldal'
     size='default'
-    className={cn('gap-1 pr-2.5', className)}
+    className={cn('gap-1 pr-2.5  select-none', className)}
     {...props}
   >
     <span className='max-md:hidden'>Következő</span>
@@ -68,7 +73,12 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
 PaginationNext.displayName = 'PaginationNext';
 
 const PaginationFirst = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink aria-label='Irány az első oldal' size='default' className={cn('gap-1 pr-2.5', className)} {...props}>
+  <PaginationLink
+    aria-label='Irány az első oldal'
+    size='default'
+    className={cn('gap-1 pr-2.5  select-none', className)}
+    {...props}
+  >
     <ChevronsLeft className='h-4 w-4' />
     <span className='max-md:hidden'>Első</span>
   </PaginationLink>
@@ -79,7 +89,7 @@ const PaginationLast = ({ className, ...props }: React.ComponentProps<typeof Pag
   <PaginationLink
     aria-label='Irány az utolsó oldal'
     size='default'
-    className={cn('gap-1 pr-2.5', className)}
+    className={cn('gap-1 pr-2.5  select-none', className)}
     {...props}
   >
     <span className='max-md:hidden'>Utolsó</span>

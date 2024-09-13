@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import LoadingCard from '@/components/ui/LoadingCard';
+import NotFoundCard from '@/components/ui/NotFoundCard';
 import OwnPagination from '@/components/ui/ownPagination';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
 import { useUsers } from '@/hooks/useUsers';
@@ -49,6 +50,7 @@ export default function Page() {
           <Badge className='w-16 justify-end h-100'>{users.data ? <p>{users.data.totalUsers}</p> : <p>??</p>}</Badge>
         </div>
       </div>
+
       {search.length < 3 && (
         <OwnPagination
           props={{
@@ -59,34 +61,46 @@ export default function Page() {
         />
       )}
       {users.isLoading && !users.data && <LoadingCard />}
+      {users.data && users.data.users.length === 0 && <NotFoundCard />}
       <div className='grid max-md:grid-cols-1 md:grid-cols-2 gap-2'>
         {users.data &&
           users.data.users.map((user) => (
             <Card key={user.id}>
               <CardHeader className='flex flex-row w-full justify-between items-center p-4'>
-                <div>
-                  <div className='flex gap-4'>
-                    <CardTitle>{user.fullName}</CardTitle>
-                    {user.neptun && <Badge variant='secondary'>{user.neptun.toUpperCase()}</Badge>}
+                <div className='flex gap-8'>
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture`}
+                    alt='KEP'
+                    className='md:rounded-l-lg max-md:rounded-lg max-w-20 h-fit aspect-auto -m-4 max-md:-my-4'
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = 'default_pfp.jpg';
+                    }}
+                  />
+                  <div>
+                    <div className='flex gap-4'>
+                      <CardTitle>{user.fullName}</CardTitle>
+                      {user.neptun && <Badge variant='secondary'>{user.neptun.toUpperCase()}</Badge>}
+                    </div>
+                    <CardDescription className='flex md:gap-4 max-md:gap-0 max-md:flex-col md:flex-row mt-2'>
+                      <p className='flex items-center gap-2'>
+                        <FiUser />
+                        {new Date(user.createdAt).toLocaleDateString('hu-HU', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                      <p className='flex items-center gap-2'>
+                        <FiEdit2 />
+                        {new Date(user.updatedAt).toLocaleDateString('hu-HU', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                    </CardDescription>
                   </div>
-                  <CardDescription className='flex md:gap-4 max-md:gap-0 max-md:flex-col md:flex-row mt-2'>
-                    <p className='flex items-center gap-2'>
-                      <FiUser />
-                      {new Date(user.createdAt).toLocaleDateString('hu-HU', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </p>
-                    <p className='flex items-center gap-2'>
-                      <FiEdit2 />
-                      {new Date(user.updatedAt).toLocaleDateString('hu-HU', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </p>
-                  </CardDescription>
                 </div>
                 <RoleBadgeSelector
                   onChange={(newRole: Role) => onChange(newRole, user.authSchId)}
