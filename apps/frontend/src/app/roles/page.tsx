@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import LoadingCard from '@/components/ui/LoadingCard';
+import OwnPagination from '@/components/ui/ownPagination';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
 import { useUsers } from '@/hooks/useUsers';
 import { toast } from '@/lib/use-toast';
@@ -15,7 +16,8 @@ import { Role } from '@/types/user-entity';
 
 export default function Page() {
   const [search, setSearch] = React.useState('');
-  const users = useUsers(search);
+  const [pageIndex, setPageIndex] = React.useState(0);
+  const users = useUsers(search, pageIndex);
   async function onChange(newRole: Role, userId: string) {
     try {
       await api.patch(`/users/${userId}`, { role: newRole });
@@ -34,15 +36,30 @@ export default function Page() {
     <>
       <div className='flex justify-between md:flex-row max-md:flex-col items-center'>
         <Th1>Jogosultságok kezelése</Th1>
-        <Input
-          placeholder='Keresés név alapján...'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className='md:max-w-sm max-md:w-full'
-        />
+        <div className='flex gap-2'>
+          <Input
+            placeholder='Keresés név alapján...'
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPageIndex(0);
+            }}
+            className='md:max-w-sm max-md:w-full'
+          />
+          <Badge className='w-16 justify-end h-100'>{users.data ? <p>{users.data.totalUsers}</p> : <p>??</p>}</Badge>
+        </div>
       </div>
-      <div className='flex flex-col gap-2'>
-        {users.isLoading && !users.data && <LoadingCard />}
+      {search.length < 3 && (
+        <OwnPagination
+          props={{
+            pageIndex: pageIndex,
+            setPageIndex: setPageIndex,
+            limit: users.data ? users.data.totalUsers : 10,
+          }}
+        />
+      )}
+      {users.isLoading && !users.data && <LoadingCard />}
+      <div className='grid max-md:grid-cols-1 md:grid-cols-2 gap-2'>
         {users.data &&
           users.data.users.map((user) => (
             <Card key={user.id}>
@@ -50,7 +67,7 @@ export default function Page() {
                 <div>
                   <div className='flex gap-4'>
                     <CardTitle>{user.fullName}</CardTitle>
-                    {user.neptun && <Badge variant='secondary'>{user.neptun}</Badge>}
+                    {user.neptun && <Badge variant='secondary'>{user.neptun.toUpperCase()}</Badge>}
                   </div>
                   <CardDescription className='flex md:gap-4 max-md:gap-0 max-md:flex-col md:flex-row mt-2'>
                     <p className='flex items-center gap-2'>
@@ -79,6 +96,15 @@ export default function Page() {
             </Card>
           ))}
       </div>
+      {search.length < 3 && (
+        <OwnPagination
+          props={{
+            pageIndex: pageIndex,
+            setPageIndex: setPageIndex,
+            limit: users.data ? users.data.totalUsers : 10,
+          }}
+        />
+      )}
     </>
   );
 }
