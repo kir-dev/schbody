@@ -12,7 +12,7 @@ export default function Page() {
     <>
       <Th1>Admin</Th1>
       <div className='flex w-full gap-4'>
-        <Button onClick={() => router.push('/prof-pic-check')}>
+        <Button onClick={() => router.push('/profile-picture-check')}>
           <FiUserCheck />
           Profileképek ellenőrzése
         </Button>
