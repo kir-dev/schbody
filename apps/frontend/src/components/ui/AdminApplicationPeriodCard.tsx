@@ -1,6 +1,5 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { mutate } from 'swr';
 
 import { PassExport } from '@/app/periods/[id]/pass-export';
@@ -28,8 +27,13 @@ import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { Th2 } from '../typography/typography';
 import PictureUploadDialog from './PictureUploadDialog';
 
-export default function AdminApplicationPeriodCard({ period }: { period: ApplicationPeriodEntity }) {
-  const [cacheBuster, setCacheBuster] = useState(Date.now());
+type Props = {
+  period: ApplicationPeriodEntity;
+  cacheBuster: number;
+  setCacheBuster: (n: number) => void;
+};
+
+export default function AdminApplicationPeriodCard({ period, cacheBuster, setCacheBuster }: Props) {
   const router = useRouter();
   const deleteApplicationPeriod = async () => {
     const response = await api.delete(`/application-periods/${period.id}`).catch((e) => {
@@ -58,14 +62,14 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
     await mutate(`/application-periods/${period.id}`);
   };
 
-  const onDummyExport = async () => {
-    const now = new Date();
+  const onMockExport = async () => {
     downloadPdf(
       <PassExport
         mock
         periodId={period.id}
         applicationData={[mockApplication]}
-        periodName={`${now.getFullYear()}. ${now.getMonth() < 7 ? 'tavasz' : 'ősz'}`}
+        periodName={period.name}
+        cacheBuster={cacheBuster}
       />,
       `schbody_pass_mock_export_${Date.now()}.pdf`
     );
@@ -142,7 +146,7 @@ export default function AdminApplicationPeriodCard({ period }: { period: Applica
               Szerkesztés
             </Button>
           </PictureUploadDialog>
-          <Button variant='secondary' className='max-md:w-full' onClick={onDummyExport}>
+          <Button variant='secondary' className='max-md:w-full' onClick={onMockExport}>
             Minta belépő generálása
           </Button>
         </div>

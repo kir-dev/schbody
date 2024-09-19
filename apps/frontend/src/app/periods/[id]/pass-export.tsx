@@ -6,6 +6,7 @@ type Props = {
   applicationData: ApplicationEntity[];
   periodName: string;
   periodId: number;
+  cacheBuster: number;
   mock?: boolean;
 };
 
@@ -14,7 +15,7 @@ Font.register({
   src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
 });
 
-export const PassExport = ({ applicationData, periodName, periodId, mock = false }: Props) => (
+export const PassExport = ({ applicationData, periodName, periodId, cacheBuster, mock = false }: Props) => (
   <Document>
     <Page
       size='A4'
@@ -27,8 +28,7 @@ export const PassExport = ({ applicationData, periodName, periodId, mock = false
       {applicationData.map((a) => (
         <View key={a.id}>
           <Image
-            cache={false}
-            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${periodId}/pass-bg`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${periodId}/pass-bg?cb=${cacheBuster}`}
             style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
           />
 

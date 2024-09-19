@@ -30,6 +30,8 @@ export default function PictureUploadDialog({ children, aspectRatio, onChange, e
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setZoom(1);
+      setCrop({ x: 0, y: 0 });
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {

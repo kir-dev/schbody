@@ -89,12 +89,7 @@ export default function PeriodCreateOrEditDialog(props: props) {
         <Label htmlFor='name' className='text-right'>
           Név
         </Label>
-        <Input
-          id='name'
-          placeholder='Őszi jelentkezési időszak 2024'
-          onChange={(event) => setName(event.target.value)}
-          value={name}
-        />
+        <Input id='name' placeholder='2024. ősz' onChange={(event) => setName(event.target.value)} value={name} />
 
         <Label htmlFor='datepicker' className='text-right'>
           Időszak kezdete és vége
