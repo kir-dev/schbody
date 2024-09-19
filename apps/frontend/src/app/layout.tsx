@@ -22,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='hu'>
+      <head>
+        <script defer data-domain='body.sch.bme.hu' src='https://visit.kir-dev.hu/js/script.js' />
+      </head>
       <body
         className={`${inter.className} min-h-dvh flex flex-col justify-between`}
         style={{
