@@ -16,7 +16,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
+import { ProfilePictureStatus, Role } from '@prisma/client';
 import { ImageParserPipe } from 'src/util';
 
 import { Roles } from '../auth/decorators/Roles.decorator';
@@ -93,12 +93,27 @@ export class UserController {
     return new StreamableFile(await this.userService.findProfilePicture(id));
   }
 
+  @Get('profile-pictures/pending')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  async findPendingProfilePictures() {
+    return this.userService.findPendingProfilePictures();
+  }
+
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserAdminDto, @CurrentUser() user: User) {
     return this.userService.updateAdmin(id, updateUserDto, user.role);
+  }
+  @Patch(':id/profile-picture/:status')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_MEMBER, Role.BODY_ADMIN)
+  async setProfilePictureStatus(@Param('id') id: string, @Param('status') status: ProfilePictureStatus) {
+    return this.userService.setProfilePictureStatus(id, status);
   }
 
   @Post(':id/profile-picture')
