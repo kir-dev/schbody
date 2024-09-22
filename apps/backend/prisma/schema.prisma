@@ -50,13 +50,20 @@ model User {
 }
 
 model ProfilePicture {
-  id           Int    @id @default(autoincrement())
-  user         User   @relation(fields: [userId], references: [authSchId])
-  userId       String @unique
+  id           Int                  @id @default(autoincrement())
+  user         User                 @relation(fields: [userId], references: [authSchId])
+  userId       String               @unique
   mimeType     String
   profileImage Bytes
+  status       ProfilePictureStatus @default(PENDING)
 
   @@index([userId])
+}
+
+enum ProfilePictureStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model PassBackgroundPicture {

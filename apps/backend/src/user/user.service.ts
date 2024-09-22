@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
@@ -8,6 +14,23 @@ import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 
 @Injectable()
 export class UserService {
+  async findPendingProfilePictures() {
+    try {
+      return this.prisma.profilePicture.findMany({
+        where: {
+          status: ProfilePictureStatus.PENDING,
+        },
+        take: 10,
+        select: {
+          user: true,
+          mimeType: true,
+          status: true,
+        },
+      });
+    } catch (e) {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
   constructor(private readonly prisma: PrismaService) {}
 
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
@@ -23,6 +46,22 @@ export class UserService {
     }
 
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
+  }
+
+  async setProfilePictureStatus(id: string, status: any) {
+    try {
+      return this.prisma.profilePicture.update({
+        where: { userId: id },
+        data: { status },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`User not found`);
+        }
+      }
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 
   async searchUser(query: string): Promise<{ users: User[]; pageNumber: number; totalUsers: number }> {
@@ -148,7 +187,13 @@ export class UserService {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
-      await this.prisma.profilePicture.update({ where: { userId: userId }, data });
+      await this.prisma.profilePicture.update({
+        where: { userId: userId },
+        data: {
+          ...data,
+          status: ProfilePictureStatus.PENDING,
+        },
+      });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
