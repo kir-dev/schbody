@@ -11,7 +11,7 @@ export default function Page() {
   return (
     <>
       <Th1>Admin</Th1>
-      <div className='flex w-full gap-4'>
+      <div className='flex w-full gap-4 max-lg:flex-col'>
         <Button onClick={() => router.push('/profile-picture-check')}>
           <FiUserCheck />
           Profileképek ellenőrzése

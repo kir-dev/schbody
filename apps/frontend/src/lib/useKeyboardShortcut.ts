@@ -13,7 +13,7 @@ export default function useKeyboardShortcut(shortcutAction: ShortcutAction, conf
   // eslint-disable-next-line no-undef
   const targetElement = config.shortcutTarget || document;
 
-  const eventHandler = useCallback(
+  const eventHandler: (e: KeyboardEvent) => void = useCallback(
     (e: KeyboardEvent) => {
       const { code, ctrlKey, altKey, shiftKey } = e;
       if (config.code !== code) return;
