@@ -1,33 +1,58 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
-type OptionalConfig = Pick<KeyboardEvent, 'altKey' | 'ctrlKey' | 'shiftKey'>;
+type Key = 'ctrl' | 'shift' | 'alt' | 'esc' | string;
+const keysThatWorkFromInput = ['escape', 'enter', 'arrowup', 'arrowdown'];
 
-interface ShortcutConfig extends Partial<OptionalConfig> {
-  code: KeyboardEvent['code'];
-  shortcutTarget?: HTMLElement;
-}
-
-type ShortcutAction = (e: KeyboardEvent) => void;
-
-export default function useKeyboardShortcut(shortcutAction: ShortcutAction, config: ShortcutConfig) {
-  // eslint-disable-next-line no-undef
-  const targetElement = config.shortcutTarget || document;
-
-  const eventHandler: (e: KeyboardEvent) => void = useCallback(
-    (e: KeyboardEvent) => {
-      const { code, ctrlKey, altKey, shiftKey } = e;
-      if (config.code !== code) return;
-      if (config.ctrlKey && !ctrlKey) return;
-      if (config.shiftKey && !shiftKey) return;
-      if (config.altKey && !altKey) return;
-
-      shortcutAction(e);
-    },
-    [shortcutAction, config]
-  );
-
+export const useKeyboardShortcut = (keys: Key[], callback: (idxOfKey?: number) => void) => {
   useEffect(() => {
-    targetElement.addEventListener('keydown', eventHandler);
-    return () => targetElement.removeEventListener('keydown', eventHandler);
-  }, [targetElement, eventHandler]);
-}
+    if (!Array.isArray(keys)) {
+      console.error('Expected "keys" to be an array, but received:', keys);
+      return;
+    }
+
+    const handleKeyDown = (event: WindowEventMap['keydown']) => {
+      const targetTagName = (event.target as HTMLElement)?.tagName?.toLowerCase();
+
+      // Prevent default browser shortcuts if ctrl/alt/meta keys are pressed
+      if (event.ctrlKey || event.altKey || event.metaKey) {
+        event.preventDefault();
+      }
+
+      const index = keys.findIndex((key) => {
+        switch (key) {
+          case 'ctrl':
+            return event.ctrlKey;
+          case 'shift':
+            return event.shiftKey;
+          case 'alt':
+            return event.altKey;
+          case 'esc':
+            return event.key === 'Escape';
+          default:
+            return event.key.toLowerCase() === key;
+        }
+      });
+
+      if (
+        index !== -1 &&
+        !keysThatWorkFromInput.includes(keys[index]) &&
+        (targetTagName === 'input' || targetTagName === 'textarea')
+      ) {
+        return;
+      }
+
+      if (index !== -1) {
+        callback(index);
+        event.preventDefault(); // Prevent default browser behavior
+      }
+    };
+
+    // eslint-disable-next-line no-undef
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      // eslint-disable-next-line no-undef
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [keys, callback]);
+};

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { FiArrowLeft, FiArrowRight, FiCheck, FiX } from 'react-icons/fi';
+import { FiCheck, FiX } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import useKeyboardShortcut from '@/lib/useKeyboardShortcut';
+import { useKeyboardShortcut } from '@/lib/useKeyboardShortcut';
 import { UserEntity } from '@/types/user-entity';
 
 type ProfilePictureTinderCardProps = {
@@ -45,8 +45,8 @@ export default function ProfilePictureTinderCard({
     }
   };
 
-  useKeyboardShortcut(() => handleSlideOut('left'), { code: 'ArrowLeft' });
-  useKeyboardShortcut(() => handleSlideOut('right'), { code: 'ArrowRight' });
+  useKeyboardShortcut(['f'], () => handleSlideOut('left'));
+  useKeyboardShortcut(['j'], () => handleSlideOut('right'));
 
   return (
     <Card className='w-fit flex flex-col items-center overflow-hidden'>
@@ -78,9 +78,7 @@ export default function ProfilePictureTinderCard({
         </div>
         <div className='flex gap-4'>
           <Button variant='destructive' onClick={() => handleSlideOut('left')}>
-            <div className='border p-0.5 text-xs rounded'>
-              <FiArrowLeft />
-            </div>
+            <div className='border p-0.5 text-xs rounded  px-1.5'>F</div>
             <FiX />
           </Button>
           <Button variant='secondary' onClick={onSkip}>
@@ -88,9 +86,7 @@ export default function ProfilePictureTinderCard({
           </Button>
           <Button onClick={() => handleSlideOut('right')}>
             <FiCheck />
-            <div className='border p-0.5 text-xs rounded'>
-              <FiArrowRight />
-            </div>
+            <div className='border p-0.5 text-xs rounded px-1.5'>J</div>
           </Button>
         </div>
       </CardContent>
