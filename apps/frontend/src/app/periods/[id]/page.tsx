@@ -1,10 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import api from '@/components/network/apiSetup';
 import Th1, { Th2 } from '@/components/typography/typography';
 import AdminApplicationPeriodCard from '@/components/ui/AdminApplicationPeriodCard';
+import { GeneratingDialog } from '@/components/ui/generating-dialog';
 import LoadingCard from '@/components/ui/LoadingCard';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
@@ -17,6 +20,8 @@ import { PassExport } from './pass-export';
 
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
+  const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
@@ -34,12 +39,19 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   };
 
-  const onPassExport = (data: ApplicationEntity[]) => {
+  const onPassExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
-      downloadPdf(
-        <PassExport applicationData={data} periodName={period.data.name} periodId={period.data.id} />,
+      setGeneratingDialogOpened(true);
+      await downloadPdf(
+        <PassExport
+          applicationData={data}
+          periodName={period.data.name}
+          periodId={period.data.id}
+          cacheBuster={cacheBuster}
+        />,
         `schbody_pass_export_${Date.now()}.pdf`
       );
+      setGeneratingDialogOpened(false);
     }
   };
 
@@ -59,9 +71,12 @@ export default function Page({ params }: { params: { id: number } }) {
 
   return (
     <>
+      <GeneratingDialog open={generatingDialogOpened} />
       <Th1>Jelentkezési időszak kezelése</Th1>
       {period?.isLoading && <LoadingCard />}
-      {period?.data && <AdminApplicationPeriodCard period={period.data} />}
+      {period?.data && (
+        <AdminApplicationPeriodCard period={period.data} cacheBuster={cacheBuster} setCacheBuster={setCacheBuster} />
+      )}
       <div className='mt-16'>
         <Th2>Jelentkezők</Th2>
         {areApplicationsLoading && <LoadingCard />}
