@@ -8,7 +8,9 @@ import api from '@/components/network/apiSetup';
 import Th1, { Th2 } from '@/components/typography/typography';
 import AdminApplicationPeriodCard from '@/components/ui/AdminApplicationPeriodCard';
 import { GeneratingDialog } from '@/components/ui/generating-dialog';
+import { Label } from '@/components/ui/label';
 import LoadingCard from '@/components/ui/LoadingCard';
+import { Switch } from '@/components/ui/switch';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
 import { toast } from '@/lib/use-toast';
@@ -23,6 +25,7 @@ export default function Page({ params }: { params: { id: number } }) {
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
+  const [isEntryMode, setIsEntryMode] = useState(false);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
     const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
@@ -72,13 +75,27 @@ export default function Page({ params }: { params: { id: number } }) {
   return (
     <>
       <GeneratingDialog open={generatingDialogOpened} />
-      <Th1>Jelentkezési időszak kezelése</Th1>
-      {period?.isLoading && <LoadingCard />}
-      {period?.data && (
-        <AdminApplicationPeriodCard period={period.data} cacheBuster={cacheBuster} setCacheBuster={setCacheBuster} />
+      {!isEntryMode && (
+        <div className='mb-8'>
+          <Th1>Jelentkezési időszak kezelése</Th1>
+          {period?.isLoading && <LoadingCard />}
+          {period?.data && (
+            <AdminApplicationPeriodCard
+              period={period.data}
+              cacheBuster={cacheBuster}
+              setCacheBuster={setCacheBuster}
+            />
+          )}
+        </div>
       )}
-      <div className='mt-16'>
-        <Th2>Jelentkezők</Th2>
+      <div>
+        <div className='flex justify-between'>
+          <Th2>Jelentkezők</Th2>
+          <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
+            <Label htmlFor='tickets-are-valid-now'>Beléptető mód</Label>
+            <Switch id='tickets-are-valid-now' onCheckedChange={(v) => setIsEntryMode(v)} checked={isEntryMode} />
+          </div>
+        </div>
         {areApplicationsLoading && <LoadingCard />}
         {applications && (
           <DataTable
