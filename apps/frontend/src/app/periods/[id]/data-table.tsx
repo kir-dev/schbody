@@ -6,6 +6,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -13,6 +14,7 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -51,7 +53,10 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<Record<number, boolean>>({});
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
-
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 50,
+  });
   const table = useReactTable({
     data,
     columns,
@@ -61,12 +66,15 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    getPaginationRowModel: getPaginationRowModel(),
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
   });
   const invertSelection = () => {
@@ -237,6 +245,25 @@ export function DataTable<TData, TValue>({
                     {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length}{' '}
                     jelentkezés kijelölve
                   </span>
+                </div>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={columns.length} className='pt-0'>
+                <div className='flex flex-row gap-4 w-full justify-center'>
+                  <Button onClick={() => table.firstPage()} disabled={!table.getCanPreviousPage()}>
+                    {'<<'}
+                  </Button>
+                  <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                    {'<'}
+                  </Button>
+                  <div className='flex flex-col justify-center min-w-5 items-center'>{pagination.pageIndex}</div>
+                  <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                    {'>'}
+                  </Button>
+                  <Button onClick={() => table.lastPage()} disabled={!table.getCanNextPage()}>
+                    {'>>'}
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
