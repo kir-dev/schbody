@@ -250,16 +250,16 @@ export const columns: (
               <CommandList>
                 <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
                 <CommandGroup>
-                  {Object.keys(ApplicationStatus).map((status) => (
+                  {Object.entries(ApplicationStatus).map(([key, status]) => (
                     <CommandItem
-                      key={status}
+                      key={key}
                       value={status}
                       onSelect={(value) => {
                         onStatusChange(row.original, value as ApplicationStatus);
                         setOpen(false);
                       }}
                     >
-                      <StatusBadge status={status as ApplicationStatus} />
+                      <StatusBadge status={key as ApplicationStatus} />
                     </CommandItem>
                   ))}
                 </CommandGroup>
