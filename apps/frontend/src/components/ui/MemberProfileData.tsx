@@ -14,7 +14,6 @@ export default function MemberProfileData({
       canHelpNoobs: boolean;
       nickName: string;
       email: string;
-      neptun: string;
       publicDesc?: string | undefined;
       isSchResident?: boolean | undefined;
       roomNumber?: number | null | undefined;

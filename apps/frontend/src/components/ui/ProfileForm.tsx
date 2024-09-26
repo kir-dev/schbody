@@ -26,7 +26,6 @@ export default function ProfileForm() {
     defaultValues: {
       nickName: '',
       email: '',
-      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       canHelpNoobs: false,
@@ -69,7 +68,6 @@ export default function ProfileForm() {
       reset({
         nickName: user.nickName || '',
         email: user.email || '',
-        neptun: user.neptun || '',
         isSchResident: user.isSchResident || false,
         roomNumber: user.roomNumber || 0,
         canHelpNoobs: user.canHelpNoobs || false,
@@ -90,7 +88,7 @@ export default function ProfileForm() {
         <UserProfileBanner
           user={user}
           editingIsOn={editingIsOn}
-          onClick={() => setEditingIsOn(true)}
+          setEditingIsOn={setEditingIsOn}
           onSubmit={() => onSubmit(form.getValues())}
         />
         <Card>
@@ -100,19 +98,13 @@ export default function ProfileForm() {
             </div>
           </CardHeader>
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
-            <FormField
-              control={form.control}
-              name='neptun'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>NEPTUN</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!editingIsOn} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>NEPTUN</FormLabel>
+              <FormControl>
+                <Input disabled value={user.neptun} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <FormField
               control={form.control}
               name='nickName'
