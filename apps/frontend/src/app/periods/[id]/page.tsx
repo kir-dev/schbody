@@ -28,12 +28,13 @@ export default function Page({ params }: { params: { id: number } }) {
   const [isEntryMode, setIsEntryMode] = useState(false);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
-    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
-    mutate();
+    const convertedStatus = getStatusKey(status);
+    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: convertedStatus });
+    await mutate();
     if (resp.status === 200) {
       toast({
         title: 'Sikeres módosítás!',
-        duration: 1000,
+        duration: 300,
       });
     } else {
       toast({

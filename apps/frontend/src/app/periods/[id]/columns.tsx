@@ -255,7 +255,7 @@ export const columns: (
                       key={key}
                       value={status}
                       onSelect={(value) => {
-                        onStatusChange(row.original, value as ApplicationStatus);
+                        onStatusChange(row.original, value);
                         setOpen(false);
                       }}
                     >
