@@ -98,13 +98,6 @@ export default function ProfileForm() {
             </div>
           </CardHeader>
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
-            <FormItem>
-              <FormLabel>NEPTUN</FormLabel>
-              <FormControl>
-                <Input disabled value={user.neptun} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
             <FormField
               control={form.control}
               name='nickName'
