@@ -27,10 +27,8 @@ export default function Page({ params }: { params: { id: number } }) {
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
   const [isEntryMode, setIsEntryMode] = useState(false);
 
-  const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
-    const convertedStatus = getStatusKey(status);
-    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: convertedStatus });
-    await mutate();
+  const sendChangeRequest = async (application: ApplicationEntity) => {
+    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: application.status });
     if (resp.status === 200) {
       toast({
         title: 'Sikeres módosítás!',
@@ -41,6 +39,23 @@ export default function Page({ params }: { params: { id: number } }) {
         title: 'Hiba történt!',
       });
     }
+    return api.get(`/application-periods/${application.applicationPeriodId}/applications`);
+  };
+  const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
+    const convertedStatus = getStatusKey(status);
+    if (convertedStatus === application.status || !convertedStatus) return;
+    const newApplication: ApplicationEntity = { ...application, status: convertedStatus as ApplicationStatus };
+    await mutate(sendChangeRequest(newApplication), {
+      optimisticData: (oldData) => {
+        return oldData.map((a) => {
+          if (a.id === application.id) {
+            return newApplication;
+          }
+          return a;
+        });
+      },
+      revalidate: false,
+    });
   };
 
   const onPassExport = async (data: ApplicationEntity[]) => {
