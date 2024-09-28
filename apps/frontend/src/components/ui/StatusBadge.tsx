@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import { FiAlertCircle, FiArrowRightCircle, FiCheckCircle, FiDisc, FiMinusCircle } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/utils';
@@ -20,6 +21,26 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
         return 'purple';
     }
   }, [status]);
+  // eslint-disable-next-line no-undef
+  const icon: JSX.Element = useMemo(() => {
+    switch (ApplicationStatus[convertedStatus]) {
+      case ApplicationStatus.SUBMITTED:
+        return <FiDisc />;
+      case ApplicationStatus.ACCEPTED:
+        return <FiCheckCircle />;
+      case ApplicationStatus.REJECTED:
+        return <FiMinusCircle />;
+      case ApplicationStatus.NEEDS_REVIEW:
+        return <FiAlertCircle />;
+      case ApplicationStatus.FINISHED:
+        return <FiArrowRightCircle />;
+    }
+  }, [status]);
 
-  return <Badge variant={color}>{ApplicationStatus[convertedStatus]}</Badge>;
+  return (
+    <Badge variant={color}>
+      {icon}
+      {ApplicationStatus[convertedStatus]}
+    </Badge>
+  );
 }

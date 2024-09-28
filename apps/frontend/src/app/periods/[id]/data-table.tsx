@@ -101,7 +101,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center justify-between py-4 gap-4 sticky top-2 z-20>'>
+      <div className='flex items-center justify-between py-4 gap-4 sticky top-0 z-20 backdrop-blur'>
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>Kijelölés</MenubarTrigger>
@@ -197,7 +197,7 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className='rounded-md border'>
-        <Table className='w-full bg-white rounded'>
+        <Table className='w-full bg-white rounded z-0'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
