@@ -129,8 +129,9 @@ function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
 }
 
 export const columns: (
+  quickMode: boolean,
   onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
+) => ColumnDef<ApplicationEntity>[] = (quickMode, onStatusChange) => [
   {
     id: 'Választ',
     enableResizing: false, // Disable resizing
@@ -232,41 +233,52 @@ export const columns: (
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       return (
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+        <div className='flex gap-2 items-center'>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant='ghost'
+                className='m-0 p-0'
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <StatusBadge status={row.original.status as ApplicationStatus} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput placeholder='Keresés...' />
+                <CommandList>
+                  <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
+                  <CommandGroup>
+                    {Object.entries(ApplicationStatus).map(([key, status]) => (
+                      <CommandItem
+                        key={key}
+                        value={status}
+                        onSelect={(value) => {
+                          onStatusChange(row.original, value);
+                          setOpen(false);
+                        }}
+                      >
+                        <StatusBadge status={key as ApplicationStatus} />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {quickMode && row.original.status !== 'FINISHED' && (
             <Button
-              variant='ghost'
-              className='m-0 p-0'
-              onClick={() => {
-                setOpen(true);
-              }}
+              variant='secondary'
+              className='h-min px-2 py-0.5 rounded'
+              onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
             >
-              <StatusBadge status={row.original.status as ApplicationStatus} />
+              <span className='m-0 p-0'>Kiosztás</span>
             </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Command>
-              <CommandInput placeholder='Keresés...' />
-              <CommandList>
-                <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
-                <CommandGroup>
-                  {Object.entries(ApplicationStatus).map(([key, status]) => (
-                    <CommandItem
-                      key={key}
-                      value={status}
-                      onSelect={(value) => {
-                        onStatusChange(row.original, value);
-                        setOpen(false);
-                      }}
-                    >
-                      <StatusBadge status={key as ApplicationStatus} />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+          )}
+        </div>
       );
     },
   },

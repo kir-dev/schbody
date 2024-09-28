@@ -25,28 +25,23 @@ export default function Page({ params }: { params: { id: number } }) {
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
-  const [isEntryMode, setIsEntryMode] = useState(false);
+  const [quickModeEnabled, setQuickModeEnabled] = useState(false);
 
-  const sendChangeRequest = async (application: ApplicationEntity) => {
-    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: application.status });
-    if (resp.status === 200) {
-      toast({
-        title: 'Sikeres módosítás!',
-        duration: 300,
-      });
-    } else {
-      toast({
-        title: 'Hiba történt!',
-      });
-    }
-    return api.get(`/application-periods/${application.applicationPeriodId}/applications`);
-  };
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
     const convertedStatus = getStatusKey(status);
     if (convertedStatus === application.status || !convertedStatus) return;
+    const r = await api.patch(`/application/${application.id}`, { applicationStatus: convertedStatus });
+    if (r.status === 200) {
+      toast({
+        title: 'Sikeres módosítás!',
+        duration: 500,
+      });
+    } else {
+      return;
+    }
     const newApplication: ApplicationEntity = { ...application, status: convertedStatus as ApplicationStatus };
-    await mutate(sendChangeRequest(newApplication), {
-      optimisticData: (oldData) => {
+    await mutate(
+      (oldData) => {
         return oldData.map((a) => {
           if (a.id === application.id) {
             return newApplication;
@@ -54,8 +49,8 @@ export default function Page({ params }: { params: { id: number } }) {
           return a;
         });
       },
-      revalidate: false,
-    });
+      { revalidate: false }
+    );
   };
 
   const onPassExport = async (data: ApplicationEntity[]) => {
@@ -91,7 +86,7 @@ export default function Page({ params }: { params: { id: number } }) {
   return (
     <>
       <GeneratingDialog open={generatingDialogOpened} />
-      {!isEntryMode && (
+      {!quickModeEnabled && (
         <div className='mb-8'>
           <Th1>Jelentkezési időszak kezelése</Th1>
           {period?.isLoading && <LoadingCard />}
@@ -108,14 +103,18 @@ export default function Page({ params }: { params: { id: number } }) {
         <div className='flex justify-between'>
           <Th2>Jelentkezők</Th2>
           <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
-            <Label htmlFor='tickets-are-valid-now'>Beléptető mód</Label>
-            <Switch id='tickets-are-valid-now' onCheckedChange={(v) => setIsEntryMode(v)} checked={isEntryMode} />
+            <Label htmlFor='tickets-are-valid-now'>Grind mód</Label>
+            <Switch
+              id='tickets-are-valid-now'
+              onCheckedChange={(v) => setQuickModeEnabled(v)}
+              checked={quickModeEnabled}
+            />
           </div>
         </div>
         {areApplicationsLoading && <LoadingCard />}
         {applications && (
           <DataTable
-            columns={columns(handleStatusChange)}
+            columns={columns(quickModeEnabled, handleStatusChange)}
             data={applications}
             onStatusChange={handleStatusChange}
             onExportPassesClicked={onPassExport}

@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
   function setSelectedToStatus(value: ApplicationStatus) {
     if (!onStatusChange) return;
     const selectedRows = table.getSelectedRowModel().rows;
-    selectedRows.map((row) => onStatusChange(row.original, value));
+    selectedRows.map((row) => onStatusChange(row.original, ApplicationStatus[value]));
   }
 
   function selectGivenStatuses(value: ApplicationStatus) {
@@ -101,7 +101,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center justify-between py-4 gap-4'>
+      <div className='flex items-center justify-between py-4 gap-4 sticky top-2 z-20>'>
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>Kijelölés</MenubarTrigger>
