@@ -258,7 +258,7 @@ export const columns: (
                         key={key}
                         value={status}
                         onSelect={(value) => {
-                          onStatusChange(row.original, value);
+                          onStatusChange(row.original, value as ApplicationStatus);
                           setOpen(false);
                         }}
                       >
@@ -270,11 +270,11 @@ export const columns: (
               </Command>
             </PopoverContent>
           </Popover>
-          {quickMode && row.original.status !== 'FINISHED' && (
+          {quickMode && (row.original.status as ApplicationStatus) !== ('FINISHED' as ApplicationStatus) && (
             <Button
               variant='outline'
               className='h-min px-2 py-0.5 rounded'
-              disabled={row.original.status === 'REJECTED'}
+              disabled={(row.original.status as ApplicationStatus) === ('REJECTED' as ApplicationStatus)}
               onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
             >
               <FiArrowRightCircle />

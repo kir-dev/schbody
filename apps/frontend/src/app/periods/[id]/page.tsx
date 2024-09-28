@@ -28,8 +28,9 @@ export default function Page({ params }: { params: { id: number } }) {
   const [quickModeEnabled, setQuickModeEnabled] = useState(false);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
-    const convertedStatus = getStatusKey(status);
-    if (convertedStatus === application.status || !convertedStatus) return;
+    let convertedStatus = getStatusKey(status);
+    if (!convertedStatus) convertedStatus = status;
+    if (convertedStatus === application.status) return;
     const r = await api.patch(`/application/${application.id}`, { applicationStatus: convertedStatus });
     if (r.status === 200) {
       toast({

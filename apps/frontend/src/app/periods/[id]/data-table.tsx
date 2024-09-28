@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState<>({});
+  const [rowSelection, setRowSelection] = React.useState({});
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -95,15 +95,11 @@ export function DataTable<TData, TValue>({
   const invertSelection = () => {
     table.getExpandedRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
   };
-  const selectAllFiltered = () => {
-    const visibles = table.getFilteredRowModel().rows;
-    table.getExpandedRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
-  };
 
   function setSelectedToStatus(value: ApplicationStatus) {
     if (!onStatusChange) return;
     const selectedRows = table.getSelectedRowModel().rows;
-    selectedRows.map((row) => onStatusChange(row.original, ApplicationStatus[value]));
+    selectedRows.map((row) => onStatusChange(row.original, value));
   }
 
   function selectGivenStatuses(value: ApplicationStatus) {
