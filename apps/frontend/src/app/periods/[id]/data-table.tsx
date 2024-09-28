@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
   ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState<Record<number, boolean>>({});
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -262,10 +262,10 @@ export function DataTable<TData, TValue>({
               <TableCell colSpan={columns.length}>
                 <Pagination className='mb-2'>
                   <PaginationContent>
-                    <PaginationItem onClick={() => table.firstPage()} disabled={!table.getCanPreviousPage()}>
+                    <PaginationItem onClick={() => table.firstPage()} area-disabled={!table.getCanPreviousPage()}>
                       <PaginationFirst />
                     </PaginationItem>
-                    <PaginationItem onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                    <PaginationItem onClick={() => table.previousPage()} area-disabled={!table.getCanPreviousPage()}>
                       <PaginationPrevious />
                     </PaginationItem>
                     <PaginationItem>
@@ -273,10 +273,10 @@ export function DataTable<TData, TValue>({
                         {pagination.pageIndex + 1}
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                    <PaginationItem onClick={() => table.nextPage()} area-disabled={!table.getCanNextPage()}>
                       <PaginationNext />
                     </PaginationItem>
-                    <PaginationItem onClick={() => table.lastPage()} disabled={!table.getCanNextPage()}>
+                    <PaginationItem onClick={() => table.lastPage()} area-disabled={!table.getCanNextPage()}>
                       <PaginationLast />
                     </PaginationItem>
                   </PaginationContent>

@@ -43,6 +43,7 @@ export default function Page({ params }: { params: { id: number } }) {
     const newApplication: ApplicationEntity = { ...application, status: convertedStatus as ApplicationStatus };
     await mutate(
       (oldData) => {
+        if (!oldData) return [];
         return oldData.map((a) => {
           if (a.id === application.id) {
             return newApplication;
