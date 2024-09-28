@@ -76,6 +76,14 @@ export function DataTable<TData, TValue>({
       rowSelection,
       pagination,
     },
+    initialState: {
+      sorting: [
+        {
+          id: 'Név',
+          desc: true,
+        },
+      ],
+    },
   });
   const invertSelection = () => {
     table.getRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));

@@ -1,6 +1,7 @@
 'use client';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
+import { FiArrowRightCircle } from 'react-icons/fi';
 import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-icons/md';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
@@ -233,7 +234,7 @@ export const columns: (
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       return (
-        <div className='flex gap-2 items-center'>
+        <div className='flex gap-2 items-center justify-between'>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -271,11 +272,13 @@ export const columns: (
           </Popover>
           {quickMode && row.original.status !== 'FINISHED' && (
             <Button
-              variant='secondary'
+              variant='outline'
               className='h-min px-2 py-0.5 rounded'
+              disabled={row.original.status === 'REJECTED'}
               onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
             >
-              <span className='m-0 p-0'>Kiosztás</span>
+              <FiArrowRightCircle />
+              Kiosztás
             </Button>
           )}
         </div>

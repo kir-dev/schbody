@@ -106,7 +106,9 @@ export default function Page({ params }: { params: { id: number } }) {
             <Label htmlFor='tickets-are-valid-now'>Grind mód</Label>
             <Switch
               id='tickets-are-valid-now'
-              onCheckedChange={(v) => setQuickModeEnabled(v)}
+              onCheckedChange={(v) => {
+                setQuickModeEnabled(v);
+              }}
               checked={quickModeEnabled}
             />
           </div>
