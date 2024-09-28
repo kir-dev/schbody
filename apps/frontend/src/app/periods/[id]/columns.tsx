@@ -140,8 +140,8 @@ export const columns: (
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(Boolean(value))}
-        aria-label='Select all'
+        onClick={table.getToggleAllRowsSelectedHandler()}
+        aria-label='Minden kijelölése'
       />
     ),
     cell: ({ row }) => (
