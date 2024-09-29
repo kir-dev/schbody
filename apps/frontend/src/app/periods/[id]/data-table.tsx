@@ -262,23 +262,27 @@ export function DataTable<TData, TValue>({
               <TableCell colSpan={columns.length}>
                 <Pagination className='mb-2'>
                   <PaginationContent>
-                    <PaginationItem onClick={() => table.firstPage()} area-disabled={!table.getCanPreviousPage()}>
-                      <PaginationFirst />
-                    </PaginationItem>
-                    <PaginationItem onClick={() => table.previousPage()} area-disabled={!table.getCanPreviousPage()}>
-                      <PaginationPrevious />
-                    </PaginationItem>
+                    <div className={table.getCanPreviousPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.firstPage()}>
+                        <PaginationFirst />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.previousPage()}>
+                        <PaginationPrevious />
+                      </PaginationItem>
+                    </div>
                     <PaginationItem>
                       <PaginationLink href='#' isActive>
                         {pagination.pageIndex + 1}
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem onClick={() => table.nextPage()} area-disabled={!table.getCanNextPage()}>
-                      <PaginationNext />
-                    </PaginationItem>
-                    <PaginationItem onClick={() => table.lastPage()} area-disabled={!table.getCanNextPage()}>
-                      <PaginationLast />
-                    </PaginationItem>
+                    <div className={table.getCanNextPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.nextPage()}>
+                        <PaginationNext />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.lastPage()}>
+                        <PaginationLast />
+                      </PaginationItem>
+                    </div>
                   </PaginationContent>
                 </Pagination>
               </TableCell>
