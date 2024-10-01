@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use client';
 
 import {
@@ -40,7 +41,8 @@ import {
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ApplicationStatus } from '@/types/application-entity';
+import { getStatusKey } from '@/lib/utils';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -121,6 +123,7 @@ export function DataTable<TData, TValue>({
               <MenubarItem onClick={table.getToggleAllRowsSelectedHandler()}>Összes kijelölése</MenubarItem>
               <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
               <MenubarItem onClick={() => table.resetRowSelection(false)}>Kijelölés megszüntetése</MenubarItem>
+              <MenubarItem onClick={() => table.resetRowSelection(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
               <MenubarSub>
                 <MenubarSubTrigger>Adott státuszúak kijelölése</MenubarSubTrigger>
@@ -173,8 +176,28 @@ export function DataTable<TData, TValue>({
               <MenubarItem onClick={() => onExportApplicationsClicked(data.filter((_, i) => rowSelection[i]))}>
                 Kijelöltekhez lista exportálása (csak kiosztott)
               </MenubarItem>
-              <MenubarItem onClick={() => onExportApplicationsClicked(data)}>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(
+                    data.filter((a) => (a as ApplicationEntity).status === getStatusKey(ApplicationStatus.FINISHED))
+                  )
+                }
+              >
                 Teljes lista exportálása (csak kiosztott)
+              </MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(data.filter((a) => (a as ApplicationEntity).user.isSchResident))
+                }
+              >
+                Teljes lista exportálása (kollégisták)
+              </MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(data.filter((a) => !(a as ApplicationEntity).user.isSchResident))
+                }
+              >
+                Teljes lista exportálása (nem kollégisták)
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>

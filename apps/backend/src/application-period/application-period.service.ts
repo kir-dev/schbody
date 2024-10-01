@@ -56,6 +56,7 @@ export class ApplicationPeriodService {
             isActiveVikStudent: true,
             email: true,
             roomNumber: true,
+            isSchResident: true,
           },
         },
       },
