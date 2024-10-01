@@ -7,7 +7,6 @@ export const ProfileFormSchema = z
       invalid_type_error: 'String, tesó!',
     }),
     email: z.string().email(),
-    neptun: z.string().length(6, 'Neptun kód 6 karakter hosszú kell legyen!'),
     isSchResident: z.boolean().optional(),
     roomNumber: z
       .union([

@@ -24,8 +24,4 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   publicDesc: string;
-
-  @IsString()
-  @IsOptional()
-  neptun: string;
 }

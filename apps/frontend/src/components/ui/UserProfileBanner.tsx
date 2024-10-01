@@ -18,7 +18,7 @@ import PictureUploadDialog from './PictureUploadDialog';
 export default function UserProfileBanner(props: {
   user: UserEntity | undefined;
   editingIsOn: boolean;
-  onClick: () => void;
+  setEditingIsOn: (e: boolean) => void;
   onSubmit: () => void;
 }) {
   const router = useRouter();
@@ -87,21 +87,28 @@ export default function UserProfileBanner(props: {
           </div>
           <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
             {!props.editingIsOn && (
-              <Button variant='secondary' onClick={props.onClick}>
-                <FiEdit2 />
-                Adatok szerkesztése
-              </Button>
+              <>
+                <Button variant='secondary' onClick={() => props.setEditingIsOn(true)}>
+                  <FiEdit2 />
+                  Adatok szerkesztése
+                </Button>
+                <Button variant='destructive' onClick={onLogout}>
+                  <FiLogOut />
+                  Kijelentkezés
+                </Button>
+              </>
             )}
             {props.editingIsOn && (
-              <Button type='submit'>
-                <FiSave />
-                Mentés
-              </Button>
+              <>
+                <Button type='submit'>
+                  <FiSave />
+                  Mentés
+                </Button>
+                <Button variant='destructive' onClick={() => props.setEditingIsOn(false)}>
+                  Mégse
+                </Button>
+              </>
             )}
-            <Button variant='destructive' onClick={onLogout}>
-              <FiLogOut />
-              Kijelenkezés
-            </Button>
           </div>
         </div>
         <UserTimeStampsBlock user={props.user} />

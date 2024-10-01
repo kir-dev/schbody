@@ -31,7 +31,6 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
     defaultValues: {
       nickName: '',
       email: '',
-      neptun: '',
       isSchResident: false,
       roomNumber: 0,
       terms: false,
@@ -44,7 +43,6 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
       reset({
         nickName: user.data.nickName || '',
         email: user.data.email || '',
-        neptun: user.data.neptun || '',
         isSchResident: user.data.isSchResident || false,
         roomNumber: user.data.roomNumber || 0,
       });
@@ -104,19 +102,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
               <FormLabel>Név</FormLabel>
               <Input disabled value={user.data.fullName} />
             </FormItem>
-            <FormField
-              control={form.control}
-              name='neptun'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Neptun</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>NEPTUN</FormLabel>
+              <FormControl>
+                <Input disabled value={user.data.neptun} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <FormField
               control={form.control}
               name='nickName'
