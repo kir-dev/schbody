@@ -8,10 +8,10 @@ import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { filterByDateRange } from '@/lib/customFilters';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
@@ -162,23 +162,21 @@ export const columns: (
     },
     cell: ({ row }) => {
       return (
-        <div className='flex items-center gap-2'>
-          {row.original.user.fullName}
-          {row.original.user.isActiveVikStudent && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <RiVerifiedBadgeLine />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='font-sans'>Igazolt VIK hallgató</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className='flex gap-2 items-center'>
+              {row.original.user.fullName}
+              {row.original.user.isActiveVikStudent && <RiVerifiedBadgeLine size={16} />}
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent>
+            <img
+              src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
+              alt='KEP'
+              className='rounded max-w-32'
+            />
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },
