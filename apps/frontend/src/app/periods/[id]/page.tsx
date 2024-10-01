@@ -74,10 +74,7 @@ export default function Page({ params }: { params: { id: number } }) {
   const onApplicationsExport = (data: ApplicationEntity[]) => {
     if (period?.data) {
       downloadPdf(
-        <ApplicationExport
-          applicationData={data.filter((a) => a.status === getStatusKey(ApplicationStatus.FINISHED))}
-          periodName={period.data.name}
-        />,
+        <ApplicationExport applicationData={data} periodName={period.data.name} />,
         `schbody_applications_export_${Date.now()}.pdf`
       );
     }
