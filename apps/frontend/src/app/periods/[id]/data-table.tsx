@@ -14,7 +14,6 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -28,6 +27,16 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationFirst,
+  PaginationItem,
+  PaginationLast,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -48,7 +57,12 @@ export function DataTable<TData, TValue>({
   onExportApplicationsClicked,
   onExportPassesClicked,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: 'Név',
+      desc: false,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<Record<number, boolean>>({});
@@ -60,6 +74,14 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination,
+    },
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -69,21 +91,11 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onRowSelectionChange: setRowSelection,
     onPaginationChange: setPagination,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-      pagination,
-    },
   });
   const invertSelection = () => {
-    table.getRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
+    table.getExpandedRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
   };
-  const selectAllFiltered = () => {
-    const visibles = table.getFilteredRowModel().rows;
-    table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
-  };
+
   function setSelectedToStatus(value: ApplicationStatus) {
     if (!onStatusChange) return;
     const selectedRows = table.getSelectedRowModel().rows;
@@ -91,7 +103,7 @@ export function DataTable<TData, TValue>({
   }
 
   function selectGivenStatuses(value: ApplicationStatus) {
-    table.getRowModel().rows.map((row) => {
+    table.getExpandedRowModel().rows.map((row) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
@@ -101,16 +113,14 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center justify-between py-4 gap-4'>
+      <div className='flex items-center justify-between py-4 gap-4 sticky top-0 z-20 backdrop-blur'>
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>Kijelölés</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(true)}>Összes kijelölése</MenubarItem>
-              <MenubarItem onClick={selectAllFiltered}>Kiszűrtek kijelölése</MenubarItem>
-
+              <MenubarItem onClick={table.getToggleAllRowsSelectedHandler()}>Összes kijelölése</MenubarItem>
               <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
-              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(false)}>Kijelölés megszüntetése</MenubarItem>
+              <MenubarItem onClick={() => table.resetRowSelection(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
               <MenubarSub>
                 <MenubarSubTrigger>Adott státuszúak kijelölése</MenubarSubTrigger>
@@ -197,7 +207,7 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className='rounded-md border'>
-        <Table className='w-full bg-white rounded'>
+        <Table className='w-full bg-white rounded z-0'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -237,7 +247,7 @@ export function DataTable<TData, TValue>({
           <TableFooter>
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <div className='flex gap-8 justify-center'>
+                <div className='flex gap-8 justify-center my-2'>
                   <span>
                     {table.getFilteredRowModel().rows.length} / {data.length} jelentkezés kiszűrve
                   </span>
@@ -249,22 +259,32 @@ export function DataTable<TData, TValue>({
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={columns.length} className='pt-0'>
-                <div className='flex flex-row gap-4 w-full justify-center'>
-                  <Button onClick={() => table.firstPage()} disabled={!table.getCanPreviousPage()}>
-                    {'<<'}
-                  </Button>
-                  <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                    {'<'}
-                  </Button>
-                  <div className='flex flex-col justify-center min-w-5 items-center'>{pagination.pageIndex}</div>
-                  <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                    {'>'}
-                  </Button>
-                  <Button onClick={() => table.lastPage()} disabled={!table.getCanNextPage()}>
-                    {'>>'}
-                  </Button>
-                </div>
+              <TableCell colSpan={columns.length}>
+                <Pagination className='mb-2'>
+                  <PaginationContent>
+                    <div className={table.getCanPreviousPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.firstPage()}>
+                        <PaginationFirst />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.previousPage()}>
+                        <PaginationPrevious />
+                      </PaginationItem>
+                    </div>
+                    <PaginationItem>
+                      <PaginationLink href='#' isActive>
+                        {pagination.pageIndex + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <div className={table.getCanNextPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.nextPage()}>
+                        <PaginationNext />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.lastPage()}>
+                        <PaginationLast />
+                      </PaginationItem>
+                    </div>
+                  </PaginationContent>
+                </Pagination>
               </TableCell>
             </TableRow>
           </TableFooter>

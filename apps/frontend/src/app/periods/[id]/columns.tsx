@@ -1,6 +1,7 @@
 'use client';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import React, { useState } from 'react';
+import { FiArrowRightCircle } from 'react-icons/fi';
 import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-icons/md';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
@@ -129,8 +130,9 @@ function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
 }
 
 export const columns: (
+  quickMode: boolean,
   onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
+) => ColumnDef<ApplicationEntity>[] = (quickMode, onStatusChange) => [
   {
     id: 'Választ',
     enableResizing: false, // Disable resizing
@@ -138,8 +140,8 @@ export const columns: (
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(Boolean(value))}
-        aria-label='Select all'
+        onClick={table.getToggleAllRowsSelectedHandler()}
+        aria-label='Minden kijelölése'
       />
     ),
     cell: ({ row }) => (
@@ -232,41 +234,54 @@ export const columns: (
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       return (
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+        <div className='flex gap-2 items-center justify-between'>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant='ghost'
+                className='m-0 p-0'
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <StatusBadge status={row.original.status as ApplicationStatus} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput placeholder='Keresés...' />
+                <CommandList>
+                  <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
+                  <CommandGroup>
+                    {Object.entries(ApplicationStatus).map(([key, status]) => (
+                      <CommandItem
+                        key={key}
+                        value={status}
+                        onSelect={(value) => {
+                          onStatusChange(row.original, value as ApplicationStatus);
+                          setOpen(false);
+                        }}
+                      >
+                        <StatusBadge status={key as ApplicationStatus} />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {quickMode && (row.original.status as ApplicationStatus) !== ('FINISHED' as ApplicationStatus) && (
             <Button
-              variant='ghost'
-              className='m-0 p-0'
-              onClick={() => {
-                setOpen(true);
-              }}
+              variant='outline'
+              className='h-min px-2 py-0.5 rounded'
+              disabled={(row.original.status as ApplicationStatus) === ('REJECTED' as ApplicationStatus)}
+              onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
             >
-              <StatusBadge status={row.original.status as ApplicationStatus} />
+              <FiArrowRightCircle />
+              Kiosztás
             </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Command>
-              <CommandInput placeholder='Keresés...' />
-              <CommandList>
-                <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
-                <CommandGroup>
-                  {Object.entries(ApplicationStatus).map(([key, status]) => (
-                    <CommandItem
-                      key={key}
-                      value={status}
-                      onSelect={(value) => {
-                        onStatusChange(row.original, value as ApplicationStatus);
-                        setOpen(false);
-                      }}
-                    >
-                      <StatusBadge status={key as ApplicationStatus} />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+          )}
+        </div>
       );
     },
   },
