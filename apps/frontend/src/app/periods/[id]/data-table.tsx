@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 50,
+    pageSize: 30,
   });
   const table = useReactTable({
     data,
