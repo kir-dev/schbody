@@ -21,9 +21,25 @@ export function getRoleBadgeColor(role: Role, bg?: boolean) {
   }
 }
 
+export function getRoleBadgeColorVariant(role: Role) {
+  const convertedRole = role as unknown as Role;
+  switch (Role[convertedRole]) {
+    case Role.USER:
+      return 'blue';
+    case Role.BODY_MEMBER:
+      return 'yellow';
+    case Role.BODY_ADMIN:
+      return 'red';
+    case Role.SUPERUSER:
+      return 'green';
+    default:
+      return 'gray';
+  }
+}
+
 export default function RoleBadge({ role, short }: { role: Role; short?: boolean }) {
   const convertedRole = role as unknown as Role;
-  const color = useMemo(() => getRoleBadgeColor(role), [role]);
+  const color = useMemo(() => getRoleBadgeColorVariant(role), [role]);
   // eslint-disable-next-line no-undef
   const icon: JSX.Element = useMemo(() => {
     switch (Role[convertedRole]) {
