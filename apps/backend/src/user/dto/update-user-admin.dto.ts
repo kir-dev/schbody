@@ -29,4 +29,8 @@ export class UpdateUserAdminDto {
   @IsEnum(Role)
   @IsOptional()
   role: Role;
+
+  @IsString()
+  @IsOptional()
+  idNumber: string;
 }

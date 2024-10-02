@@ -47,6 +47,7 @@ model User {
   applicationPeriods ApplicationPeriod[]
   applications       Application[]
   posts              Post[]
+  idNumber           String?
 }
 
 model ProfilePicture {

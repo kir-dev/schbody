@@ -57,6 +57,8 @@ export class ApplicationPeriodService {
             email: true,
             roomNumber: true,
             isSchResident: true,
+            role: true,
+            idNumber: true,
           },
         },
       },
