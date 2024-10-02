@@ -20,6 +20,8 @@ import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity
 import { ApplicationExport } from './application-export';
 import { PassExport } from './pass-export';
 
+const CHUNK_SIZE = 300;
+
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
@@ -58,15 +60,17 @@ export default function Page({ params }: { params: { id: number } }) {
   const onPassExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
       setGeneratingDialogOpened(true);
-      await downloadPdf(
-        <PassExport
-          applicationData={data}
-          periodName={period.data.name}
-          periodId={period.data.id}
-          cacheBuster={cacheBuster}
-        />,
-        `schbody_pass_export_${Date.now()}.pdf`
-      );
+      for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+        await downloadPdf(
+          <PassExport
+            applicationData={data.slice(i, i + CHUNK_SIZE)}
+            periodName={period.data.name}
+            periodId={period.data.id}
+            cacheBuster={cacheBuster}
+          />,
+          `schbody_pass_export_${Date.now()}.pdf`
+        );
+      }
       setGeneratingDialogOpened(false);
     }
   };

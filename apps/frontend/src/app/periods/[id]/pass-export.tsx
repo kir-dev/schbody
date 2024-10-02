@@ -17,11 +17,11 @@ Font.register({
 
 //Pass size: 7.5cm x 4.4cm
 export const PassExport = ({ applicationData, periodName, periodId, cacheBuster, mock = false }: Props) => {
-  const width = 7.5 * Math.ceil(applicationData.length / 15) * 28.3464567 + 10;
+  const width = 7.5 * Math.ceil(applicationData.length / 14) * 28.3464567 + 10;
   return (
     <Document>
       <Page
-        size={{ width, height: 1840 }}
+        size={{ width, height: 1740 }}
         style={{
           flexDirection: 'row',
           flexWrap: 'wrap',
