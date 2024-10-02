@@ -172,6 +172,20 @@ export function DataTable<TData, TValue>({
                 Kijelöltekhez belépők exportálása
               </MenubarItem>
               <MenubarItem onClick={() => onExportPassesClicked(data)}>Minden belépő exportálása</MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportPassesClicked(
+                    data.filter(
+                      (a) =>
+                        (a as ApplicationEntity).user.role === 'BODY_ADMIN' ||
+                        (a as ApplicationEntity).user.role === 'BODY_MEMBER'
+                    )
+                  )
+                }
+              >
+                Körtagok belépőinek exportálása
+              </MenubarItem>
+
               <Separator />
               <MenubarItem onClick={() => onExportApplicationsClicked(data.filter((_, i) => rowSelection[i]))}>
                 Kijelöltekhez lista exportálása (csak kiosztott)
