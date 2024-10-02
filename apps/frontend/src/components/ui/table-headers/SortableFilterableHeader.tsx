@@ -9,7 +9,7 @@ import { ApplicationEntity } from '@/types/application-entity';
 
 export function SortableFilterableHeader(column: Column<ApplicationEntity>) {
   return (
-    <div className=' flex items-center justify-start'>
+    <div className='flex items-center justify-start gap-0'>
       {column.id}
       <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
         <MdSortByAlpha size={16} />

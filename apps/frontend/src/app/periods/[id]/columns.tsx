@@ -1,19 +1,23 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
 import React, { useState } from 'react';
-import { FiArrowRightCircle } from 'react-icons/fi';
+import { FiArrowRightCircle, FiCheck, FiCopy } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
+import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import RoleBadge, { getRoleBadgeColor } from '@/components/ui/RoleBadge';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { DateSortableFilterableHeader } from '@/components/ui/table-headers/DateSortableFilterableHeader';
 import { SortableFilterableHeader } from '@/components/ui/table-headers/SortableFilterableHeader';
 import { filterByDateRange } from '@/lib/customFilters';
+import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 export const columns: (
@@ -80,13 +84,24 @@ export const columns: (
   {
     id: 'Kontakt',
     accessorKey: 'user.email',
-    enableResizing: false, // Disable resizing
-    size: 180, // Fixed size for consistency
     header: ({ column }) => {
       return SortableFilterableHeader(column);
     },
     cell: ({ row }) => {
-      return <span className='font-mono'>{row.original.user.email}</span>;
+      return (
+        <div className='flex items-center'>
+          <span className='block w-24 text-ellipsis overflow-clip font-mono'>{row.original.user.email}</span>
+          <FiCopy
+            onClick={() => {
+              navigator.clipboard.writeText(row.original.user.email as string);
+              toast({
+                title: 'Másolva',
+                description: 'Az email cím vágólapra másolva',
+              });
+            }}
+          />
+        </div>
+      );
     },
   },
   {
@@ -94,6 +109,59 @@ export const columns: (
     accessorKey: 'user.roomNumber',
     header: ({ column }) => {
       return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      if (row.original.user.isSchResident) {
+        return <span className='font-bold font-mono'>{row.original.user.roomNumber}</span>;
+      }
+      return <span>Külsős</span>;
+    },
+  },
+  {
+    id: 'Igazolványszám',
+    accessorKey: 'user.idNumber',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      const [idNumber, setIdNumber] = useState(row.original.user.idNumber);
+      return (
+        <form
+          className='flex gap-2 h-auto'
+          onSubmit={async (event) => {
+            event.preventDefault();
+            try {
+              const resp = await api.patch(`/users/${row.original.user.authSchId}`, { idNumber: idNumber });
+              if (resp.status === 200) {
+                toast({
+                  title: 'Sikeres mentés',
+                  description: 'Az igazolványszám sikeresen mentve',
+                });
+              }
+            } catch (e) {
+              if (e instanceof AxiosError) {
+                toast({
+                  title: 'Hiba történt',
+                  description: e.message,
+                });
+              }
+            }
+          }}
+        >
+          <Input
+            placeholder='123456AB'
+            onChange={(e) => {
+              setIdNumber(e.target.value);
+            }}
+            pattern='[0-9]{6}[A-Z]{2}'
+            value={idNumber ? idNumber : ''}
+            className='w-24 py-1 h-auto'
+          />
+          <Button type='submit' className='h-fit w-fit px-2' variant='secondary'>
+            <FiCheck />
+          </Button>
+        </form>
+      );
     },
   },
   {
