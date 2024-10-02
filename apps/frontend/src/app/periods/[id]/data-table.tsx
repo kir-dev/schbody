@@ -41,7 +41,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getStatusKey } from '@/lib/utils';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
@@ -192,26 +191,17 @@ export function DataTable<TData, TValue>({
               </MenubarItem>
               <MenubarItem
                 onClick={() =>
-                  onExportApplicationsClicked(
-                    data.filter((a) => (a as ApplicationEntity).status === getStatusKey(ApplicationStatus.FINISHED))
-                  )
-                }
-              >
-                Teljes lista exportálása (csak kiosztott)
-              </MenubarItem>
-              <MenubarItem
-                onClick={() =>
                   onExportApplicationsClicked(data.filter((a) => (a as ApplicationEntity).user.isSchResident))
                 }
               >
-                Teljes lista exportálása (kollégisták)
+                Kollégisták exportálása (csak kiosztott)
               </MenubarItem>
               <MenubarItem
                 onClick={() =>
                   onExportApplicationsClicked(data.filter((a) => !(a as ApplicationEntity).user.isSchResident))
                 }
               >
-                Teljes lista exportálása (nem kollégisták)
+                Nem kollégisták exportálása (csak kiosztott)
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
