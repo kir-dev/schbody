@@ -87,7 +87,7 @@ export default function Page({ params }: { params: { id: number } }) {
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
-    <>
+    <div className={quickModeEnabled ? '2xl:-mx-64 xl:-mx-32 max-xl:-mx-8 max-md:-mx-4 px-4 py-0 -mt-4' : ''}>
       <GeneratingDialog open={generatingDialogOpened} />
       {!quickModeEnabled && (
         <div className='mb-8'>
@@ -127,6 +127,6 @@ export default function Page({ params }: { params: { id: number } }) {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }

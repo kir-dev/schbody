@@ -21,6 +21,7 @@ export type UserEntity = {
   createdAt: string;
   updatedAt: string;
   profileSeenAt: string | null;
+  idNumber: string | null;
 };
 
 export type UserEntityPagination = {
