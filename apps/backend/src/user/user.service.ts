@@ -41,7 +41,10 @@ export class UserService {
     } else if (!(updateUserDto.isSchResident ?? user.isSchResident) && updateUserDto.roomNumber) {
       throw new BadRequestException('Non-resident users cannot have a room number');
     }
-    if ((updateUserDto.role === 'SUPERUSER' || user.role === 'SUPERUSER') && currentUserRole !== 'SUPERUSER') {
+    if (
+      (updateUserDto.role === 'SUPERUSER' || (user.role === 'SUPERUSER' && updateUserDto.role)) &&
+      currentUserRole !== 'SUPERUSER'
+    ) {
       throw new UnauthorizedException('Only superusers can manage superuser role');
     }
 
