@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 'use client';
 
 import {
@@ -6,6 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -26,10 +28,21 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationFirst,
+  PaginationItem,
+  PaginationLast,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ApplicationStatus } from '@/types/application-entity';
+import { getStatusKey } from '@/lib/utils';
+import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,36 +59,45 @@ export function DataTable<TData, TValue>({
   onExportApplicationsClicked,
   onExportPassesClicked,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: 'Név',
+      desc: false,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({ Szerep: false, Leadva: false });
   const [rowSelection, setRowSelection] = React.useState<Record<number, boolean>>({});
   const [automaticSelectionWhenRowClicked, setAutomaticSelectionWhenRowClicked] = React.useState(false);
-
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 30,
+  });
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination,
+    },
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    getPaginationRowModel: getPaginationRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
+    onPaginationChange: setPagination,
   });
   const invertSelection = () => {
-    table.getRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
+    table.getExpandedRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
   };
-  const selectAllFiltered = () => {
-    const visibles = table.getFilteredRowModel().rows;
-    table.getRowModel().rows.map((row) => row.toggleSelected(visibles.includes(row)));
-  };
+
   function setSelectedToStatus(value: ApplicationStatus) {
     if (!onStatusChange) return;
     const selectedRows = table.getSelectedRowModel().rows;
@@ -83,7 +105,7 @@ export function DataTable<TData, TValue>({
   }
 
   function selectGivenStatuses(value: ApplicationStatus) {
-    table.getRowModel().rows.map((row) => {
+    table.getExpandedRowModel().rows.map((row) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
@@ -93,16 +115,15 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className='flex items-center justify-between py-4 gap-4'>
+      <div className='flex items-center justify-between py-4 gap-4 sticky top-0 z-20 backdrop-blur'>
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger>Kijelölés</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(true)}>Összes kijelölése</MenubarItem>
-              <MenubarItem onClick={selectAllFiltered}>Kiszűrtek kijelölése</MenubarItem>
-
+              <MenubarItem onClick={table.getToggleAllRowsSelectedHandler()}>Összes kijelölése</MenubarItem>
               <MenubarItem onClick={invertSelection}>Kijelölés invertálása</MenubarItem>
-              <MenubarItem onClick={() => table.toggleAllPageRowsSelected(false)}>Kijelölés megszüntetése</MenubarItem>
+              <MenubarItem onClick={() => table.resetRowSelection(false)}>Kijelölés megszüntetése</MenubarItem>
+              <MenubarItem onClick={() => table.resetRowSelection(false)}>Kijelölés megszüntetése</MenubarItem>
               <MenubarSeparator />
               <MenubarSub>
                 <MenubarSubTrigger>Adott státuszúak kijelölése</MenubarSubTrigger>
@@ -151,12 +172,46 @@ export function DataTable<TData, TValue>({
                 Kijelöltekhez belépők exportálása
               </MenubarItem>
               <MenubarItem onClick={() => onExportPassesClicked(data)}>Minden belépő exportálása</MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportPassesClicked(
+                    data.filter(
+                      (a) =>
+                        (a as ApplicationEntity).user.role === 'BODY_ADMIN' ||
+                        (a as ApplicationEntity).user.role === 'BODY_MEMBER'
+                    )
+                  )
+                }
+              >
+                Körtagok belépőinek exportálása
+              </MenubarItem>
+
               <Separator />
               <MenubarItem onClick={() => onExportApplicationsClicked(data.filter((_, i) => rowSelection[i]))}>
                 Kijelöltekhez lista exportálása (csak kiosztott)
               </MenubarItem>
-              <MenubarItem onClick={() => onExportApplicationsClicked(data)}>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(
+                    data.filter((a) => (a as ApplicationEntity).status === getStatusKey(ApplicationStatus.FINISHED))
+                  )
+                }
+              >
                 Teljes lista exportálása (csak kiosztott)
+              </MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(data.filter((a) => (a as ApplicationEntity).user.isSchResident))
+                }
+              >
+                Teljes lista exportálása (kollégisták)
+              </MenubarItem>
+              <MenubarItem
+                onClick={() =>
+                  onExportApplicationsClicked(data.filter((a) => !(a as ApplicationEntity).user.isSchResident))
+                }
+              >
+                Teljes lista exportálása (nem kollégisták)
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
@@ -189,7 +244,7 @@ export function DataTable<TData, TValue>({
         />
       </div>
       <div className='rounded-md border'>
-        <Table className='w-full bg-white rounded'>
+        <Table className='w-full bg-white rounded z-0'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -229,7 +284,7 @@ export function DataTable<TData, TValue>({
           <TableFooter>
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <div className='flex gap-8 justify-center'>
+                <div className='flex gap-8 justify-center my-2'>
                   <span>
                     {table.getFilteredRowModel().rows.length} / {data.length} jelentkezés kiszűrve
                   </span>
@@ -238,6 +293,35 @@ export function DataTable<TData, TValue>({
                     jelentkezés kijelölve
                   </span>
                 </div>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <Pagination className='mb-2'>
+                  <PaginationContent>
+                    <div className={table.getCanPreviousPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.firstPage()}>
+                        <PaginationFirst />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.previousPage()}>
+                        <PaginationPrevious />
+                      </PaginationItem>
+                    </div>
+                    <PaginationItem>
+                      <PaginationLink href='#' isActive>
+                        {pagination.pageIndex + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <div className={table.getCanNextPage() ? 'flex' : 'pointer-events-none opacity-50 flex'}>
+                      <PaginationItem onClick={() => table.nextPage()}>
+                        <PaginationNext />
+                      </PaginationItem>
+                      <PaginationItem onClick={() => table.lastPage()}>
+                        <PaginationLast />
+                      </PaginationItem>
+                    </div>
+                  </PaginationContent>
+                </Pagination>
               </TableCell>
             </TableRow>
           </TableFooter>

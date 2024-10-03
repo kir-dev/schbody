@@ -1,136 +1,29 @@
 'use client';
-import { Column, ColumnDef } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
+import { AxiosError } from 'axios';
 import React, { useState } from 'react';
-import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-icons/md';
+import { FiArrowRightCircle, FiCheck, FiCopy } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
+import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import RoleBadge, { getRoleBadgeColor } from '@/components/ui/RoleBadge';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DateSortableFilterableHeader } from '@/components/ui/table-headers/DateSortableFilterableHeader';
+import { SortableFilterableHeader } from '@/components/ui/table-headers/SortableFilterableHeader';
 import { filterByDateRange } from '@/lib/customFilters';
+import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
-function SortableFilterableHeader(column: Column<ApplicationEntity>) {
-  return (
-    <div className=' flex items-center justify-start'>
-      {column.id}
-      <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <MdSortByAlpha size={16} />
-      </Button>
-      <Popover>
-        <PopoverTrigger>
-          {column.getFilterValue() === undefined ? (
-            <MdOutlineFilterAlt size={16} />
-          ) : (
-            <MdOutlineFilterAltOff size={16} />
-          )}
-        </PopoverTrigger>
-        <PopoverContent className='p-3'>
-          <div className='flex w-full justify-between mb-2'>
-            <p className='font-bold'>Szöveg szűrés</p>
-            <p
-              className='underline'
-              onClick={() => {
-                column.setFilterValue(undefined);
-              }}
-            >
-              visszaállítás
-            </p>
-          </div>
-          <Input
-            value={column.getFilterValue() ? column.getFilterValue()!.toString() : ''}
-            onChange={(e) => column.setFilterValue(e.target.value)}
-            placeholder={`Szűrés ${column.id.toLowerCase()} alapján`}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}
-
-function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  const [start, setStart] = useState(column.getFilterValue()?.start || '2024-01-01T00:00');
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  const [end, setEnd] = useState(column.getFilterValue()?.end || '2025-01-01T00:00');
-
-  const handleStartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newStart = e.target.value;
-    setStart(newStart);
-    column.setFilterValue((oldValue: { start: string; end: string }) => ({ ...oldValue, start: newStart }));
-  };
-
-  // Handler for end date change
-  const handleEndChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEnd = e.target.value;
-    setEnd(newEnd);
-    column.setFilterValue((oldValue: { start: string; end: string }) => ({ ...oldValue, end: newEnd }));
-  };
-  return (
-    <div className='flex h-4 items-center gap-1 justify-start'>
-      {column.id}
-      <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-        <MdSortByAlpha size={16} />
-      </Button>
-      <Popover>
-        <PopoverTrigger>
-          {column.getFilterValue() === undefined ? (
-            <MdOutlineFilterAlt size={16} />
-          ) : (
-            <MdOutlineFilterAltOff size={16} />
-          )}
-        </PopoverTrigger>
-        <PopoverContent className='p-3'>
-          <div className='flex w-full justify-between mb-2'>
-            <p className='font-bold'>Dátum szűrés</p>
-            <p
-              className='underline'
-              onClick={() => {
-                column.setFilterValue(undefined);
-                setStart('2024-01-01T00:00');
-                setEnd('2025-01-01T00:00');
-              }}
-            >
-              visszaállítás
-            </p>
-          </div>
-          <div className='flex gap-2'>
-            <div>
-              <p className='mb-2'>Kezdő dátum</p>
-              <Input
-                type='datetime-local'
-                value={start.toString()}
-                onChange={handleStartChange}
-                className='date-input'
-                placeholder='Szűrés dátum alapján'
-              />
-            </div>
-            <div>
-              <p className='mb-2'>Vég dátum</p>
-              <Input
-                type='datetime-local'
-                value={end.toString()}
-                onChange={handleEndChange}
-                className='date-input'
-                placeholder='Szűrés dátum alapján'
-              />
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}
-
 export const columns: (
+  quickMode: boolean,
   onStatusChange: (row: ApplicationEntity, status: ApplicationStatus) => void
-) => ColumnDef<ApplicationEntity>[] = (onStatusChange) => [
+) => ColumnDef<ApplicationEntity>[] = (quickMode, onStatusChange) => [
   {
     id: 'Választ',
     enableResizing: false, // Disable resizing
@@ -138,8 +31,8 @@ export const columns: (
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(Boolean(value))}
-        aria-label='Select all'
+        onClick={table.getToggleAllRowsSelectedHandler()}
+        aria-label='Minden kijelölése'
       />
     ),
     cell: ({ row }) => (
@@ -160,23 +53,22 @@ export const columns: (
     },
     cell: ({ row }) => {
       return (
-        <div className='flex items-center gap-2'>
-          {row.original.user.fullName}
-          {row.original.user.isActiveVikStudent && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <RiVerifiedBadgeLine />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='font-sans'>Igazolt VIK hallgató</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
+        <HoverCard>
+          <HoverCardTrigger>
+            <div className='flex gap-2 items-center'>
+              <div className={`${getRoleBadgeColor(row.original.user.role, true)} h-6 w-1 rounded`} />
+              <p className=''>{row.original.user.fullName}</p>
+              {row.original.user.isActiveVikStudent && <RiVerifiedBadgeLine size={16} />}
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent>
+            <img
+              src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
+              alt='KEP'
+              className='rounded max-w-32'
+            />
+          </HoverCardContent>
+        </HoverCard>
       );
     },
   },
@@ -192,10 +84,94 @@ export const columns: (
   {
     id: 'Kontakt',
     accessorKey: 'user.email',
-    enableResizing: false, // Disable resizing
-    size: 180, // Fixed size for consistency
     header: ({ column }) => {
       return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      return (
+        <div className='flex items-center'>
+          <span className='block w-24 text-ellipsis overflow-clip font-mono'>{row.original.user.email}</span>
+          <FiCopy
+            onClick={() => {
+              navigator.clipboard.writeText(row.original.user.email as string);
+              toast({
+                title: 'Másolva',
+                description: 'Az email cím vágólapra másolva',
+              });
+            }}
+          />
+        </div>
+      );
+    },
+  },
+  {
+    id: 'Szoba',
+    accessorKey: 'user.roomNumber',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      if (row.original.user.isSchResident) {
+        return <span className='font-bold font-mono'>{row.original.user.roomNumber}</span>;
+      }
+      return <span>Külsős</span>;
+    },
+  },
+  {
+    id: 'Igazolványszám',
+    accessorKey: 'user.idNumber',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      const [idNumber, setIdNumber] = useState(row.original.user.idNumber);
+      return (
+        <form
+          className='flex gap-2 h-auto'
+          onSubmit={async (event) => {
+            event.preventDefault();
+            try {
+              const resp = await api.patch(`/users/${row.original.user.authSchId}`, { idNumber: idNumber });
+              if (resp.status === 200) {
+                toast({
+                  title: 'Sikeres mentés',
+                  description: 'Az igazolványszám sikeresen mentve',
+                });
+              }
+            } catch (e) {
+              if (e instanceof AxiosError) {
+                toast({
+                  title: 'Hiba történt',
+                  description: e.message,
+                });
+              }
+            }
+          }}
+        >
+          <Input
+            placeholder='123456AB'
+            onChange={(e) => {
+              setIdNumber(e.target.value);
+            }}
+            pattern='[0-9]{6}[A-Z]{2}'
+            value={idNumber ? idNumber : ''}
+            className='w-24 py-1 h-auto'
+          />
+          <Button type='submit' className='h-fit w-fit px-2' variant='secondary'>
+            <FiCheck />
+          </Button>
+        </form>
+      );
+    },
+  },
+  {
+    id: 'Szerep',
+    accessorKey: 'user.role',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      return <RoleBadge role={row.original.user.role} short />;
     },
   },
   {
@@ -215,7 +191,6 @@ export const columns: (
             hour: 'numeric',
             day: '2-digit',
             month: 'short',
-            year: 'numeric',
           })}
         </span>
       );
@@ -227,46 +202,59 @@ export const columns: (
     header: ({ column }) => {
       return SortableFilterableHeader(column);
     },
-    enableResizing: false,
     size: 100,
+    enableResizing: false,
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
       return (
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
+        <div className='flex gap-2 items-center justify-between'>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant='ghost'
+                className='m-0 p-0'
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <StatusBadge status={row.original.status as ApplicationStatus} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Command>
+                <CommandInput placeholder='Keresés...' />
+                <CommandList>
+                  <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
+                  <CommandGroup>
+                    {Object.entries(ApplicationStatus).map(([key, status]) => (
+                      <CommandItem
+                        key={key}
+                        value={status}
+                        onSelect={(value) => {
+                          onStatusChange(row.original, value as ApplicationStatus);
+                          setOpen(false);
+                        }}
+                      >
+                        <StatusBadge status={key as ApplicationStatus} />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          {quickMode && (row.original.status as ApplicationStatus) !== ('FINISHED' as ApplicationStatus) && (
             <Button
-              variant='ghost'
-              className='m-0 p-0'
-              onClick={() => {
-                setOpen(true);
-              }}
+              variant='outline'
+              className='h-min px-2 py-0.5 rounded'
+              disabled={(row.original.status as ApplicationStatus) === ('REJECTED' as ApplicationStatus)}
+              onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
             >
-              <StatusBadge status={row.original.status as ApplicationStatus} />
+              <FiArrowRightCircle />
+              Kiosztás
             </Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <Command>
-              <CommandInput placeholder='Keresés...' />
-              <CommandList>
-                <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
-                <CommandGroup>
-                  {Object.keys(ApplicationStatus).map((status) => (
-                    <CommandItem
-                      key={status}
-                      value={status}
-                      onSelect={(value) => {
-                        onStatusChange(row.original, value as ApplicationStatus);
-                        setOpen(false);
-                      }}
-                    >
-                      <StatusBadge status={status as ApplicationStatus} />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+          )}
+        </div>
       );
     },
   },

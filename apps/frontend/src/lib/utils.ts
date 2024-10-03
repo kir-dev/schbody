@@ -77,6 +77,7 @@ export const mockApplication: ApplicationEntity = {
     publicDesc: '',
     role: Role.USER,
     updatedAt: '',
+    idNumber: '123456AB',
   },
 };
 

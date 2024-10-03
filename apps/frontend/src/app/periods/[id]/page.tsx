@@ -1,11 +1,16 @@
 'use client';
 
+import { useState } from 'react';
+
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import api from '@/components/network/apiSetup';
 import Th1, { Th2 } from '@/components/typography/typography';
 import AdminApplicationPeriodCard from '@/components/ui/AdminApplicationPeriodCard';
+import { GeneratingDialog } from '@/components/ui/generating-dialog';
+import { Label } from '@/components/ui/label';
 import LoadingCard from '@/components/ui/LoadingCard';
+import { Switch } from '@/components/ui/switch';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
 import { toast } from '@/lib/use-toast';
@@ -15,41 +20,65 @@ import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity
 import { ApplicationExport } from './application-export';
 import { PassExport } from './pass-export';
 
+const CHUNK_SIZE = 300;
+
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
+  const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
+  const [quickModeEnabled, setQuickModeEnabled] = useState(false);
 
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
-    const resp = await api.patch(`/application/${application.id}`, { applicationStatus: status });
-    mutate();
-    if (resp.status === 200) {
+    let convertedStatus = getStatusKey(status);
+    if (!convertedStatus) convertedStatus = status;
+    if (convertedStatus === application.status) return;
+    const r = await api.patch(`/application/${application.id}`, { applicationStatus: convertedStatus });
+    if (r.status === 200) {
       toast({
         title: 'Sikeres módosítás!',
-        duration: 1000,
+        duration: 500,
       });
     } else {
-      toast({
-        title: 'Hiba történt!',
-      });
+      return;
     }
+    const newApplication: ApplicationEntity = { ...application, status: convertedStatus as ApplicationStatus };
+    await mutate(
+      (oldData) => {
+        if (!oldData) return [];
+        return oldData.map((a) => {
+          if (a.id === application.id) {
+            return newApplication;
+          }
+          return a;
+        });
+      },
+      { revalidate: false }
+    );
   };
 
-  const onPassExport = (data: ApplicationEntity[]) => {
+  const onPassExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
-      downloadPdf(
-        <PassExport applicationData={data} periodName={period.data.name} periodId={period.data.id} />,
-        `schbody_pass_export_${Date.now()}.pdf`
-      );
+      setGeneratingDialogOpened(true);
+      for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+        await downloadPdf(
+          <PassExport
+            applicationData={data.slice(i, i + CHUNK_SIZE)}
+            periodName={period.data.name}
+            periodId={period.data.id}
+            cacheBuster={cacheBuster}
+          />,
+          `schbody_pass_export_${Date.now()}.pdf`
+        );
+      }
+      setGeneratingDialogOpened(false);
     }
   };
 
   const onApplicationsExport = (data: ApplicationEntity[]) => {
     if (period?.data) {
       downloadPdf(
-        <ApplicationExport
-          applicationData={data.filter((a) => a.status === getStatusKey(ApplicationStatus.FINISHED))}
-          periodName={period.data.name}
-        />,
+        <ApplicationExport applicationData={data} periodName={period.data.name} />,
         `schbody_applications_export_${Date.now()}.pdf`
       );
     }
@@ -58,16 +87,39 @@ export default function Page({ params }: { params: { id: number } }) {
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
-    <>
-      <Th1>Jelentkezési időszak kezelése</Th1>
-      {period?.isLoading && <LoadingCard />}
-      {period?.data && <AdminApplicationPeriodCard period={period.data} />}
-      <div className='mt-16'>
-        <Th2>Jelentkezők</Th2>
+    <div className={quickModeEnabled ? '2xl:-mx-64 xl:-mx-32 max-xl:-mx-8 max-md:-mx-4 px-4 py-0 -mt-4' : ''}>
+      <GeneratingDialog open={generatingDialogOpened} />
+      {!quickModeEnabled && (
+        <div className='mb-8'>
+          <Th1>Jelentkezési időszak kezelése</Th1>
+          {period?.isLoading && <LoadingCard />}
+          {period?.data && (
+            <AdminApplicationPeriodCard
+              period={period.data}
+              cacheBuster={cacheBuster}
+              setCacheBuster={setCacheBuster}
+            />
+          )}
+        </div>
+      )}
+      <div>
+        <div className='flex justify-between'>
+          <Th2>Jelentkezők</Th2>
+          <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
+            <Label htmlFor='tickets-are-valid-now'>Grind mód</Label>
+            <Switch
+              id='tickets-are-valid-now'
+              onCheckedChange={(v) => {
+                setQuickModeEnabled(v);
+              }}
+              checked={quickModeEnabled}
+            />
+          </div>
+        </div>
         {areApplicationsLoading && <LoadingCard />}
         {applications && (
           <DataTable
-            columns={columns(handleStatusChange)}
+            columns={columns(quickModeEnabled, handleStatusChange)}
             data={applications}
             onStatusChange={handleStatusChange}
             onExportPassesClicked={onPassExport}
@@ -75,6 +127,6 @@ export default function Page({ params }: { params: { id: number } }) {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }

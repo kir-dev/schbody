@@ -18,6 +18,8 @@ export class AuthService {
         data: {
           isActiveVikStudent: userProfile.bme.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
           vikStatusUpdatedAt: new Date(),
+          neptun: userProfile.bme.neptun,
+          //Since we need to deal with the users, who logged in and edited their neptun before this update
         },
       });
     } catch (e) {
@@ -30,6 +32,7 @@ export class AuthService {
               nickName: userProfile.firstName,
               email: userProfile.email,
               isSchResident: true,
+              neptun: userProfile.bme.neptun,
               //TODO: Find a solution for only dorm residents.
               isActiveVikStudent: userProfile.bme.bmeStatus.includes(BmeUnitScope.BME_VIK_ACTIVE),
             },
