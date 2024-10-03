@@ -1,18 +1,30 @@
 import React from 'react';
-import { FiEdit2, FiUser } from 'react-icons/fi';
+import { LuFileImage, LuPartyPopper, LuUserCog } from 'react-icons/lu';
 
 import { CardDescription } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserEntity } from '@/types/user-entity';
 
-export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) {
+export function UserDataRow({ user }: { user: UserEntity | undefined }) {
   return (
     <CardDescription className='flex max-md:justify-center md:gap-16 max-md:hidden bottom-4 absolute'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <span className='flex gap-2 items-center'>
-              <FiUser />
+              <LuFileImage />A profilképed elfogadásra vár
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className='font-sans'>A profilképek minden módosítás után elfogadásra szorulnak</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className='flex gap-2 items-center'>
+              <LuPartyPopper />
               {user?.createdAt &&
                 new Date(user.createdAt!).toLocaleDateString('hu-HU', {
                   minute: 'numeric',
@@ -32,7 +44,7 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
         <Tooltip>
           <TooltipTrigger asChild>
             <span className='flex gap-2 items-center'>
-              <FiEdit2 />
+              <LuUserCog />
               {user?.createdAt &&
                 new Date(user.updatedAt!).toLocaleDateString('hu-HU', {
                   minute: 'numeric',

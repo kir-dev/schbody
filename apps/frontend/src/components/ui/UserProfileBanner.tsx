@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
+import { UserDataRow } from '@/components/ui/UserDataRow';
 import { UserEntity } from '@/types/user-entity';
 
 import PictureUploadDialog from './PictureUploadDialog';
@@ -111,7 +111,7 @@ export default function UserProfileBanner(props: {
             )}
           </div>
         </div>
-        <UserTimeStampsBlock user={props.user} />
+        <UserDataRow user={props.user} />
       </CardContent>
     </Card>
   );
