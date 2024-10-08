@@ -25,6 +25,7 @@ enum ApplicationStatus {
   ACCEPTED
   REJECTED
   NEEDS_REVIEW
+  PRINTED
   FINISHED
 }
 
