@@ -22,6 +22,8 @@ const badgeVariants = cva(
         red: 'border-transparent bg-red-500 text-slate-50 hover:bg-red-500/80 dark:bg-red-900 dark:hover:bg-red-900/80',
         yellow:
           'border-transparent bg-yellow-500 text-slate-50 hover:bg-yellow-500/80 dark:bg-yellow-900 dark:hover:bg-yellow-900/80',
+        orange:
+          'border-transparent bg-orange-500 text-slate-50 hover:bg-orange-500/80 dark:bg-orange-900 dark:hover:bg-orange-900/80',
         purple:
           'border-transparent bg-purple-500 text-slate-50 hover:bg-purple-500/80 dark:bg-purple-900 dark:hover:bg-purple-900/80',
       },

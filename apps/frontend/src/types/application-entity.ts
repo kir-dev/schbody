@@ -6,6 +6,7 @@ export enum ApplicationStatus {
   ACCEPTED = 'Elfogadott',
   REJECTED = 'Elutasított',
   NEEDS_REVIEW = 'Vizsgált',
+  PRINTED = 'Kinyomtatott',
   FINISHED = 'Kiosztott',
 }
 

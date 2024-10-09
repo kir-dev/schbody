@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { FiAlertCircle, FiArrowRightCircle, FiCheckCircle, FiDisc, FiMinusCircle } from 'react-icons/fi';
+import { useMemo } from 'react';
+import { FiAlertCircle, FiArrowRightCircle, FiCheckCircle, FiDisc, FiMinusCircle, FiPrinter } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/utils';
@@ -17,6 +17,8 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
         return 'red';
       case ApplicationStatus.NEEDS_REVIEW:
         return 'yellow';
+      case ApplicationStatus.PRINTED:
+        return 'orange';
       case ApplicationStatus.FINISHED:
         return 'purple';
     }
@@ -32,6 +34,8 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
         return <FiMinusCircle />;
       case ApplicationStatus.NEEDS_REVIEW:
         return <FiAlertCircle />;
+      case ApplicationStatus.PRINTED:
+        return <FiPrinter />;
       case ApplicationStatus.FINISHED:
         return <FiArrowRightCircle />;
     }
