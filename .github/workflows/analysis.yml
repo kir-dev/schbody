@@ -65,5 +65,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Generate Prisma Client
+        run: yarn prisma generate
+
       - name: Build
         run: yarn build:backend
