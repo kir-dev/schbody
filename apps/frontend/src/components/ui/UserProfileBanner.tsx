@@ -36,6 +36,23 @@ export default function UserProfileBanner(props: {
     });
   };
 
+  const getVerifiedBadge = () => {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>
+              <RiVerifiedBadgeLine size={36} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className='font-sans'>Igazolt VIK hallgató</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
+
   if (!props.user) return null;
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>
@@ -67,23 +84,10 @@ export default function UserProfileBanner(props: {
           <div className='max-md:flex max-md:flex-col max-md:items-center'>
             <div className='flex gap-2 items-start'>
               <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
-              {props.user.isActiveVikStudent && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <RiVerifiedBadgeLine size={36} />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className='font-sans'>Igazolt VIK hallgató</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
+              {props.user.isActiveVikStudent && getVerifiedBadge()}
             </div>
             <Th2 className='mb-4'>{props.user!.neptun}</Th2>
-            <RoleBadge role={props.user!.role} />
+            <RoleBadge role={props.user!.role} hover={false} />
           </div>
           <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
             {!props.editingIsOn && (

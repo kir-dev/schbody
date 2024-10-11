@@ -37,7 +37,13 @@ export function getRoleBadgeColorVariant(role: Role) {
   }
 }
 
-export default function RoleBadge({ role, short }: { role: Role; short?: boolean }) {
+interface RoleBageProps {
+  role: Role;
+  short?: boolean;
+  hover?: boolean;
+}
+
+export default function RoleBadge({ role, short, hover = true }: RoleBageProps) {
   const convertedRole = role as unknown as Role;
   const color = useMemo(() => getRoleBadgeColorVariant(role), [role]);
   // eslint-disable-next-line no-undef
@@ -71,7 +77,7 @@ export default function RoleBadge({ role, short }: { role: Role; short?: boolean
     );
   }
   return (
-    <Badge variant={color}>
+    <Badge variant={color} hover={hover}>
       <div className='py-1'>{icon}</div>
       {!short && Role[convertedRole]}
     </Badge>
