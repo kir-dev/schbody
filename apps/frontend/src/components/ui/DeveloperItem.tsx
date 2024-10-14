@@ -22,7 +22,7 @@ export const DeveloperItem = ({ dev: { name, img, tags } }: Props) => {
         <CardTitle>{name}</CardTitle>
         <div className='flex flex-wrap gap-2'>
           {tags.map((tag) => (
-            <Badge key={tag} variant='orange' /*TODO hover={false} */>
+            <Badge key={tag} variant='orange' hover={false}>
               {tag}
             </Badge>
           ))}
