@@ -20,6 +20,9 @@ export default function Footer() {
           Kir-Dev
         </a>
       </p>
+      <Link className='hover:underline' href='/impressum'>
+        Impresszum
+      </Link>
     </footer>
   );
 }
