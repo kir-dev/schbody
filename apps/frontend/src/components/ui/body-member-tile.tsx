@@ -10,7 +10,7 @@ type Props = {
 
 export function BodyMemberTile({ userEntity }: Props) {
   return (
-    <Card className='p-4 flex w-full gap-4'>
+    <Card style={{ wordBreak: 'break-word' }} className='p-4 flex w-full gap-4'>
       <img
         src={`${process.env.NEXT_PUBLIC_API_URL}/users/${userEntity.authSchId}/profile-picture`}
         alt='PROFIL KEP'
@@ -26,8 +26,8 @@ export function BodyMemberTile({ userEntity }: Props) {
           <CardDescription className='mt-1'>{userEntity.fullName}</CardDescription>
         </div>
         <a href={`mailto:${userEntity.email}`} className='flex flex-row gap-2 items-center text-sm'>
-          <Mail size={16} />
-          {userEntity.email}{' '}
+          <Mail size={16} style={{ minWidth: '16px' }} />
+          {userEntity.email}
         </a>
         {userEntity.canHelpNoobs && (
           <CardContent className='text-sm p-0'>{userEntity.publicDesc ? userEntity.publicDesc : '-'}</CardContent>
