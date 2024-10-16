@@ -5,9 +5,13 @@ export enum ApplicationStatus {
   SUBMITTED = 'Benyújtott',
   ACCEPTED = 'Elfogadott',
   REJECTED = 'Elutasított',
-  NEEDS_REVIEW = 'Vizsgált',
+  PREPARED_FOR_PRINT = 'Nyomtatásra kész',
   PRINTED = 'Kinyomtatott',
-  FINISHED = 'Kiosztott',
+  DISTRIBUTED = 'Kiosztott',
+  WAITING_FOR_OPS = 'Üzemeltetésre vár',
+  VALID = 'Érvényes',
+  REVOKED = 'Visszavont',
+  EXPIRED = 'Lejárt',
 }
 
 export type ApplicationEntityWithPeriod = {
