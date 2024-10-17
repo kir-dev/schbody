@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  FiArrowDownCircle,
   FiArrowRightCircle,
   FiCheckCircle,
   FiClock,
@@ -27,7 +28,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
         return 'red';
       case ApplicationStatus.PREPARED_FOR_PRINT:
         return 'yellow';
-      case ApplicationStatus.PRINTED:
+      case ApplicationStatus.MANUFACTURED:
         return 'orange';
       case ApplicationStatus.DISTRIBUTED:
         return 'purple';
@@ -51,8 +52,8 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
         return <FiMinusCircle />;
       case ApplicationStatus.PREPARED_FOR_PRINT:
         return <FiPrinter />;
-      case ApplicationStatus.PRINTED:
-        return <FiPrinter />;
+      case ApplicationStatus.MANUFACTURED:
+        return <FiArrowDownCircle />;
       case ApplicationStatus.DISTRIBUTED:
         return <FiTruck />;
       case ApplicationStatus.WAITING_FOR_OPS:

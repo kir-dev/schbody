@@ -1,7 +1,6 @@
-import { randomInt } from 'node:crypto';
-
 import { faker } from '@faker-js/faker';
 import { ApplicationStatus, PrismaClient } from '@prisma/client';
+import { randomInt } from 'crypto';
 
 const prisma = new PrismaClient();
 

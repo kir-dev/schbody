@@ -79,11 +79,12 @@ export default function Page({ params }: { params: { id: number } }) {
     if (period?.data) {
       downloadPdf(
         <ApplicationExport
-          applicationData={data.filter((a) => a.status === getStatusKey(ApplicationStatus.FINISHED))}
+          applicationData={data.filter((a) => a.status === getStatusKey(ApplicationStatus.ACCEPTED))}
           periodName={period.data.name}
         />,
         `schbody_applications_export_${Date.now()}.pdf`
       );
+      // TODO - Set the exported applications to "PREPARED TO PRINT" status
     }
   };
 
