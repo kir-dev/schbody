@@ -153,7 +153,6 @@ export const columns: (
             onChange={(e) => {
               setIdNumber(e.target.value);
             }}
-            pattern='[0-9]{6}[A-Z]{2}'
             value={idNumber ? idNumber : ''}
             className='w-24 py-1 h-auto'
           />
