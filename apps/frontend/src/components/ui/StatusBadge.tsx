@@ -1,11 +1,21 @@
 import { useMemo } from 'react';
-import { FiAlertCircle, FiArrowRightCircle, FiCheckCircle, FiDisc, FiMinusCircle, FiPrinter } from 'react-icons/fi';
+import {
+  FiArrowRightCircle,
+  FiCheckCircle,
+  FiClock,
+  FiDisc,
+  FiMinusCircle,
+  FiPauseCircle,
+  FiPrinter,
+  FiRotateCcw,
+  FiTruck,
+} from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/utils';
 import { ApplicationStatus } from '@/types/application-entity';
 
-export default function StatusBadge({ status }: { status: ApplicationStatus }) {
+export default function StatusBadge({ status }: Readonly<{ status: ApplicationStatus }>) {
   const convertedStatus = statusConvert(status);
   const color = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
@@ -15,15 +25,22 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
         return 'green';
       case ApplicationStatus.REJECTED:
         return 'red';
-      case ApplicationStatus.NEEDS_REVIEW:
+      case ApplicationStatus.PREPARED_FOR_PRINT:
         return 'yellow';
       case ApplicationStatus.PRINTED:
         return 'orange';
-      case ApplicationStatus.FINISHED:
+      case ApplicationStatus.DISTRIBUTED:
         return 'purple';
+      case ApplicationStatus.WAITING_FOR_OPS:
+        return 'gray';
+      case ApplicationStatus.VALID:
+        return 'green';
+      case ApplicationStatus.REVOKED:
+        return 'red';
+      case ApplicationStatus.EXPIRED:
+        return 'gray';
     }
   }, [status]);
-  // eslint-disable-next-line no-undef
   const icon: JSX.Element = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
       case ApplicationStatus.SUBMITTED:
@@ -32,12 +49,20 @@ export default function StatusBadge({ status }: { status: ApplicationStatus }) {
         return <FiCheckCircle />;
       case ApplicationStatus.REJECTED:
         return <FiMinusCircle />;
-      case ApplicationStatus.NEEDS_REVIEW:
-        return <FiAlertCircle />;
+      case ApplicationStatus.PREPARED_FOR_PRINT:
+        return <FiPrinter />;
       case ApplicationStatus.PRINTED:
         return <FiPrinter />;
-      case ApplicationStatus.FINISHED:
+      case ApplicationStatus.DISTRIBUTED:
+        return <FiTruck />;
+      case ApplicationStatus.WAITING_FOR_OPS:
+        return <FiPauseCircle />;
+      case ApplicationStatus.VALID:
         return <FiArrowRightCircle />;
+      case ApplicationStatus.REVOKED:
+        return <FiRotateCcw />;
+      case ApplicationStatus.EXPIRED:
+        return <FiClock />;
     }
   }, [status]);
 
