@@ -1,7 +1,7 @@
 'use client';
 import { ColumnDef } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FiArrowRightCircle, FiCheck, FiCopy } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
@@ -153,7 +153,6 @@ export const columns: (
             onChange={(e) => {
               setIdNumber(e.target.value);
             }}
-            pattern='[0-9]{6}[A-Z]{2}'
             value={idNumber ? idNumber : ''}
             className='w-24 py-1 h-auto'
           />
@@ -177,6 +176,28 @@ export const columns: (
   {
     id: 'Leadva',
     accessorKey: 'createdAt',
+    enableResizing: false, // Disable resizing
+    size: 140, // Fixed size for consistency
+    filterFn: filterByDateRange,
+    header: ({ column }) => {
+      return DateSortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      return (
+        <span>
+          {new Date(row.original.createdAt).toLocaleDateString('hu-HU', {
+            minute: 'numeric',
+            hour: 'numeric',
+            day: '2-digit',
+            month: 'short',
+          })}
+        </span>
+      );
+    },
+  },
+  {
+    id: 'Frissítve',
+    accessorKey: 'updatedAt',
     enableResizing: false, // Disable resizing
     size: 140, // Fixed size for consistency
     filterFn: filterByDateRange,
