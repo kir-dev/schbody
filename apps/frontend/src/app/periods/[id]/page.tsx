@@ -6,6 +6,7 @@ import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import api from '@/components/network/apiSetup';
 import Th1, { Th2 } from '@/components/typography/typography';
+import { AcceptDialog } from '@/components/ui/accept-dialog';
 import AdminApplicationPeriodCard from '@/components/ui/AdminApplicationPeriodCard';
 import { GeneratingDialog } from '@/components/ui/generating-dialog';
 import { Label } from '@/components/ui/label';
@@ -25,6 +26,8 @@ const CHUNK_SIZE = 300;
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
+  const [autoChangeStatusDialogOpened, setAutoChangeStatusDialogOpened] = useState(false);
+  const [autoChangeStatus, setAutoChangeStatus] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
   const [quickModeEnabled, setQuickModeEnabled] = useState(false);
@@ -68,8 +71,14 @@ export default function Page({ params }: { params: { id: number } }) {
     );
   };
 
+  /**
+   * Handles the export of passes.
+   * Exports the passes to a pdf. By default it exports all the selected passes, but if autoChangeStatus is true,
+   * it changes every selected pass's status that are currently "ACCEPTED" to "PREPARED_FOR_PRINT".
+   */
   const onPassExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
+      setAutoChangeStatusDialogOpened(true);
       setGeneratingDialogOpened(true);
       for (let i = 0; i < data.length; i += CHUNK_SIZE) {
         await downloadPdf(
@@ -81,6 +90,16 @@ export default function Page({ params }: { params: { id: number } }) {
           />,
           `schbody_pass_export_${Date.now()}.pdf`
         );
+      }
+
+      // Changes the status of the applications with status "ACCEPTED"
+      // to "PREPARED_FOR_PRINT" if autoChangeStatus is true
+      if (autoChangeStatus === true) {
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].status === getStatusKey(ApplicationStatus.ACCEPTED)) {
+            handleStatusChange(data[i], ApplicationStatus.PREPARED_FOR_PRINT);
+          }
+        }
       }
       setGeneratingDialogOpened(false);
     }
@@ -101,7 +120,6 @@ export default function Page({ params }: { params: { id: number } }) {
         `schbody_applications_export_${Date.now()}.pdf`
       );
 
-      // TODO - Create a checbox whether the applications should change status automatically
       // Set the exported applications to "WAITING_FOR_OPS" status
       for (let i = 0; i < dataToExport.length; i++) {
         handleStatusChange(dataToExport[i], ApplicationStatus.WAITING_FOR_OPS);
@@ -114,6 +132,19 @@ export default function Page({ params }: { params: { id: number } }) {
   return (
     <div className={quickModeEnabled ? '2xl:-mx-64 xl:-mx-32 max-xl:-mx-8 max-md:-mx-4 px-4 py-0 -mt-4' : ''}>
       <GeneratingDialog open={generatingDialogOpened} />
+      <AcceptDialog
+        open={autoChangeStatusDialogOpened}
+        onAccept={() => {
+          setAutoChangeStatusDialogOpened(false);
+          setAutoChangeStatus(true);
+        }}
+        onDecline={() => {
+          setAutoChangeStatusDialogOpened(false);
+          setAutoChangeStatus(false);
+        }}
+        title='Automatikus státuszváltás'
+        description='Az állapot átállításával a jelentkezők a következő státuszba kerülnek: NYOMTATÁSRA ELŐKÉSZÍTETT'
+      />
       {!quickModeEnabled && (
         <div className='mb-8'>
           <Th1>Jelentkezési időszak kezelése</Th1>

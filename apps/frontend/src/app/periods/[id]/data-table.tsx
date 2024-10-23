@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -72,6 +73,7 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 30,
   });
+  const [autoChangeStatus, setAutoChangeStatus] = React.useState(false);
   const table = useReactTable({
     data,
     columns,
@@ -167,8 +169,14 @@ export function DataTable<TData, TValue>({
           <MenubarMenu>
             <MenubarTrigger>Exportálás</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem onClick={() => onExportPassesClicked(data.filter((_, i) => rowSelection[i]))}>
-                Kijelöltekhez belépők exportálása
+              <MenubarItem className='justify-between'>
+                <div
+                  className='flex justify-between items-center'
+                  onClick={() => onExportPassesClicked(data.filter((_, i) => rowSelection[i]))}
+                >
+                  Kijelöltekhez belépők exportálása
+                </div>
+                <Checkbox checked={autoChangeStatus} onCheckedChange={() => setAutoChangeStatus((prev) => !prev)} />
               </MenubarItem>
               <MenubarItem onClick={() => onExportPassesClicked(data)}>Minden belépő exportálása</MenubarItem>
               <MenubarItem
