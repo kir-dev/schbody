@@ -16,7 +16,6 @@ import {
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -77,7 +76,6 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: 30,
   });
-  const [autoChangeStatus, setAutoChangeStatus] = React.useState(false);
   const table = useReactTable({
     data,
     columns,
@@ -173,14 +171,8 @@ export function DataTable<TData, TValue>({
           <MenubarMenu>
             <MenubarTrigger>Exportálás</MenubarTrigger>
             <MenubarContent>
-              <MenubarItem className='justify-between'>
-                <div
-                  className='flex justify-between items-center'
-                  onClick={() => onExportPassesClicked(data.filter((_, i) => rowSelection[i]))}
-                >
-                  Kijelöltekhez belépők exportálása
-                </div>
-                <Checkbox checked={autoChangeStatus} onCheckedChange={() => setAutoChangeStatus((prev) => !prev)} />
+              <MenubarItem onClick={() => onExportPassesClicked(data.filter((_, i) => rowSelection[i]))}>
+                Kijelöltekhez belépők exportálása
               </MenubarItem>
               <MenubarItem onClick={() => onExportPassesClicked(data)}>Minden belépő exportálása</MenubarItem>
               <MenubarItem
@@ -238,25 +230,27 @@ export function DataTable<TData, TValue>({
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button onClick={() => onSetToDistributedClicked(data)} variant='outline'>
-                Nyomtatással kész
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Az összes PREPARED TO PRINT státusszal rendelkező applikációt átállítja KIOSZTOTT-ra</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className='flex gap-2'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={() => onSetToDistributedClicked(data)} variant='outline'>
+                  Nyomtatással kész
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Az összes NYOMTATÁSRA KÉSZ státusszal rendelkező applikációt átállítja KIOSZTOTT-ra</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-        <Input
-          placeholder='Keresés név alapján'
-          value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('Név')?.setFilterValue(event.target.value)}
-          className='max-w-sm'
-        />
+          <Input
+            placeholder='Keresés név alapján'
+            value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('Név')?.setFilterValue(event.target.value)}
+            className='max-w-sm'
+          />
+        </div>
       </div>
       <div className='rounded-md border'>
         <Table className='w-full bg-white rounded z-0'>

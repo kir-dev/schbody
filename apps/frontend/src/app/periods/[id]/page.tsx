@@ -6,7 +6,6 @@ import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
 import api from '@/components/network/apiSetup';
 import Th1, { Th2 } from '@/components/typography/typography';
-import { AcceptDialog } from '@/components/ui/accept-dialog';
 import AdminApplicationPeriodCard from '@/components/ui/AdminApplicationPeriodCard';
 import { GeneratingDialog } from '@/components/ui/generating-dialog';
 import { Label } from '@/components/ui/label';
@@ -26,7 +25,6 @@ const CHUNK_SIZE = 300;
 export default function Page({ params }: { params: { id: number } }) {
   const period = usePeriod(params.id);
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
-  const [autoChangeStatusDialogOpened, setAutoChangeStatusDialogOpened] = useState(false);
   const [autoChangeStatus, setAutoChangeStatus] = useState(false);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
@@ -78,7 +76,6 @@ export default function Page({ params }: { params: { id: number } }) {
    */
   const onPassExport = async (data: ApplicationEntity[]) => {
     if (period?.data) {
-      setAutoChangeStatusDialogOpened(true);
       setGeneratingDialogOpened(true);
       for (let i = 0; i < data.length; i += CHUNK_SIZE) {
         await downloadPdf(
@@ -121,8 +118,10 @@ export default function Page({ params }: { params: { id: number } }) {
       );
 
       // Set the exported applications to "WAITING_FOR_OPS" status
-      for (let i = 0; i < dataToExport.length; i++) {
-        handleStatusChange(dataToExport[i], ApplicationStatus.WAITING_FOR_OPS);
+      if (autoChangeStatus === true) {
+        for (let i = 0; i < dataToExport.length; i++) {
+          handleStatusChange(dataToExport[i], ApplicationStatus.WAITING_FOR_OPS);
+        }
       }
     }
   };
@@ -145,19 +144,6 @@ export default function Page({ params }: { params: { id: number } }) {
   return (
     <div className={quickModeEnabled ? '2xl:-mx-64 xl:-mx-32 max-xl:-mx-8 max-md:-mx-4 px-4 py-0 -mt-4' : ''}>
       <GeneratingDialog open={generatingDialogOpened} />
-      <AcceptDialog
-        open={autoChangeStatusDialogOpened}
-        onAccept={() => {
-          setAutoChangeStatusDialogOpened(false);
-          setAutoChangeStatus(true);
-        }}
-        onDecline={() => {
-          setAutoChangeStatusDialogOpened(false);
-          setAutoChangeStatus(false);
-        }}
-        title='Automatikus státuszváltás'
-        description='Az állapot átállításával a jelentkezők a következő státuszba kerülnek: NYOMTATÁSRA ELŐKÉSZÍTETT'
-      />
       {!quickModeEnabled && (
         <div className='mb-8'>
           <Th1>Jelentkezési időszak kezelése</Th1>
@@ -174,15 +160,27 @@ export default function Page({ params }: { params: { id: number } }) {
       <div>
         <div className='flex justify-between'>
           <Th2>Jelentkezők</Th2>
-          <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
-            <Label htmlFor='tickets-are-valid-now'>Grind mód</Label>
-            <Switch
-              id='tickets-are-valid-now'
-              onCheckedChange={(v) => {
-                setQuickModeEnabled(v);
-              }}
-              checked={quickModeEnabled}
-            />
+          <div className='flex flex-row items-center gap-4'>
+            <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
+              <Label htmlFor='automatic-status-change'>Automatikus státuszváltás exportáláskor</Label>
+              <Switch
+                id='automatic-status-change'
+                onCheckedChange={(v) => {
+                  setAutoChangeStatus(v);
+                }}
+                checked={autoChangeStatus}
+              />
+            </div>
+            <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
+              <Label htmlFor='tickets-are-valid-now'>Grind mód</Label>
+              <Switch
+                id='tickets-are-valid-now'
+                onCheckedChange={(v) => {
+                  setQuickModeEnabled(v);
+                }}
+                checked={quickModeEnabled}
+              />
+            </div>
           </div>
         </div>
         {areApplicationsLoading && <LoadingCard />}
