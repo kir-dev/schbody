@@ -68,7 +68,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
   }, [status]);
 
   return (
-    <Badge variant={color}>
+    <Badge variant={color} hover>
       {icon}
       {ApplicationStatus[convertedStatus]}
     </Badge>
