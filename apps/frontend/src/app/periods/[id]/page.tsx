@@ -127,6 +127,19 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   };
 
+  /**
+   * Handles the click on the "Set to distributed" button.
+   * This function sets the status of the selected applications which has the
+   * status "PREPARED_TO_PRINT" to "DISTRIBUTED", .
+   */
+  const onSetToDistributedClicked = async (data: ApplicationEntity[]) => {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].status === getStatusKey(ApplicationStatus.PREPARED_FOR_PRINT)) {
+        handleStatusChange(data[i], ApplicationStatus.DISTRIBUTED);
+      }
+    }
+  };
+
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
@@ -180,6 +193,7 @@ export default function Page({ params }: { params: { id: number } }) {
             onStatusChange={handleStatusChange}
             onExportPassesClicked={onPassExport}
             onExportApplicationsClicked={onApplicationsExport}
+            onSetToDistributedClicked={onSetToDistributedClicked}
           />
         )}
       </div>

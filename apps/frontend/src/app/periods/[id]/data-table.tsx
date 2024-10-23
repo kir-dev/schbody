@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
@@ -42,6 +43,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
@@ -50,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
   onExportPassesClicked: (data: TData[]) => void;
   onExportApplicationsClicked: (data: TData[]) => void;
+  onSetToDistributedClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -58,6 +61,7 @@ export function DataTable<TData, TValue>({
   onStatusChange,
   onExportApplicationsClicked,
   onExportPassesClicked,
+  onSetToDistributedClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -234,6 +238,19 @@ export function DataTable<TData, TValue>({
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={() => onSetToDistributedClicked(data)} variant='outline'>
+                Nyomtatással kész
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Az összes PREPARED TO PRINT státusszal rendelkező applikációt átállítja KIOSZTOTT-ra</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <Input
           placeholder='Keresés név alapján'
           value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
