@@ -29,6 +29,17 @@ export default function Page({ params }: { params: { id: number } }) {
   const { data: applications, isLoading: areApplicationsLoading, mutate } = useApplications(params.id);
   const [quickModeEnabled, setQuickModeEnabled] = useState(false);
 
+  /**
+   * Handles the status change of an application.
+   *
+   * This function updates the status of a given application entity by sending a PATCH request
+   * to the API. If the status update is successful, it displays a success toast notification
+   * and updates the local state with the new application status.
+   *
+   * @param {ApplicationEntity} application - The application entity whose status is to be changed.
+   * @param {ApplicationStatus} status - The new status to be applied to the application.
+   * @returns {Promise<void>} A promise that resolves when the status change process is complete.
+   */
   const handleStatusChange = async (application: ApplicationEntity, status: ApplicationStatus) => {
     let convertedStatus = getStatusKey(status);
     if (!convertedStatus) convertedStatus = status;
@@ -75,16 +86,26 @@ export default function Page({ params }: { params: { id: number } }) {
     }
   };
 
+  /**
+   * Handles the export of applications.
+   * This function filters the applications by status and exports them to a PDF file.
+   * After the export, the status of the exported applications is changed to "WAITING_FOR_OPS".
+   * This step happens after the applications have been distributed to the members, but has to be
+   * exported to given to the operations team for acceptance.
+   */
   const onApplicationsExport = (data: ApplicationEntity[]) => {
     if (period?.data) {
+      const dataToExport = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
       downloadPdf(
-        <ApplicationExport
-          applicationData={data.filter((a) => a.status === getStatusKey(ApplicationStatus.ACCEPTED))}
-          periodName={period.data.name}
-        />,
+        <ApplicationExport applicationData={dataToExport} periodName={period.data.name} />,
         `schbody_applications_export_${Date.now()}.pdf`
       );
-      // TODO - Set the exported applications to "PREPARED TO PRINT" status
+
+      // TODO - Create a checbox whether the applications should change status automatically
+      // Set the exported applications to "WAITING_FOR_OPS" status
+      for (let i = 0; i < dataToExport.length; i++) {
+        handleStatusChange(dataToExport[i], ApplicationStatus.WAITING_FOR_OPS);
+      }
     }
   };
 
