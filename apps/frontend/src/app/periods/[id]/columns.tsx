@@ -269,7 +269,7 @@ export const columns: (
               variant='outline'
               className='h-min px-2 py-0.5 rounded'
               disabled={(row.original.status as ApplicationStatus) === ('REJECTED' as ApplicationStatus)}
-              onClick={() => onStatusChange(row.original, ApplicationStatus.FINISHED)}
+              onClick={() => onStatusChange(row.original, ApplicationStatus.VALID)}
             >
               <FiArrowRightCircle />
               Kiosztás
