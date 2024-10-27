@@ -193,7 +193,7 @@ export default function Page({ params }: { params: { id: number } }) {
       <AcceptDialog
         open={autoChangeStatusDialogOpened}
         title='Automatikus státuszváltás'
-        description='Szeretné, hogy az érintett applikációk státuszai automatikusan változzanak exportáláskor?'
+        description='Szeretnéd, hogy az érintett applikációk státuszai automatikusan változzanak exportáláskor?'
         onAccept={() => {
           acceptDialogHandlers?.onAccept();
         }}
