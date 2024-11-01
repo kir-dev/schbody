@@ -41,6 +41,13 @@ export class ApplicationController {
     return this.applicationService.getCurrentUserApplication(user);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @Get('last')
+  getLastUserApplication(@CurrentUser() user: User): Promise<Application> {
+    return this.applicationService.getLastUserApplication(user);
+  }
+
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)

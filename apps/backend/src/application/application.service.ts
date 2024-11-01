@@ -104,6 +104,13 @@ export class ApplicationService {
     }
   }
 
+  /**
+   * Retrieves the current user's application for the current application period.
+   *
+   * @param {User} user - The user whose application is to be retrieved.
+   * @returns {Promise<Application>} - The user's application for the current application period.
+   * @throws {NotFoundException} - If no application is found for the user in the current application period.
+   */
   async getCurrentUserApplication(user: User): Promise<Application> {
     const currentPeriod = await this.applicationPeriodService.getCurrentPeriod();
     try {
@@ -117,6 +124,32 @@ export class ApplicationService {
               userId: user.authSchId,
             },
           ],
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new NotFoundException('Nem található jelentkezés');
+        }
+      }
+    }
+  }
+
+  /**
+   * Gets the last submitted application of the user, if it exists.
+   * It doesn't take into consideration the current application period.
+   * @param {User} user - The user whose application is to be retrieved.
+   * @returns {Promise<Application>} - The last submitted application of the user.
+   * @throws {NotFoundException} - if the user has no applications
+   */
+  async getLastUserApplication(user: User): Promise<Application> {
+    try {
+      return await this.prisma.application.findFirstOrThrow({
+        where: {
+          userId: user.authSchId,
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       });
     } catch (e) {

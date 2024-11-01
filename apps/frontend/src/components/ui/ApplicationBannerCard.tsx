@@ -16,7 +16,7 @@ export default function ApplicationBannerCard() {
   const currentPeriod = useCurrentPeriod();
   const user = useProfile();
   const application = useCurrentApplication();
-  if (!currentPeriod.data || !user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
+  if (!user.data || user.isLoading || application.isLoading || currentPeriod.isLoading) {
     return null;
   }
   if (application.data) {
@@ -35,7 +35,7 @@ export default function ApplicationBannerCard() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {/*todo tooltip does not work */}
+                  {/*TODO tooltip does not work */}
                   <StatusBadge status={application.data.status} />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -47,23 +47,25 @@ export default function ApplicationBannerCard() {
         </CardHeader>
       </Card>
     );
+  } else if (currentPeriod.data) {
+    return (
+      <Card className='w-full'>
+        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
+          <div>
+            <CardTitle> Jelentkezés </CardTitle>
+            <CardDescription>
+              {' '}
+              Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
+              időszak!
+            </CardDescription>
+          </div>
+          <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
+            <FiFastForward />
+            Jelentkezés
+          </Button>
+        </CardHeader>
+      </Card>
+    );
   }
-  return (
-    <Card className='w-full'>
-      <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
-        <div>
-          <CardTitle> Jelentkezés </CardTitle>
-          <CardDescription>
-            {' '}
-            Jelenleg folyamatban van a <span className='font-bold'>{currentPeriod?.data?.name}</span> jelentkezési
-            időszak!
-          </CardDescription>
-        </div>
-        <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
-          <FiFastForward />
-          Jelentkezés
-        </Button>
-      </CardHeader>
-    </Card>
-  );
+  return null;
 }
