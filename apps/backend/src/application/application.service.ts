@@ -151,6 +151,9 @@ export class ApplicationService {
         orderBy: {
           createdAt: 'desc',
         },
+        include: {
+          applicationPeriod: true,
+        },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
