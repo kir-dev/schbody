@@ -136,20 +136,25 @@ export class ApplicationService {
   }
 
   /**
-   * Gets the last submitted application of the user, if it exists.
+   * Gets the last submitted application of the user, if it exists, and includes the period
+   * the application was submitted in.
    * It doesn't take into consideration the current application period.
    * @param {User} user - The user whose application is to be retrieved.
    * @returns {Promise<Application>} - The last submitted application of the user.
    * @throws {NotFoundException} - if the user has no applications
    */
-  async getLastUserApplication(user: User): Promise<Application> {
+  async getLastUserApplication(
+    user: User
+  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>> {
     try {
       return await this.prisma.application.findFirstOrThrow({
         where: {
           userId: user.authSchId,
         },
         orderBy: {
-          createdAt: 'desc',
+          applicationPeriod: {
+            applicationPeriodEndAt: 'desc',
+          },
         },
         include: {
           applicationPeriod: true,

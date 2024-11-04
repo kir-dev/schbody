@@ -2,7 +2,7 @@ import { CurrentUser } from '@kir-dev/passport-authsch';
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Application, Role, User } from '@prisma/client';
+import { Application, Prisma, Role, User } from '@prisma/client';
 import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { PaginationDto } from 'src/dto/pagination.dto';
@@ -44,7 +44,9 @@ export class ApplicationController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @Get('last')
-  getLastUserApplication(@CurrentUser() user: User): Promise<Application> {
+  getLastUserApplication(
+    @CurrentUser() user: User
+  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>> {
     return this.applicationService.getLastUserApplication(user);
   }
 

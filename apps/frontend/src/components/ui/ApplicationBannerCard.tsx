@@ -74,11 +74,6 @@ export default function ApplicationBannerCard() {
         <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
           <div className='flex flex-col gap-4 justify-start'>
             <CardTitle>Eddigi jelentkezésed</CardTitle>
-            <p>
-              Jelenleg nincsen jelentkezési időszak, de itt láthatod a(z){' '}
-              <span className='font-bold'>{lastApplication.data.applicationPeriod.name}</span> időszakban sikeresen
-              leadott jelentkezésedet.
-            </p>
           </div>
           <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
             <Ticket user={user.data} />
