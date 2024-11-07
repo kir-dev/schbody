@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
@@ -23,7 +23,8 @@ import { PassExport } from './pass-export';
 
 const CHUNK_SIZE = 300;
 
-export default function Page({ params }: { params: { id: number } }) {
+export default function Page(props: { params: Promise<{ id: number }> }) {
+  const params = use(props.params);
   const period = usePeriod(params.id);
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
   const [autoChangeStatusDialogOpened, setAutoChangeStatusDialogOpened] = useState(false);
