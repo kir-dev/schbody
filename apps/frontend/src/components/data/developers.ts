@@ -20,6 +20,12 @@ export const developers: Dev[] = [
     github: 'DannySS123',
   },
   {
+    name: 'Samu',
+    img: 'https://avatars.githubusercontent.com/u/13004605?v=4',
+    tags: ['Backend', 'Frontend', 'Review'],
+    github: 'Tschonti',
+  },
+  {
     name: 'Csanád',
     img: 'https://avatars.githubusercontent.com/u/93796810?v=4',
     tags: ['Backend', 'Frontend'],
@@ -30,11 +36,5 @@ export const developers: Dev[] = [
     img: 'https://avatars.githubusercontent.com/u/37874705?v=4',
     tags: ['Kép kezelés'],
     github: 'Isti01',
-  },
-  {
-    name: 'Samu',
-    img: 'https://avatars.githubusercontent.com/u/13004605?v=4',
-    tags: ['Review'],
-    github: 'Tschonti',
   },
 ];
