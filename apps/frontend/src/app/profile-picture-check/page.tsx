@@ -31,7 +31,7 @@ export default function Page() {
     setCounter(counter + 1);
     if (currentPicture === data!.length - 1) {
       await mutate();
-      setCurrentPicture(0);
+      setCurrentPicture(data.length === 0 ? -1 : 0);
     } else {
       setCurrentPicture(currentPicture + 1);
     }
@@ -42,7 +42,7 @@ export default function Page() {
     <div className='flex flex-col items-center w-full gap-4'>
       {isLoading && <LoadingCard />}
       {data && data.length === 0 && <Th2>Nincs több kép</Th2>}
-      {data && (
+      {data && currentPicture > -1 && (
         <ProfilePictureTinderCard
           user={data[currentPicture].user}
           onAccept={onAccept}

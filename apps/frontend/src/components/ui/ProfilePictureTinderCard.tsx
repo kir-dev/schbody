@@ -59,7 +59,7 @@ export default function ProfilePictureTinderCard({
             className={`overflow-hidden rounded transition-all duration-500 ${
               slideDirection === 'left' ? '-translate-x-96 opacity-0' : ''
             } ${slideDirection === 'right' ? 'translate-x-96 opacity-0' : ''} ${
-              isSliding ? '' : 'translate-x-0 opacity-100 duration-150 transition-opacity' // Ensure the image returns to the center after sliding
+              isSliding ? '' : 'translate-x-0 opacity-100 duration-150 transition-opacity'
             }`}
           >
             <img
