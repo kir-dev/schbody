@@ -10,7 +10,7 @@ type Props = {
 
 export const DeveloperItem = ({ dev: { name, img, tags, github } }: Props) => {
   return (
-    <Link href={github ? `https://github.com/${github}` : 'https://github.com/kir-dev'}>
+    <Link href={github ? `https://github.com/${github}` : 'https://github.com/kir-dev'} target='_blank'>
       <Card style={{ wordBreak: 'break-word' }} className='flex w-full rounded-lg p-2'>
         <img
           src={img}

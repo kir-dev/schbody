@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { LuGithub, LuUser } from 'react-icons/lu';
 
 import { developers } from '@/components/data/developers';
@@ -10,7 +9,6 @@ import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { DeveloperItem } from '@/components/ui/DeveloperItem';
 
 export default function Page() {
-  const router = useRouter();
   return (
     <>
       <Th1>Fejlesztők</Th1>
@@ -35,7 +33,7 @@ export default function Page() {
         <div className='flex gap-4 justify-center'>
           <Button
             onClick={() => {
-              router.push('https://github.com/kir-dev/schbody');
+              window.open('https://github.com/kir-dev/schbody');
             }}
             variant='secondary'
           >
@@ -43,7 +41,7 @@ export default function Page() {
           </Button>
           <Button
             onClick={() => {
-              router.push('https://kir-dev.hu');
+              window.open('https://kir-dev.hu');
             }}
             variant='secondary'
           >
