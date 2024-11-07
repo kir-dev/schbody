@@ -1,4 +1,4 @@
-import { pdf } from '@react-pdf/renderer';
+import { pdf, DocumentProps } from '@react-pdf/renderer';
 import { type ClassValue, clsx } from 'clsx';
 import { decode, JwtPayload } from 'jsonwebtoken';
 import { ReactElement } from 'react';
@@ -81,8 +81,7 @@ export const mockApplication: ApplicationEntity = {
     idNumber: '123456AB',
   },
 };
-
-export const downloadPdf = async (pdfComponent: ReactElement, fileName: string) => {
+export const downloadPdf = async (pdfComponent: ReactElement<DocumentProps>, fileName: string) => {
   const blob = await pdf(pdfComponent).toBlob();
   const a = document.createElement('a');
   a.style.display = 'none';
