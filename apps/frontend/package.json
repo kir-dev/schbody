@@ -57,7 +57,7 @@
     "lucide-react": "^0.454.0",
     "next": "15.0.2",
     "react": "19.0.0-rc-fb9a90fa48-20240614",
-    "react-day-picker": "8.10.1",
+    "react-day-picker": "9.3.0",
     "react-dom": "19.0.0-rc-fb9a90fa48-20240614",
     "react-easy-crop": "^5.1.0",
     "react-hook-form": "^7.53.1",

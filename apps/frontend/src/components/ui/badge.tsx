@@ -8,10 +8,21 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',
-        secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
-        outline: 'text-foreground',
+        default: 'border-transparent bg-slate-900 text-slate-50 dark:bg-slate-50 dark:text-slate-900',
+        secondary: 'border-transparent bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50',
+        destructive: 'border-transparent bg-red-500 text-slate-50 dark:bg-red-900 dark:text-slate-50',
+        outline: 'text-slate-950 dark:text-slate-50',
+        orange: 'border-transparent bg-orange-500 text-slate-50 dark:bg-orange-900',
+        blue: 'border-transparent bg-blue-500 text-slate-50 dark:bg-blue-900',
+        gray: 'border-transparent bg-gray-500 text-slate-50 dark:bg-gray-900',
+        green: 'border-transparent bg-green-500 text-slate-50 dark:bg-green-900',
+        red: 'border-transparent bg-red-500 text-slate-50 dark:bg-red-900',
+        yellow: 'border-transparent bg-yellow-500 text-slate-50 dark:bg-yellow-900',
+        purple: 'border-transparent bg-purple-500 text-slate-50 dark:bg-purple-900',
+      },
+      hover: {
+        true: 'hover:bg-opacity-80',
+        false: '',
       },
     },
     defaultVariants: {
