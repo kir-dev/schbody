@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
@@ -57,7 +58,7 @@ export default function UserProfileBanner(props: {
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>
       <div className='min-w-44 min-h-44 md:w-1/5 max-md:w-44 h-full relative'>
-        <img
+        <Image
           src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
           alt='PROFIL KEP'
           className='md:rounded-l max-md:rounded-xl max-md:my-4'

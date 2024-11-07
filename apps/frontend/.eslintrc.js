@@ -6,7 +6,11 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin', 'react'],
-  extends: ['plugin:@typescript-eslint/recommended', 'plugin:react/recommended'],
+  extends: [
+    // 'next/core-web-vitals',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+  ],
   settings: {
     react: {
       version: 'detect',

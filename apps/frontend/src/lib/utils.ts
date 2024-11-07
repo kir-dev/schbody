@@ -83,17 +83,13 @@ export const mockApplication: ApplicationEntity = {
 
 export const downloadPdf = async (pdfComponent: ReactElement, fileName: string) => {
   const blob = await pdf(pdfComponent).toBlob();
-  // eslint-disable-next-line no-undef
   const a = document.createElement('a');
   a.style.display = 'none';
-  // eslint-disable-next-line no-undef
   document.body.appendChild(a);
 
-  // eslint-disable-next-line no-undef
   const url = window.URL.createObjectURL(blob);
   a.href = url;
   a.download = fileName;
   a.click();
-  // eslint-disable-next-line no-undef
   window.URL.revokeObjectURL(url);
 };

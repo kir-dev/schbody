@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nestjs/mapped-types": "*"
+    "@nestjs/mapped-types": "^2.0.5"
   },
   "name": "next-nest-template",
   "version": "0.0.0",
