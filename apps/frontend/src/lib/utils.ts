@@ -10,6 +10,7 @@ import { Role } from '@/types/user-entity';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
 export const getRoleFromJwt = (jwtToken?: string): string => {
   if (!jwtToken) {
     return 'UNAUTHORIZED';

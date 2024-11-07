@@ -20,7 +20,7 @@
     "format:check": "prettier --check apps"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.2",
     "eslint-config-prettier": "^9.1.0",

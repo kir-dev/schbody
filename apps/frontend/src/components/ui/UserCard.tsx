@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiEdit2, FiUser } from 'react-icons/fi';
 
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +8,7 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
   return (
     <Card>
       <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-scroll'>
-        <div className='flex gap-8 flex'>
+        <div className='flex gap-8'>
           <img
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
             alt='KEP'
