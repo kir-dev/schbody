@@ -17,7 +17,7 @@ export enum ApplicationStatus {
 export type ApplicationEntityWithPeriod = {
   id: number;
   user: UserEntity;
-  period: ApplicationPeriodEntity;
+  applicationPeriod: ApplicationPeriodEntity;
   status: ApplicationStatus;
   createdAt: Date;
   updatedAt: Date;
