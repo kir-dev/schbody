@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
-import { statusConvert } from '@/lib/utils';
+import { statusConvert } from '@/lib/status';
 import { ApplicationStatus } from '@/types/application-entity';
 
 export default function StatusBadge({ status }: Readonly<{ status: ApplicationStatus }>) {

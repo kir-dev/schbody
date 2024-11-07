@@ -20,8 +20,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
+import { downloadPdf, mockApplication } from '@/lib/pdf';
 import { toast } from '@/lib/use-toast';
-import { downloadPdf, mockApplication } from '@/lib/utils';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 import { Th2 } from '../typography/typography';
@@ -63,7 +63,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
   };
 
   const onMockExport = async () => {
-    downloadPdf(
+    await downloadPdf(
       <PassExport
         mock
         periodId={period.id}

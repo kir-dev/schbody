@@ -14,8 +14,9 @@ import LoadingCard from '@/components/ui/LoadingCard';
 import { Switch } from '@/components/ui/switch';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
+import { downloadPdf } from '@/lib/pdf';
+import { getStatusKey } from '@/lib/status';
 import { toast } from '@/lib/use-toast';
-import { downloadPdf, getStatusKey } from '@/lib/utils';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 import { ApplicationExport } from './application-export';
@@ -159,7 +160,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
       const autoChangeStatus = await showAutoChangeStatusDialog();
 
       const dataToExport = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
-      downloadPdf(
+      await downloadPdf(
         <ApplicationExport applicationData={dataToExport} periodName={period.data.name} />,
         `schbody_applications_export_${Date.now()}.pdf`
       );
