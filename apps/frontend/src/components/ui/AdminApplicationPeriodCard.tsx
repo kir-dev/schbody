@@ -24,6 +24,7 @@ import { downloadPdf, mockApplication } from '@/lib/pdf';
 import { toast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
+import Image from 'next/image';
 import { Th2 } from '../typography/typography';
 import PictureUploadDialog from './PictureUploadDialog';
 
@@ -125,7 +126,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
           </div>
         </div>
         <div className='flex max-md:flex-col md:flex-row gap-4 max-md:items-center md:items-end'>
-          <img
+          <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`}
             width={75 * 4}
             height={43 * 4}

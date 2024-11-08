@@ -21,7 +21,7 @@ export const getRoleFromJwt = (jwtToken?: string): string => {
       return 'UNAUTHORIZED';
     }
     return dataFromjwt?.role || 'UNAUTHORIZED';
-  } catch (e) {
+  } catch {
     return 'UNAUTHORIZED';
   }
 };

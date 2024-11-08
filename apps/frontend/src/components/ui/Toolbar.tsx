@@ -15,7 +15,7 @@ export function Toolbar({ editor }: Props) {
   if (!editor) return null;
   const setLink = useCallback(() => {
     const previousUrl = editor.getAttributes('link').href;
-    // eslint-disable-next-line no-alert, no-undef
+
     const url = window.prompt('URL', previousUrl);
     if (url === null) {
       return;

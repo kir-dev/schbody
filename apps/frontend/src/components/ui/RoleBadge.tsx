@@ -46,7 +46,7 @@ interface RoleBageProps {
 export default function RoleBadge({ role, short, hover = true }: RoleBageProps) {
   const convertedRole = role as unknown as Role;
   const color = useMemo(() => getRoleBadgeColorVariant(role), [role]);
-  // eslint-disable-next-line no-undef
+
   const icon: JSX.Element = useMemo(() => {
     switch (Role[convertedRole]) {
       case Role.USER:
@@ -58,7 +58,7 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
       case Role.SUPERUSER:
         return <FiKey />;
     }
-  }, [role]);
+  }, [convertedRole]);
 
   if (short) {
     return (

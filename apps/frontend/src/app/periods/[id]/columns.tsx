@@ -19,6 +19,7 @@ import { SortableFilterableHeader } from '@/components/ui/table-headers/Sortable
 import { filterByDateRange } from '@/lib/customFilters';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import Image from 'next/image';
 
 export const columns: (
   quickMode: boolean,
@@ -62,7 +63,7 @@ export const columns: (
             </div>
           </HoverCardTrigger>
           <HoverCardContent>
-            <img
+            <Image
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
               alt='KEP'
               className='rounded max-w-32'
@@ -124,6 +125,7 @@ export const columns: (
       return SortableFilterableHeader(column);
     },
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [idNumber, setIdNumber] = useState(row.original.user.idNumber);
       return (
         <form
@@ -226,6 +228,7 @@ export const columns: (
     size: 100,
     enableResizing: false,
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [open, setOpen] = useState(false);
       return (
         <div className='flex gap-2 items-center justify-between'>

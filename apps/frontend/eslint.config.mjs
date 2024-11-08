@@ -1,5 +1,6 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
+import next from '@next/eslint-plugin-next';
 import typescriptEslintEslintPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
@@ -22,11 +23,13 @@ export default [
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:next/core-web-vitals'
+    'next/core-web-vitals',
+    'next/typescript'
   ),
   {
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
+      next,
       react,
     },
 

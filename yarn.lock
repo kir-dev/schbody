@@ -481,7 +481,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
+"@eslint-community/eslint-utils@npm:^4.2.0":
+  version: 4.4.1
+  resolution: "@eslint-community/eslint-utils@npm:4.4.1"
+  dependencies:
+    eslint-visitor-keys: "npm:^3.4.3"
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
+  checksum: 10c0/2aa0ac2fc50ff3f234408b10900ed4f1a0b19352f21346ad4cc3d83a1271481bdda11097baa45d484dd564c895e0762a27a8240be7a256b3ad47129e96528252
+  languageName: node
+  linkType: hard
+
+"@eslint-community/eslint-utils@npm:^4.4.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
   dependencies:
@@ -1242,7 +1253,11 @@ __metadata:
     clsx: "npm:^2.1.1"
     cmdk: "npm:1.0.4"
     date-fns: "npm:^4.1.0"
+    eslint-config-next: "npm:15.0.3"
+    eslint-config-prettier: "npm:^9.1.0"
+    eslint-plugin-prettier: "npm:5.2.1"
     eslint-plugin-react: "npm:^7.37.2"
+    eslint-plugin-simple-import-sort: "npm:^12.1.1"
     hamburger-react: "npm:^2.5.1"
     input-otp: "npm:^1.4.1"
     js-cookie: "npm:^3.0.5"
@@ -4739,7 +4754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
+"cross-spawn@npm:^7.0.0, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
   dependencies:
@@ -4747,6 +4762,17 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: 10c0/5738c312387081c98d69c98e105b6327b069197f864a60593245d64c8089c8a0a744e16349281210d56835bb9274130d825a78b2ad6853ca13cfbeffc0c31750
+  languageName: node
+  linkType: hard
+
+"cross-spawn@npm:^7.0.2":
+  version: 7.0.5
+  resolution: "cross-spawn@npm:7.0.5"
+  dependencies:
+    path-key: "npm:^3.1.0"
+    shebang-command: "npm:^2.0.0"
+    which: "npm:^2.0.1"
+  checksum: 10c0/aa82ce7ac0814a27e6f2b738c5a7cf1fa21a3558a1e42df449fc96541ba3ba731e4d3ecffa4435348808a86212f287c6f20a1ee551ef1ff95d01cfec5f434944
   languageName: node
   linkType: hard
 
@@ -7865,10 +7891,6 @@ __metadata:
     "@nestjs/mapped-types": "npm:^2.0.5"
     concurrently: "npm:^9.1.0"
     eslint: "npm:^9.14.0"
-    eslint-config-next: "npm:15.0.3"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-plugin-prettier: "npm:5.2.1"
-    eslint-plugin-simple-import-sort: "npm:^12.1.1"
     prettier: "npm:^3.3.3"
   languageName: unknown
   linkType: soft

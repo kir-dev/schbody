@@ -3,13 +3,14 @@ import { FiEdit2, FiUser } from 'react-icons/fi';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
 import { Role, UserEntity } from '@/types/user-entity';
+import Image from 'next/image';
 
 export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
   return (
     <Card>
       <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-scroll'>
         <div className='flex gap-8'>
-          <img
+          <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
             alt='KEP'
             className='lg:rounded-l-lg max-lg:rounded-lg max-w-20 h-fit aspect-auto -m-4 max-md:-my-4'

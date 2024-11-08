@@ -41,7 +41,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
       case ApplicationStatus.EXPIRED:
         return 'gray';
     }
-  }, [status]);
+  }, [convertedStatus]);
   const icon: JSX.Element = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
       case ApplicationStatus.SUBMITTED:
@@ -65,7 +65,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
       case ApplicationStatus.EXPIRED:
         return <FiClock />;
     }
-  }, [status]);
+  }, [convertedStatus]);
 
   return (
     <Badge variant={color} hover>

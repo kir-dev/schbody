@@ -14,7 +14,9 @@
     "start:frontend": "cd apps/frontend && yarn dev",
     "build:backend": "cd apps/backend && yarn build",
     "build:frontend": "cd apps/frontend && yarn build",
-    "lint": "eslint apps --ext .ts,.tsx --max-warnings 0",
+    "lint:frontend": "cd apps/frontend && yarn lint",
+    "lint:backend": "cd apps/backend && yarn lint",
+    "lint": "concurrently \"yarn lint:frontend\" \"yarn lint:backend\"",
     "lint:fix": "eslint apps --ext .ts,.tsx --fix",
     "format": "prettier --write apps",
     "format:check": "prettier --check apps"
@@ -22,10 +24,6 @@
   "devDependencies": {
     "concurrently": "^9.1.0",
     "eslint": "^9.14.0",
-    "eslint-config-next": "15.0.3",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "5.2.1",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "^3.3.3"
   },
   "workspaces": [
