@@ -37,7 +37,7 @@ export default function MemberProfileData({
           control={form.control}
           name='canHelpNoobs'
           render={({ field }) => (
-            <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+            <FormItem className='flex flex-row gap-2 items-center justify-between rounded-lg border p-4 shadow-sm'>
               <div className='space-y-0.5'>
                 <FormLabel>Tudsz segíteni a többieknek az edzésben?</FormLabel>
                 <FormDescription>Ha igen, írj egy rövid leírást erről</FormDescription>

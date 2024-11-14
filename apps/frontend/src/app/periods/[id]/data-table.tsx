@@ -15,6 +15,7 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
   Menubar,
@@ -41,7 +42,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getStatusKey } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 interface DataTableProps<TData, TValue> {
@@ -50,6 +51,7 @@ interface DataTableProps<TData, TValue> {
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
   onExportPassesClicked: (data: TData[]) => void;
   onExportApplicationsClicked: (data: TData[]) => void;
+  onSetToDistributedClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -58,6 +60,7 @@ export function DataTable<TData, TValue>({
   onStatusChange,
   onExportApplicationsClicked,
   onExportPassesClicked,
+  onSetToDistributedClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -192,26 +195,17 @@ export function DataTable<TData, TValue>({
               </MenubarItem>
               <MenubarItem
                 onClick={() =>
-                  onExportApplicationsClicked(
-                    data.filter((a) => (a as ApplicationEntity).status === getStatusKey(ApplicationStatus.FINISHED))
-                  )
-                }
-              >
-                Teljes lista exportálása (csak kiosztott)
-              </MenubarItem>
-              <MenubarItem
-                onClick={() =>
                   onExportApplicationsClicked(data.filter((a) => (a as ApplicationEntity).user.isSchResident))
                 }
               >
-                Teljes lista exportálása (kollégisták)
+                Kollégisták exportálása (csak kiosztott)
               </MenubarItem>
               <MenubarItem
                 onClick={() =>
                   onExportApplicationsClicked(data.filter((a) => !(a as ApplicationEntity).user.isSchResident))
                 }
               >
-                Teljes lista exportálása (nem kollégisták)
+                Nem kollégisták exportálása (csak kiosztott)
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
@@ -236,12 +230,27 @@ export function DataTable<TData, TValue>({
             </MenubarContent>
           </MenubarMenu>
         </Menubar>
-        <Input
-          placeholder='Keresés név alapján'
-          value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('Név')?.setFilterValue(event.target.value)}
-          className='max-w-sm'
-        />
+        <div className='flex gap-2'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={() => onSetToDistributedClicked(data)} variant='outline'>
+                  Nyomtatással kész
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Az összes NYOMTATÁSRA KÉSZ státusszal rendelkező applikációt átállítja KIOSZTOTT-ra</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <Input
+            placeholder='Keresés név alapján'
+            value={(table.getColumn('Név')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('Név')?.setFilterValue(event.target.value)}
+            className='max-w-sm'
+          />
+        </div>
       </div>
       <div className='rounded-md border'>
         <Table className='w-full bg-white rounded z-0'>

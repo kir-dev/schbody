@@ -104,7 +104,7 @@ export class UserController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_ADMIN)
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserAdminDto, @CurrentUser() user: User) {
     return this.userService.updateAdmin(id, updateUserDto, user.role);
   }

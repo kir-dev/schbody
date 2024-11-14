@@ -142,7 +142,7 @@ export default function ProfileForm() {
               control={form.control}
               name='isSchResident'
               render={({ field }) => (
-                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm'>
+                <FormItem className='flex flex-row gap-2 items-center justify-between rounded-lg border p-4 shadow-sm'>
                   <div className='space-y-0.5'>
                     <FormLabel>A Schönherz Kollégiumban laksz?</FormLabel>
                     <FormDescription>Ha igen, kérlek add meg a szobaszámod is</FormDescription>
@@ -166,34 +166,36 @@ export default function ProfileForm() {
               name='roomNumber'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
+                  className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
                     <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
                     <FormMessage />
                   </div>
-                  <FormControl>
-                    <InputOTP
-                      maxLength={form.watch('roomNumber')?.toString().startsWith('1') ? 4 : 3}
-                      disabled={!form.watch('isSchResident') || !editingIsOn}
-                      value={field.value ? `${field.value}` : ''}
-                      onChange={(value: string) => {
-                        let numericValue = parseInt(value, 10);
-                        if (isNaN(numericValue)) {
-                          numericValue = 0;
-                        }
-                        field.onChange(numericValue);
-                      }}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        {form.watch('roomNumber')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </FormControl>
+                  <div className='flex self-center'>
+                    <FormControl>
+                      <InputOTP
+                        maxLength={form.watch('roomNumber')?.toString().startsWith('1') ? 4 : 3}
+                        disabled={!form.watch('isSchResident') || !editingIsOn}
+                        value={field.value ? `${field.value}` : ''}
+                        onChange={(value: string) => {
+                          let numericValue = parseInt(value, 10);
+                          if (isNaN(numericValue)) {
+                            numericValue = 0;
+                          }
+                          field.onChange(numericValue);
+                        }}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          {form.watch('roomNumber')?.toString().startsWith('1') && <InputOTPSlot index={3} />}
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                  </div>
                 </FormItem>
               )}
             />

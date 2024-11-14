@@ -5,14 +5,19 @@ export enum ApplicationStatus {
   SUBMITTED = 'Benyújtott',
   ACCEPTED = 'Elfogadott',
   REJECTED = 'Elutasított',
-  NEEDS_REVIEW = 'Vizsgált',
-  FINISHED = 'Kiosztott',
+  PREPARED_FOR_PRINT = 'Nyomtatásra kész',
+  MANUFACTURED = 'Legyártott',
+  DISTRIBUTED = 'Kiosztott',
+  WAITING_FOR_OPS = 'Üzemeltetésre vár',
+  VALID = 'Érvényes',
+  REVOKED = 'Visszavont',
+  EXPIRED = 'Lejárt',
 }
 
 export type ApplicationEntityWithPeriod = {
   id: number;
   user: UserEntity;
-  period: ApplicationPeriodEntity;
+  applicationPeriod: ApplicationPeriodEntity;
   status: ApplicationStatus;
   createdAt: Date;
   updatedAt: Date;

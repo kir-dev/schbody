@@ -28,18 +28,24 @@ export const ApplicationExport = ({ applicationData, periodName }: Props) => (
         </Text>
         <Text style={{ width: '100%', textAlign: 'center', fontSize: '14pt', marginBottom: '5mm' }}>{periodName}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ width: '70%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
+          <Text style={{ width: '60%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
             Teljes név
           </Text>
-          <Text style={{ width: '30%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
+          <Text style={{ width: '20%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
             NEPTUN kód
+          </Text>
+          <Text style={{ width: '20%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
+            SZIG szám
           </Text>
         </View>
         {applicationData.map((a) => (
           <View style={{ flexDirection: 'row', alignItems: 'center' }} key={a.id}>
-            <Text style={{ width: '70%', padding: '1mm', border: '1pt solid black' }}>{a.user.fullName}</Text>
-            <Text style={{ width: '30%', padding: '1mm', border: '1pt solid black', textAlign: 'center' }}>
+            <Text style={{ width: '60%', padding: '1mm', border: '1pt solid black' }}>{a.user.fullName}</Text>
+            <Text style={{ width: '20%', padding: '1mm', border: '1pt solid black', textAlign: 'center' }}>
               {a.user.neptun ?? '-'}
+            </Text>
+            <Text style={{ width: '20%', padding: '1mm', border: '1pt solid black', textAlign: 'center' }}>
+              {a.user.idNumber ?? '-'}
             </Text>
           </View>
         ))}
