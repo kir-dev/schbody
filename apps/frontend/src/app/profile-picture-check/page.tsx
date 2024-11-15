@@ -1,8 +1,11 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import api from '@/components/network/apiSetup';
 import { Th2 } from '@/components/typography/typography';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import LoadingCard from '@/components/ui/LoadingCard';
 import ProfilePictureTinderCard from '@/components/ui/ProfilePictureTinderCard';
 import { usePendingPictures } from '@/hooks/usePendingPictures';
@@ -38,20 +41,32 @@ export default function Page() {
     setIsMutating(false);
   };
 
+  const router = useRouter();
+
   return (
-    <div className='flex flex-col items-center w-full gap-4'>
+    <Card className='flex flex-col items-center w-full gap-4 p-8'>
       {isLoading && <LoadingCard />}
-      {data && data.length === 0 && <Th2>Nincs több kép</Th2>}
-      {data && currentPicture > -1 && (
-        <ProfilePictureTinderCard
-          user={data[currentPicture].user}
-          onAccept={onAccept}
-          onReject={onReject}
-          onSkip={onSkip}
-          isMutating={isLoading || isMutating}
-        />
+      {data && data.length === 0 && <p>Most nincs elbirálandó kép</p>}
+      {data && currentPicture > -1 && data[currentPicture] && (
+        <>
+          <ProfilePictureTinderCard
+            user={data[currentPicture].user}
+            onAccept={onAccept}
+            onReject={onReject}
+            onSkip={onSkip}
+            isMutating={isLoading || isMutating}
+          />
+          <Th2>{counter} húzás</Th2>
+        </>
       )}
-      <Th2>{counter} húzás</Th2>
-    </div>
+      <Button
+        onClick={() => {
+          router.push('/admin');
+        }}
+        variant='secondary'
+      >
+        Vissza
+      </Button>
+    </Card>
   );
 }
