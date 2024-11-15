@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/utils';
 import { ApplicationStatus } from '@/types/application-entity';
 
-export default function StatusBadge({ status }: Readonly<{ status: ApplicationStatus }>) {
+export default function StatusBadge({ status, hover }: Readonly<{ status: ApplicationStatus }> & { hover?: boolean }) {
   const convertedStatus = statusConvert(status);
   const color = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
@@ -68,7 +68,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
   }, [status]);
 
   return (
-    <Badge variant={color} hover>
+    <Badge variant={color} hover={hover}>
       {icon}
       {ApplicationStatus[convertedStatus]}
     </Badge>

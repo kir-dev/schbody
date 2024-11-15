@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuBuilding2, LuFileEdit } from 'react-icons/lu';
 import { z } from 'zod';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -94,7 +95,10 @@ export default function ProfileForm() {
         <Card>
           <CardHeader className='flex items-start flex-row justify-between'>
             <div>
-              <CardTitle>Személyes adatok</CardTitle>
+              <CardTitle>
+                <LuFileEdit />
+                Személyes adatok
+              </CardTitle>
             </div>
           </CardHeader>
           <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
@@ -128,7 +132,10 @@ export default function ProfileForm() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Kollégiumi bentlakás</CardTitle>
+            <CardTitle>
+              <LuBuilding2 />
+              Kollégiumi bentlakás
+            </CardTitle>
           </CardHeader>
           <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField

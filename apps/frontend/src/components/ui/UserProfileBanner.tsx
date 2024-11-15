@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
+import { UserDataRow } from '@/components/ui/UserDataRow';
 import { UserEntity } from '@/types/user-entity';
 
 import PictureUploadDialog from './PictureUploadDialog';
@@ -60,7 +60,7 @@ export default function UserProfileBanner(props: {
         <img
           src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
           alt='PROFIL KEP'
-          className='md:rounded-l max-md:rounded-xl max-md:my-4'
+          className='md:rounded-l-lg max-md:rounded-xl max-md:my-4'
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = 'default_pfp.jpg';
@@ -115,7 +115,7 @@ export default function UserProfileBanner(props: {
             )}
           </div>
         </div>
-        <UserTimeStampsBlock user={props.user} />
+        <UserDataRow user={props.user} />
       </CardContent>
     </Card>
   );
