@@ -37,7 +37,6 @@ export default function ApplicationBannerCard() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {/*TODO tooltip does not work */}
                   <StatusBadge status={currentApplication.data.status} />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -73,14 +72,13 @@ export default function ApplicationBannerCard() {
       <Card className='w-full'>
         <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
           <div className='flex flex-col gap-4 justify-start'>
-            <CardTitle>Eddigi jelentkezésed</CardTitle>
+            <CardTitle>Utolsó jelentkezésed</CardTitle>
           </div>
           <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
             <Ticket user={user.data} />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {/*TODO tooltip does not work */}
                   <StatusBadge status={lastApplication.data.status} />
                 </TooltipTrigger>
                 <TooltipContent>
