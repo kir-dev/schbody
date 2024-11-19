@@ -4,12 +4,13 @@ import { decode, JwtPayload } from 'jsonwebtoken';
 import { ReactElement } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity, ApplicationEntityWithPeriod, ApplicationStatus } from '@/types/application-entity';
 import { Role } from '@/types/user-entity';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
 export const getRoleFromJwt = (jwtToken?: string): string => {
   if (!jwtToken) {
     return 'UNAUTHORIZED';
@@ -96,4 +97,13 @@ export const downloadPdf = async (pdfComponent: ReactElement, fileName: string) 
   a.click();
   // eslint-disable-next-line no-undef
   window.URL.revokeObjectURL(url);
+};
+
+export const trimPeriod = (application: ApplicationEntityWithPeriod): ApplicationEntity => {
+  return {
+    ...application,
+    userId: application.user.authSchId,
+    applicationPeriodId: application.applicationPeriod.id,
+    user: application.user,
+  };
 };
