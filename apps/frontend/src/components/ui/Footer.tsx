@@ -7,8 +7,8 @@ import KirCard from '@/components/ui/KirCard';
 export default function Footer() {
   return (
     <footer className='bg-amber-200 text-black p-4'>
-      <div className='flex gap-4 container mx-auto items-center justify-between'>
-        <div className='flex gap-4 justify-center'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 w-full container mx-auto gap-4'>
+        <div className='flex gap-4 justify-center lg:justify-start '>
           <Link href='https://www.facebook.com/groups/schbody' target='_blank'>
             <FaFacebookF size={20} />
           </Link>
@@ -17,7 +17,7 @@ export default function Footer() {
           </Link>
         </div>
         <KirCard />
-        <p className='text-sm'>&copy; 2024 SCHBody</p>
+        <p className='text-sm text-center lg:text-right '>&copy; 2024 SCHBody</p>
       </div>
     </footer>
   );
