@@ -51,7 +51,7 @@ interface DataTableProps<TData, TValue> {
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
   onExportPassesClicked: (data: TData[]) => void;
   onExportApplicationsClicked: (data: TData[]) => void;
-  onSetToDistributedClicked: (data: TData[]) => void;
+  onSetToManufactured: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -60,7 +60,7 @@ export function DataTable<TData, TValue>({
   onStatusChange,
   onExportApplicationsClicked,
   onExportPassesClicked,
-  onSetToDistributedClicked,
+  onSetToManufactured,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -234,12 +234,17 @@ export function DataTable<TData, TValue>({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={() => onSetToDistributedClicked(data)} variant='outline'>
+                <Button onClick={() => onSetToManufactured(data)} variant='outline'>
                   Nyomtatással kész
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Az összes NYOMTATÁSRA KÉSZ státusszal rendelkező applikációt átállítja KIOSZTOTT-ra</p>
+                <span className='flex gap-2 items-center'>
+                  Az összes <StatusBadge status={'PREPARED_FOR_PRINT' as ApplicationStatus} hover={false} />
+                  jelentkezés
+                  <StatusBadge status={'MANUFACTURED' as ApplicationStatus} hover={false} />
+                  -ra állítása
+                </span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

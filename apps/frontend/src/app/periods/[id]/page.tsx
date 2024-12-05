@@ -164,7 +164,7 @@ export default function Page({ params }: { params: { id: number } }) {
       );
 
       // Set the exported applications to "WAITING_FOR_OPS" status
-      if (autoChangeStatus === true) {
+      if (autoChangeStatus) {
         for (let i = 0; i < dataToExport.length; i++) {
           handleStatusChange(dataToExport[i], ApplicationStatus.WAITING_FOR_OPS);
         }
@@ -177,10 +177,10 @@ export default function Page({ params }: { params: { id: number } }) {
    * This function sets the status of the selected applications which has the
    * status {@link ApplicationStatus.PREPARED_FOR_PRINT} to {@link ApplicationStatus.DISTRIBUTED}
    */
-  const onSetToDistributedClicked = async (data: ApplicationEntity[]) => {
+  const onSetToManufactured = async (data: ApplicationEntity[]) => {
     for (let i = 0; i < data.length; i++) {
       if (data[i].status === getStatusKey(ApplicationStatus.PREPARED_FOR_PRINT)) {
-        handleStatusChange(data[i], ApplicationStatus.DISTRIBUTED);
+        handleStatusChange(data[i], ApplicationStatus.MANUFACTURED);
       }
     }
   };
@@ -248,7 +248,7 @@ export default function Page({ params }: { params: { id: number } }) {
             onStatusChange={handleStatusChange}
             onExportPassesClicked={onPassExport}
             onExportApplicationsClicked={onApplicationsExport}
-            onSetToDistributedClicked={onSetToDistributedClicked}
+            onSetToManufactured={onSetToManufactured}
           />
         )}
       </div>
