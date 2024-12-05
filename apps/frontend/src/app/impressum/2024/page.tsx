@@ -17,37 +17,6 @@ export default function Page() {
   return (
     <>
       <Th1>SCHBody x Kir-Dev</Th1>
-      <Card className='p-4 flex flex-col'>
-        <CardTitle>2024 ősz számokban</CardTitle>
-        <CardDescription>És még csak most kezdtük</CardDescription>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-8 text-center'>
-          <StatCard title='alkalommal látogattátok meg az oldalt' value={53400} icon={<LuRocket />} />
-          <StatCard title='felhasználóval gazdagodtunk' value={1351} icon={<LuUser />} />
-          <StatCard title='jelentkezést adtatok le' value={1170} icon={<LuArrowRightCircle />} />
-          <StatCard title='issuet zártunk le' value={61} icon={<LuGitPullRequest />} />
-          <StatCard title='vicces profilképet utasítuttunk vissza' value={23} icon={<LuBaby />} />
-          <StatCard title='alkalommal halt meg KSZK-s szerverünk, Junior' value={9} icon={<LuRotateCw />} />
-        </div>
-        <div className='text-center w-full italic font-mono'>
-          <span>az kom</span>
-        </div>
-      </Card>
-
-      <Th1>Fejlesztők</Th1>
-      <div className='grid  grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {developers.map((dev) => (
-          <DeveloperItem key={dev.name} dev={dev} />
-        ))}
-      </div>
-      <Th1>Bodysok</Th1>
-      {isLoading && <LoadingCard />}
-      {bodymembers && (
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-          {bodymembers.map((member) => (
-            <BodyMemberTile key={member.authSchId} userEntity={member} simple />
-          ))}
-        </div>
-      )}
       <Card className='p-4 flex flex-col gap-4'>
         <CardTitle>Kir-Dev x SCHBody</CardTitle>
         <p>
@@ -74,6 +43,41 @@ export default function Page() {
             <LuUser /> Kir-Dev
           </Button>
         </div>
+      </Card>
+      <Card className='p-4 flex flex-col'>
+        <CardTitle>2024 ősz számokban</CardTitle>
+        <CardDescription>És még csak most kezdtük</CardDescription>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-8 text-center'>
+          <StatCard title='alkalommal látogattátok meg az oldalt' value={53400} icon={<LuRocket />} />
+          <StatCard title='felhasználóval gazdagodtunk' value={1351} icon={<LuUser />} />
+          <StatCard title='jelentkezést adtatok le' value={1170} icon={<LuArrowRightCircle />} />
+          <StatCard title='issuet zártunk le' value={61} icon={<LuGitPullRequest />} />
+          <StatCard title='vicces profilképet utasítuttunk vissza' value={23} icon={<LuBaby />} />
+          <StatCard title='alkalommal halt meg KSZK-s szerverünk, Junior' value={9} icon={<LuRotateCw />} />
+        </div>
+        <div className='text-center w-full italic font-mono'>
+          <span>az kom</span>
+        </div>
+      </Card>
+
+      <Card className='p-4'>
+        <CardTitle>Fejlesztők</CardTitle>
+        <div className='grid  grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8'>
+          {developers.map((dev) => (
+            <DeveloperItem key={dev.name} dev={dev} />
+          ))}
+        </div>
+      </Card>
+      <Card className='p-4'>
+        <CardTitle>Bodysok</CardTitle>
+        {isLoading && <LoadingCard />}
+        {bodymembers && (
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 3xl:grid-cols-6 gap-4 mt-8'>
+            {bodymembers.map((member) => (
+              <BodyMemberTile key={member.authSchId} userEntity={member} simple />
+            ))}
+          </div>
+        )}
       </Card>
     </>
   );

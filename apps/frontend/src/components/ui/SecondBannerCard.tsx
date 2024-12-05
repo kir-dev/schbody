@@ -9,7 +9,7 @@ export default function SecondBannerCard() {
   const router = useRouter();
   //get current date
   const today = new Date();
-  if (today.getMonth() !== 12) return null;
+  if (today.getMonth() !== 12 - 1) return null;
   return (
     <Card className='w-full my-4'>
       <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 max-md:items-start md:items-center'>
