@@ -23,7 +23,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
       case ApplicationStatus.SUBMITTED:
         return 'blue';
       case ApplicationStatus.ACCEPTED:
-        return 'green';
+        return 'cyan';
       case ApplicationStatus.REJECTED:
         return 'red';
       case ApplicationStatus.PREPARED_FOR_PRINT:
