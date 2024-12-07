@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   FiArrowDownCircle,
   FiArrowRightCircle,
@@ -42,7 +42,7 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
         return 'gray';
     }
   }, [convertedStatus]);
-  const icon: JSX.Element = useMemo(() => {
+  const icon: React.JSX.Element = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
       case ApplicationStatus.SUBMITTED:
         return <FiDisc />;
