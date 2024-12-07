@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { FiKey, FiMeh, FiSmile, FiUser } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
@@ -47,7 +47,7 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
   const convertedRole = role as unknown as Role;
   const color = useMemo(() => getRoleBadgeColorVariant(role), [role]);
 
-  const icon: JSX.Element = useMemo(() => {
+  const icon: React.JSX.Element = useMemo(() => {
     switch (Role[convertedRole]) {
       case Role.USER:
         return <FiUser />;
