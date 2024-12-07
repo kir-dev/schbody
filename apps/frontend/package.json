@@ -56,9 +56,9 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.454.0",
     "next": "15.0.3",
-    "react": "19.0.0-rc-fb9a90fa48-20240614",
+    "react": "^19.0.0",
     "react-day-picker": "9.3.0",
-    "react-dom": "19.0.0-rc-fb9a90fa48-20240614",
+    "react-dom": "^19.0.0",
     "react-easy-crop": "^5.1.0",
     "react-hook-form": "^7.53.1",
     "react-icons": "^5.3.0",
@@ -73,8 +73,8 @@
     "@next/eslint-plugin-next": "^15.0.3",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.17.6",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "eslint-config-next": "15.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "5.2.1",
@@ -83,9 +83,5 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
-  },
-  "resolutions": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
   }
 }
