@@ -177,7 +177,7 @@ export class UserService {
     }
   }
 
-  async findProfilePicture(authSchId: string): Promise<Buffer> {
+  async findProfilePicture(authSchId: string): Promise<Uint8Array> {
     try {
       const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
       return profilePic.profileImage;

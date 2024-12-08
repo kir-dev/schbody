@@ -93,7 +93,7 @@ export class ApplicationPeriodService {
     }
     return period;
   }
-  async findPassBackground(periodId: number): Promise<Buffer> {
+  async findPassBackground(periodId: number): Promise<Uint8Array> {
     try {
       const profilePic = await this.prisma.passBackgroundPicture.findUniqueOrThrow({ where: { periodId } });
       return profilePic.backgroundImage;
