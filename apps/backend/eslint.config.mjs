@@ -12,12 +12,11 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });
-
-export default [
+const config = [
   {
     ignores: ['**/.prettierrc.js'],
   },
-  ...compat.extends('plugin:@typescript-eslint/recommended', 'nestjs'),
+  ...compat.extends('plugin:@typescript-eslint/recommended', 'nestjs', 'plugin:@next/next/recommended'),
   {
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
@@ -45,3 +44,5 @@ export default [
     },
   },
 ];
+
+export default config;
