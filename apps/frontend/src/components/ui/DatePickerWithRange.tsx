@@ -28,7 +28,6 @@ export function DatePickerWithRange({
             className={cn('w-full justify-start text-left font-normal', !date && 'text-muted-foreground')}
           >
             <CalendarIcon className='mr-2 h-4 w-4' />
-            {/* eslint-disable-next-line no-nested-ternary */}
             {date?.from ? (
               date.to ? (
                 <>
@@ -44,7 +43,7 @@ export function DatePickerWithRange({
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>
           <Calendar
-            initialFocus
+            // initialFocus
             mode='range'
             defaultMonth={date?.from}
             selected={date}

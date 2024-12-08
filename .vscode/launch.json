@@ -11,6 +11,48 @@
       "outputCapture": "std",
       "type": "node",
       "restart": true
+    },
+    {
+      "name": "Next.js: debug server-side",
+      "cwd": "${workspaceFolder}/apps/frontend",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "yarn dev"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug client-side (Firefox)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "reAttach": true,
+      "pathMappings": [
+        {
+          "url": "webpack://_N_E",
+          "path": "${workspaceFolder}/apps/frontend"
+        }
+      ]
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "cwd": "${workspaceFolder}/apps/frontend",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/frontend/node_modules/.bin/next",
+      "runtimeArgs": ["--inspect"],
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "action": "debugWithEdge",
+        "killOnServerStop": true,
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}/apps/frontend"
+      }
     }
   ]
 }

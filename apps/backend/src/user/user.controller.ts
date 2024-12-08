@@ -21,8 +21,8 @@ import { ImageParserPipe } from 'src/util';
 
 import { Roles } from '../auth/decorators/Roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -89,7 +89,7 @@ export class UserController {
   }
 
   @Get(':id/profile-picture')
-  async findProfilePicture(@Param('id') id: string) {
+  async findProfilePicture(@Param('id') id: string): Promise<StreamableFile> {
     return new StreamableFile(await this.userService.findProfilePicture(id));
   }
 

@@ -51,7 +51,7 @@ export class ApplicationPeriodController {
   }
 
   @Get(':id/pass-bg')
-  async findPassBackground(@Param('id', ParseIntPipe) id: number) {
+  async findPassBackground(@Param('id', ParseIntPipe) id: number): Promise<StreamableFile> {
     return new StreamableFile(await this.applicationPeriodService.findPassBackground(id));
   }
 

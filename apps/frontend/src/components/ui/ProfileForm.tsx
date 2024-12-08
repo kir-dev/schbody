@@ -54,7 +54,7 @@ export default function ProfileForm() {
           variant: 'destructive',
         });
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Nem várt hiba történt!',
         variant: 'destructive',

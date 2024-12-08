@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { LuArrowRightCircle, LuBaby, LuGithub, LuGitPullRequest, LuRocket, LuRotateCw, LuUser } from 'react-icons/lu';
+import { LuArrowRight, LuBaby, LuGithub, LuGitPullRequest, LuRocket, LuRotateCw, LuUser } from 'react-icons/lu';
 
 import { developers } from '@/components/data/developers';
 import Th1 from '@/components/typography/typography';
@@ -50,7 +50,7 @@ export default function Page() {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-8 text-center'>
           <StatCard title='alkalommal látogattátok meg az oldalt' value={53400} icon={<LuRocket />} />
           <StatCard title='felhasználóval gazdagodtunk' value={1351} icon={<LuUser />} />
-          <StatCard title='jelentkezést adtatok le' value={1170} icon={<LuArrowRightCircle />} />
+          <StatCard title='jelentkezést adtatok le' value={1170} icon={<LuArrowRight />} />
           <StatCard title='issuet zártunk le' value={61} icon={<LuGitPullRequest />} />
           <StatCard title='vicces profilképet utasítuttunk vissza' value={23} icon={<LuBaby />} />
           <StatCard title='alkalommal halt meg KSZK-s szerverünk, Junior' value={9} icon={<LuRotateCw />} />

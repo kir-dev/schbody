@@ -8,10 +8,9 @@ export function useCurrentPeriod() {
     shouldRetryOnError: false,
   });
 }
-
 export function usePeriod(id: number) {
-  if (id === -1) return null;
-  return useSWR<ApplicationPeriodEntity>(`/application-periods/${id}`, axiosGetFetcher, {
+  const shouldFetch = id !== -1;
+  return useSWR<ApplicationPeriodEntity>(shouldFetch ? `/application-periods/${id}` : null, axiosGetFetcher, {
     shouldRetryOnError: false,
     revalidateOnFocus: true,
   });

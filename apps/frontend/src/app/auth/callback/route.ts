@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  cookies().set('jwt', jwt, { path: '/' });
+  const cookieStore = await cookies();
+  cookieStore.set('jwt', jwt, { path: '/' });
 
   return NextResponse.redirect(new URL('/profile', request.url));
 }

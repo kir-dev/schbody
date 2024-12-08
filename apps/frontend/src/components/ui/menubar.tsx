@@ -31,7 +31,6 @@ Menubar.displayName = MenubarPrimitive.Root.displayName;
 const MenubarTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Trigger>
-  // eslint-disable-next-line react/prop-types
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Trigger
     ref={ref}

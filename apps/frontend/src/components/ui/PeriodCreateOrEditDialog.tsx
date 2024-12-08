@@ -41,7 +41,7 @@ export default function PeriodCreateOrEditDialog(props: props) {
         to: new Date(props.period.applicationPeriodEndAt),
       });
     }
-  }, []);
+  }, [props.period]);
 
   async function onSave() {
     if (date === undefined) return;
