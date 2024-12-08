@@ -93,10 +93,11 @@ export class ApplicationPeriodService {
     }
     return period;
   }
-  async findPassBackground(periodId: number): Promise<Uint8Array> {
+  async findPassBackground(periodId: number): Promise<Buffer> {
     try {
       const profilePic = await this.prisma.passBackgroundPicture.findUniqueOrThrow({ where: { periodId } });
-      return profilePic.backgroundImage;
+      const imageBuffer = Buffer.from(profilePic.backgroundImage.buffer);
+      return imageBuffer;
     } catch (_error) {
       throw new NotFoundException(`Period with id ${periodId} not found`);
     }

@@ -67,6 +67,8 @@ export const columns: (
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
               alt='KEP'
               className='rounded max-w-32'
+              width={128}
+              height={128}
             />
           </HoverCardContent>
         </HoverCard>

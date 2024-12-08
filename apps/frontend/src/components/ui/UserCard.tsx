@@ -14,6 +14,8 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
             alt='KEP'
             className='lg:rounded-l-lg max-lg:rounded-lg max-w-20 h-fit aspect-auto -m-4 max-md:-my-4'
+            width={64}
+            height={64}
           />
           <div className='overflow-scroll text-nowrap truncate justify-between flex flex-col h-auto'>
             <CardTitle className=''>{props.user.fullName}</CardTitle>
