@@ -26,8 +26,7 @@ jobs:
         run: yarn playwright install --with-deps
 
       - name: Run Playwright tests
-        working-directory: apps/frontend
-        run: yarn playwright test
+        run: yarn test:frontend
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}

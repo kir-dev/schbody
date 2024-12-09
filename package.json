@@ -19,7 +19,8 @@
     "lint": "concurrently \"yarn lint:frontend\" \"yarn lint:backend\"",
     "lint:fix": "eslint apps --ext .ts,.tsx --fix",
     "format": "prettier --write apps",
-    "format:check": "prettier --check apps"
+    "format:check": "prettier --check apps",
+    "test:frontend": "cd apps/frontend && yarn test"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.1.0",
