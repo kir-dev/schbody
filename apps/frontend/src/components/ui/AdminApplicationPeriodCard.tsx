@@ -88,7 +88,9 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
         if (response.ok) {
           setPeriodBackground(url);
         }
-      } catch (_error) {}
+      } catch (_error) {
+        setPeriodBackground(null);
+      }
     };
 
     getProfilePicture();

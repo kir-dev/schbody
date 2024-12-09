@@ -63,7 +63,9 @@ export default function UserProfileBanner(props: {
         if (response.ok) {
           setProfilePicture(url);
         }
-      } catch (_error) {}
+      } catch (_error) {
+        setProfilePicture(null);
+      }
     };
 
     getProfilePicture();
