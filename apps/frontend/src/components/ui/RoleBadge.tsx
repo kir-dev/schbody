@@ -78,7 +78,7 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
   }
   return (
     <Badge variant={color} hover={hover}>
-      <div className='py-1'>{icon}</div>
+      <div className='py-1 pr-2'>{icon}</div>
       {!short && Role[convertedRole]}
     </Badge>
   );

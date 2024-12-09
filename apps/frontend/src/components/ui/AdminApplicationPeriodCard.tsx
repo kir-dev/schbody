@@ -25,6 +25,7 @@ import { toast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { Th2 } from '../typography/typography';
 import PictureUploadDialog from './PictureUploadDialog';
 
@@ -36,6 +37,9 @@ type Props = {
 
 export default function AdminApplicationPeriodCard({ period, cacheBuster, setCacheBuster }: Props) {
   const router = useRouter();
+
+  const [periodBackground, setPeriodBackground] = useState<string | null>(null);
+
   const deleteApplicationPeriod = async () => {
     const response = await api.delete(`/application-periods/${period.id}`).catch((e) => {
       toast({
@@ -75,6 +79,20 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
       `schbody_pass_mock_export_${Date.now()}.pdf`
     );
   };
+
+  useEffect(() => {
+    const getProfilePicture = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          setPeriodBackground(url);
+        }
+      } catch (_error) {}
+    };
+
+    getProfilePicture();
+  }, [periodBackground, cacheBuster]);
 
   return (
     <Card>
@@ -127,7 +145,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
         </div>
         <div className='flex max-md:flex-col md:flex-row gap-4 max-md:items-center md:items-end'>
           <Image
-            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`}
+            src={periodBackground || 'https://placehold.co/750x430/pink/white/jpeg'}
             width={75 * 4}
             height={43 * 4}
             alt='BELEPO HATTER'
