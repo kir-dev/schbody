@@ -1,6 +1,6 @@
-import { Document, Font, Image, Page, Text, View } from '@react-pdf/renderer';
-
 import { ApplicationEntity } from '@/types/application-entity';
+import { Document, Font, Page, Text, View } from '@react-pdf/renderer';
+import Image from 'next/image';
 
 type Props = {
   applicationData: ApplicationEntity[];
@@ -36,6 +36,7 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
             <Image
               src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${periodId}/pass-bg?cb=${cacheBuster}`}
               style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
+              alt='Pass Background'
             />
 
             <View
@@ -54,6 +55,7 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     : `${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`
                 }
                 style={{ width: '2.6cm', height: '3.5cm', borderRadius: '5%' }}
+                alt='Profile Picture'
               />
               <View style={{ flexDirection: 'column' }}>
                 <Text

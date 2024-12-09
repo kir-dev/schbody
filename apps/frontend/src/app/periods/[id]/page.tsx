@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import { columns } from '@/app/periods/[id]/columns';
 import { DataTable } from '@/app/periods/[id]/data-table';
@@ -14,8 +14,9 @@ import LoadingCard from '@/components/ui/LoadingCard';
 import { Switch } from '@/components/ui/switch';
 import useApplications from '@/hooks/useApplications';
 import { usePeriod } from '@/hooks/usePeriod';
+import { downloadPdf } from '@/lib/pdf';
+import { getStatusKey } from '@/lib/status';
 import { toast } from '@/lib/use-toast';
-import { downloadPdf, getStatusKey } from '@/lib/utils';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 import { ApplicationExport } from './application-export';
@@ -23,7 +24,8 @@ import { PassExport } from './pass-export';
 
 const CHUNK_SIZE = 300;
 
-export default function Page({ params }: { params: { id: number } }) {
+export default function Page(props: { params: Promise<{ id: number }> }) {
+  const params = use(props.params);
   const period = usePeriod(params.id);
   const [generatingDialogOpened, setGeneratingDialogOpened] = useState(false);
   const [autoChangeStatusDialogOpened, setAutoChangeStatusDialogOpened] = useState(false);
@@ -158,7 +160,7 @@ export default function Page({ params }: { params: { id: number } }) {
       const autoChangeStatus = await showAutoChangeStatusDialog();
 
       const dataToExport = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
-      downloadPdf(
+      await downloadPdf(
         <ApplicationExport applicationData={dataToExport} periodName={period.data.name} />,
         `schbody_applications_export_${Date.now()}.pdf`
       );

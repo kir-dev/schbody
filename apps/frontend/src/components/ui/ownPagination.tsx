@@ -33,7 +33,7 @@ export default function OwnPagination({ props }: { props: props }) {
       buttons.push(i);
     }
     setButtons(buttons);
-  }, [props]);
+  }, [props, lastPageIndex]);
   return (
     <Pagination>
       <PaginationContent>

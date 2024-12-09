@@ -20,10 +20,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import PeriodCreateOrEditDialog from '@/components/ui/PeriodCreateOrEditDialog';
 import { Switch } from '@/components/ui/switch';
+import { downloadPdf, mockApplication } from '@/lib/pdf';
 import { toast } from '@/lib/use-toast';
-import { downloadPdf, mockApplication } from '@/lib/utils';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { Th2 } from '../typography/typography';
 import PictureUploadDialog from './PictureUploadDialog';
 
@@ -35,6 +37,9 @@ type Props = {
 
 export default function AdminApplicationPeriodCard({ period, cacheBuster, setCacheBuster }: Props) {
   const router = useRouter();
+
+  const [periodBackground, setPeriodBackground] = useState<string | null>(null);
+
   const deleteApplicationPeriod = async () => {
     const response = await api.delete(`/application-periods/${period.id}`).catch((e) => {
       toast({
@@ -63,7 +68,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
   };
 
   const onMockExport = async () => {
-    downloadPdf(
+    await downloadPdf(
       <PassExport
         mock
         periodId={period.id}
@@ -74,6 +79,22 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
       `schbody_pass_mock_export_${Date.now()}.pdf`
     );
   };
+
+  useEffect(() => {
+    const getProfilePicture = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          setPeriodBackground(url);
+        }
+      } catch {
+        setPeriodBackground(null);
+      }
+    };
+
+    getProfilePicture();
+  }, [periodBackground, cacheBuster]);
 
   return (
     <Card>
@@ -125,8 +146,8 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
           </div>
         </div>
         <div className='flex max-md:flex-col md:flex-row gap-4 max-md:items-center md:items-end'>
-          <img
-            src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${period.id}/pass-bg?cb=${cacheBuster}`}
+          <Image
+            src={periodBackground || 'https://placehold.co/750x430/pink/white/jpeg'}
             width={75 * 4}
             height={43 * 4}
             alt='BELEPO HATTER'

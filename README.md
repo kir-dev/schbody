@@ -1,7 +1,9 @@
 # SCHBody💪
+
 by Kir-Dev
 
 A Schönherz Kollégium konditermének weboldala és adminisztrációs rendszere.
+
 - Ha hibát találsz, kérlek nyiss egy issue-t!
 - Ha részt akarsz venni a fejlesztésben, vedd fel a kapcsolatot velünk és nyiss egy pull requestet!
 
@@ -10,7 +12,7 @@ A Schönherz Kollégium konditermének weboldala és adminisztrációs rendszere
 ### Prerequisites
 
 - Node.js 20
-- Yarn 1.22
+- Yarn 4.5.1
 
 ### Installation
 
@@ -81,6 +83,3 @@ yarn build:backend
 ```
 
 ## Happy Coding!
-
-
-

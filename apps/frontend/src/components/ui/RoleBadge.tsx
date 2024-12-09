@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { FiKey, FiMeh, FiSmile, FiUser } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
@@ -46,8 +46,8 @@ interface RoleBageProps {
 export default function RoleBadge({ role, short, hover = true }: RoleBageProps) {
   const convertedRole = role as unknown as Role;
   const color = useMemo(() => getRoleBadgeColorVariant(role), [role]);
-  // eslint-disable-next-line no-undef
-  const icon: JSX.Element = useMemo(() => {
+
+  const icon: React.JSX.Element = useMemo(() => {
     switch (Role[convertedRole]) {
       case Role.USER:
         return <FiUser />;
@@ -58,7 +58,7 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
       case Role.SUPERUSER:
         return <FiKey />;
     }
-  }, [role]);
+  }, [convertedRole]);
 
   if (short) {
     return (
@@ -78,7 +78,7 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
   }
   return (
     <Badge variant={color} hover={hover}>
-      <div className='py-1'>{icon}</div>
+      <div className='py-1 pr-2'>{icon}</div>
       {!short && Role[convertedRole]}
     </Badge>
   );
