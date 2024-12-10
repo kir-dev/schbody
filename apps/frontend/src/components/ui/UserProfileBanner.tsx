@@ -11,11 +11,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
+import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
 
 import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
+  applications: ApplicationPeriodEntity[];
   user: UserEntity | undefined;
   editingIsOn: boolean;
   setEditingIsOn: (e: boolean) => void;
@@ -86,8 +88,29 @@ export default function UserProfileBanner(props: {
               <TTitle className='mt-0'>{props.user!.fullName}</TTitle>
               {props.user.isActiveVikStudent && getVerifiedBadge()}
             </div>
-            <Th2 className='mb-4'>{props.user!.neptun}</Th2>
-            <RoleBadge role={props.user!.role} hover={false} />
+            <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 min-md:gap-2'>
+              <RoleBadge role={props.user!.role} hover={false} />
+              <div className='mb-4 mr-5' />
+              <Th2>{props.user!.neptun}</Th2>
+            </div>
+            <div className='mb-4 mr-5' />
+            {/* Ide kell beszurni a táblázatot */}
+            <div className='overflow-y-auto border border-gray-300 max-h-64 rounded-md mb-8'>
+              <h3 className='text-lg font-semibold mb-2'>Aktív jelentkezési időszakok:</h3>
+              <ul className='divide-y divide-gray-200'>
+                {props.applications
+                  ?.filter((app) => app.author.fullName === props.user?.fullName)
+                  .map((app) => (
+                    <li key={app.id} className='px-4 py-2 flex justify-between'>
+                      <span>
+                        {new Date(app.applicationPeriodStartAt).toLocaleDateString()} -{' '}
+                        {new Date(app.applicationPeriodEndAt).toLocaleDateString()}
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            {/* Idáig kell beszurni a táblázatot */}
           </div>
           <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
             {!props.editingIsOn && (
