@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -9,16 +9,15 @@ import { Th2, TTitle } from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
+import StatusBadge from '@/components/ui/StatusBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
-import { ApplicationPeriodEntity } from '@/types/application-period-entity';
+import { useMyApplications } from '@/hooks/useMyApplications';
 import { UserEntity } from '@/types/user-entity';
 
 import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
-  applications: ApplicationPeriodEntity[] | undefined;
-  setApplications: (applications: ApplicationPeriodEntity[] | undefined) => void;
   user: UserEntity | undefined;
   editingIsOn: boolean;
   setEditingIsOn: (e: boolean) => void;
@@ -27,16 +26,23 @@ export default function UserProfileBanner(props: {
   const router = useRouter();
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
-  const [applications, setApplications] = useState<ApplicationPeriodEntity[] | undefined>(props.applications);
+  //const [applications, setApplications] = useState<ApplicationPeriodEntity[] | undefined>(undefined);
+  const { data: applications } = useMyApplications();
 
-  useEffect(() => {
-    if (!props.applications) {
-      fetch(`/api/applications/${props.user?.authSchId}`)
-        .then((response) => response.json())
-        .then((data) => setApplications(data))
+  /*  useEffect(() => {
+    if (!applications) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/application`, {
+        method: 'GET',
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch applications');
+          }
+          console.log(response.json());
+        })
         .catch((error) => console.error('Error fetching applications:', error));
     }
-  }, [props.applications]);
+  }, []);*/
 
   const handleProfilePictureUpload = async () => {
     setCacheBuster(Date.now());
@@ -116,12 +122,21 @@ export default function UserProfileBanner(props: {
                   </tr>
                 </thead>
                 <tbody>
-                  {applications?.map((app) => (
-                    <tr key={app.id} className='odd:bg-white even:bg-gray-50'>
-                      <td className='px-4 py-2'>{new Date(app.applicationPeriodStartAt).toLocaleDateString()}</td>
-                      <td className='px-4 py-2'>{new Date(app.applicationPeriodEndAt).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
+                  {applications &&
+                    [applications].map((app) => (
+                      <tr key={app.id} className='odd:bg-white even:bg-gray-50'>
+                        <td className='px-4 py-2'>
+                          {new Date(app.applicationPeriod.applicationPeriodStartAt).toLocaleDateString()}
+                        </td>
+                        {/*todo plusz hat honap*/}
+                        <td className='px-4 py-2'>
+                          {new Date(app.applicationPeriod.applicationPeriodEndAt).toLocaleDateString()}
+                        </td>
+                        <td>
+                          <StatusBadge status={app.status} />
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
