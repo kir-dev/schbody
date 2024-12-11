@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -17,7 +17,8 @@ import { UserEntity } from '@/types/user-entity';
 import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
-  applications: ApplicationPeriodEntity[];
+  applications: ApplicationPeriodEntity[] | undefined;
+  setApplications: (applications: ApplicationPeriodEntity[] | undefined) => void;
   user: UserEntity | undefined;
   editingIsOn: boolean;
   setEditingIsOn: (e: boolean) => void;
@@ -26,6 +27,16 @@ export default function UserProfileBanner(props: {
   const router = useRouter();
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
+  const [applications, setApplications] = useState<ApplicationPeriodEntity[] | undefined>(props.applications);
+
+  useEffect(() => {
+    if (!props.applications) {
+      fetch(`/api/applications/${props.user?.authSchId}`)
+        .then((response) => response.json())
+        .then((data) => setApplications(data))
+        .catch((error) => console.error('Error fetching applications:', error));
+    }
+  }, [props.applications]);
 
   const handleProfilePictureUpload = async () => {
     setCacheBuster(Date.now());
@@ -94,23 +105,26 @@ export default function UserProfileBanner(props: {
               <Th2>{props.user!.neptun}</Th2>
             </div>
             <div className='mb-4 mr-5' />
-            {/* Ide kell beszurni a táblázatot */}
-            <div className='overflow-y-auto border border-gray-300 max-h-64 rounded-md mb-8'>
+            {/* Render the applications data in a table */}
+            <div className='overflow-y-auto border border-gray-300 max-h-64 rounded-md shadow-md mb-8'>
               <h3 className='text-lg font-semibold mb-2'>Aktív jelentkezési időszakok:</h3>
-              <ul className='divide-y divide-gray-200'>
-                {props.applications
-                  ?.filter((app) => app.author.fullName === props.user?.fullName)
-                  .map((app) => (
-                    <li key={app.id} className='px-4 py-2 flex justify-between'>
-                      <span>
-                        {new Date(app.applicationPeriodStartAt).toLocaleDateString()} -{' '}
-                        {new Date(app.applicationPeriodEndAt).toLocaleDateString()}
-                      </span>
-                    </li>
+              <table className='table-auto w-full text-left'>
+                <thead className='bg-gray-100 sticky top-0 z-10'>
+                  <tr>
+                    <th className='px-4 py-2'>Jelentkezett</th>
+                    <th className='px-4 py-2'>Lejár</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {applications?.map((app) => (
+                    <tr key={app.id} className='odd:bg-white even:bg-gray-50'>
+                      <td className='px-4 py-2'>{new Date(app.applicationPeriodStartAt).toLocaleDateString()}</td>
+                      <td className='px-4 py-2'>{new Date(app.applicationPeriodEndAt).toLocaleDateString()}</td>
+                    </tr>
                   ))}
-              </ul>
+                </tbody>
+              </table>
             </div>
-            {/* Idáig kell beszurni a táblázatot */}
           </div>
           <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
             {!props.editingIsOn && (
