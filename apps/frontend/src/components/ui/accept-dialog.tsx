@@ -12,7 +12,10 @@ interface AcceptDialogProps {
 export function AcceptDialog({ open, title, description, onAccept, onDecline }: AcceptDialogProps) {
   return (
     <Dialog open={open}>
-      <DialogContent className='sm:max-w-[425px]' closable={false}>
+      <DialogContent
+        className='sm:max-w-[425px]'
+        // closable={false}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className='my-8'>{description}</DialogDescription>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   FiArrowDownCircle,
   FiArrowRightCircle,
@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
-import { statusConvert } from '@/lib/utils';
+import { statusConvert } from '@/lib/status';
 import { ApplicationStatus } from '@/types/application-entity';
 
 export default function StatusBadge({ status }: Readonly<{ status: ApplicationStatus }>) {
@@ -41,8 +41,8 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
       case ApplicationStatus.EXPIRED:
         return 'gray';
     }
-  }, [status]);
-  const icon: JSX.Element = useMemo(() => {
+  }, [convertedStatus]);
+  const icon: React.JSX.Element = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
       case ApplicationStatus.SUBMITTED:
         return <FiDisc />;
@@ -65,11 +65,11 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
       case ApplicationStatus.EXPIRED:
         return <FiClock />;
     }
-  }, [status]);
+  }, [convertedStatus]);
 
   return (
     <Badge variant={color} hover>
-      {icon}
+      <div className='py-1 pr-2'>{icon}</div>
       {ApplicationStatus[convertedStatus]}
     </Badge>
   );

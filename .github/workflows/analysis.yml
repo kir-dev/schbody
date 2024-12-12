@@ -23,6 +23,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Yarn v4
+        run: corepack prepare yarn@4.5.1 --activate
+
       - name: Install dependencies
         run: yarn install
 
@@ -40,6 +46,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Yarn v4
+        run: corepack prepare yarn@4.5.1 --activate
 
       - name: Install dependencies
         run: yarn install
@@ -62,8 +74,18 @@ jobs:
         with:
           node-version: 20
 
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use Yarn v4
+        run: corepack prepare yarn@4.5.1 --activate
+
       - name: Install dependencies
         run: yarn install
+
+      - name: Generate Prisma Client
+        working-directory: apps/backend
+        run: yarn prisma generate
 
       - name: Build
         run: yarn build:backend

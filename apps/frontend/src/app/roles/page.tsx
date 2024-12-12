@@ -24,7 +24,7 @@ export default function Page() {
       toast({
         title: 'Sikeresen módosítva',
       });
-    } catch (error) {
+    } catch {
       toast({
         title: 'Hiba történt',
       });
