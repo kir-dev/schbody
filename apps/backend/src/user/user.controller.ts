@@ -108,6 +108,7 @@ export class UserController {
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserAdminDto, @CurrentUser() user: User) {
     return this.userService.updateAdmin(id, updateUserDto, user.role);
   }
+
   @Patch(':id/profile-picture/:status')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()

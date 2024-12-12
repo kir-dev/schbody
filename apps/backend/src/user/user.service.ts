@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
+import { Prisma, ProfilePicture, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
@@ -14,6 +14,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly prisma: PrismaService) {}
+
   async findPendingProfilePictures() {
     try {
       return this.prisma.profilePicture.findMany({
@@ -31,7 +33,6 @@ export class UserService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
@@ -87,16 +88,20 @@ export class UserService {
     };
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<{ user: User; profilePicture: ProfilePictureStatus }> {
     const user = this.prisma.user.findUnique({
       where: { authSchId: id },
     });
+    const profilePicture: ProfilePicture = this.prisma.profilePicture.findUnique({
+      where: { userId: id },
+      select: { status: true },
+    });
 
-    if (user === null) {
+    if (user === null || profilePicture === null) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return user;
+    return { user, profilePicture };
   }
 
   findMembers(page: number, pageSize: number) {
