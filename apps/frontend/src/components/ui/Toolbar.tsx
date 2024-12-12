@@ -12,10 +12,11 @@ type Props = {
 };
 
 export function Toolbar({ editor }: Props) {
-  if (!editor) return null;
   const setLink = useCallback(() => {
+    if (!editor) return;
+
     const previousUrl = editor.getAttributes('link').href;
-    // eslint-disable-next-line no-alert, no-undef
+
     const url = window.prompt('URL', previousUrl);
     if (url === null) {
       return;
@@ -27,6 +28,8 @@ export function Toolbar({ editor }: Props) {
 
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
+
+  if (!editor) return null;
 
   return (
     <Card className='p-1 flex gap-1'>

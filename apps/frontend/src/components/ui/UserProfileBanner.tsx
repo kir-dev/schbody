@@ -1,6 +1,7 @@
 'use client';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -22,6 +23,7 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
 
@@ -53,17 +55,33 @@ export default function UserProfileBanner(props: {
     );
   };
 
+  useEffect(() => {
+    const getProfilePicture = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${props.user!.authSchId}/profile-picture?cb=${cacheBuster}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          setProfilePicture(url);
+        }
+      } catch {
+        setProfilePicture(null);
+      }
+    };
+
+    getProfilePicture();
+  }, [profilePicture, cacheBuster]);
+
   if (!props.user) return null;
   return (
-    <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>
+    <Card className='flex max-md:flex-col md:flex-row max-md:items-center relative'>
       <div className='min-w-44 min-h-44 md:w-1/5 max-md:w-44 h-full relative'>
-        <img
-          src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
+        <Image
+          src={profilePicture || '/default_pfp.jpg'}
           alt='PROFIL KEP'
           className='md:rounded-l-lg max-md:rounded-xl max-md:my-4'
+
           onError={({ currentTarget }) => {
-            currentTarget.onerror = null; // prevents looping
-            currentTarget.src = 'default_pfp.jpg';
+            currentTarget.src = '/default_pfp.jpg';
           }}
         />
         <div className='w-full absolute flex bottom-2'>

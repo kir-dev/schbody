@@ -36,7 +36,7 @@ export default function RootLayout({
           backgroundColor: 'rgb(238,238,238)',
         }}
       >
-        <div>
+        <div className='flex-1'>
           <Header />
           <div className='space-y-4 py-8 2xl:mx-32 xl:mx-16 max-xl:mx-8 max-md:mx-4'>{children}</div>
         </div>
