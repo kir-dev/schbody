@@ -79,7 +79,6 @@ export default function UserProfileBanner(props: {
           src={profilePicture || '/default_pfp.jpg'}
           alt='PROFIL KEP'
           className='md:rounded-l-lg max-md:rounded-xl max-md:my-4'
-
           onError={({ currentTarget }) => {
             currentTarget.src = '/default_pfp.jpg';
           }}
@@ -97,6 +96,7 @@ export default function UserProfileBanner(props: {
           </PictureUploadDialog>
         </div>
       </div>
+
       <CardContent className='w-full md:ml-4'>
         <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between '>
           <div className='max-md:flex max-md:flex-col max-md:items-center'>
