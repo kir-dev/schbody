@@ -96,12 +96,17 @@ const config = {
             transform: 'rotate(360deg)',
           },
         },
+        'zoom-in': {
+          from: { transform: 'scale(1)' },
+          to: { transform: 'scale(1.5)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'caret-blink': 'caret-blink 1.25s ease-out infinite',
         'slow-spin': 'slow-spin 2s ease-in-out infinite',
+        'zoom-in': 'zoom-in 0.2s ease-out forwards',
       },
     },
   },

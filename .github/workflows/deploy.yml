@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - staging
 
 jobs:
   build-and-push:
@@ -23,7 +24,8 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
-          docker buildx build --platform linux/amd64 --push -t ${{ secrets.DOCKER_REGISTRY_URL }}/schbody-backend:latest -f apps/backend/Dockerfile ./apps/backend
+          TAG=${{ github.ref == 'refs/heads/main' && 'latest' || (github.ref == 'refs/heads/staging' && 'staging') }}
+          docker buildx build --platform linux/amd64 --push -t ${{ secrets.DOCKER_REGISTRY_URL }}/schbody-backend:$TAG -f apps/backend/Dockerfile ./apps/backend
 
       - name: Logout from Docker Registry
         run: docker logout ${{ secrets.DOCKER_REGISTRY_URL }}
