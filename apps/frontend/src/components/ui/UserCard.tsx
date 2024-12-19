@@ -8,7 +8,7 @@ import Image from 'next/image';
 export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
   return (
     <Card>
-      <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-auto'>
+      <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-auto gap-4'>
         <div className='flex gap-8'>
           <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
