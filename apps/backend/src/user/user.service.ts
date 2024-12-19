@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, ProfilePicture, ProfilePictureStatus, User } from '@prisma/client';
+import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
@@ -89,19 +89,20 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<{ user: User; profilePicture: ProfilePictureStatus }> {
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { authSchId: id },
     });
-    const profilePicture: ProfilePicture = this.prisma.profilePicture.findUnique({
+
+    const profilePicture = await this.prisma.profilePicture.findUnique({
       where: { userId: id },
       select: { status: true },
     });
 
-    if (user === null || profilePicture === null) {
+    if (!user || !profilePicture) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return { user, profilePicture };
+    return { user, profilePicture: profilePicture.status };
   }
 
   findMembers(page: number, pageSize: number) {
@@ -184,10 +185,11 @@ export class UserService {
 
   async findProfilePicture(authSchId: string): Promise<Buffer> {
     try {
-      const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
+      const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({
+        where: { userId: authSchId },
+      });
 
-      const imageBuffer = Buffer.from(profilePic.profileImage.buffer);
-      return imageBuffer;
+      return Buffer.from(profilePic.profileImage);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
