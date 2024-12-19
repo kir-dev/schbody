@@ -68,7 +68,7 @@ export default function StatusBadge({ status, hover }: Readonly<{ status: Applic
   }, [convertedStatus]);
 
   return (
-    <Badge variant={color} hover={false}>
+    <Badge variant={color} hover={hover === undefined ? true : hover}>
       <div className='py-1 pr-2'>{icon}</div>
       {ApplicationStatus[convertedStatus]}
     </Badge>
