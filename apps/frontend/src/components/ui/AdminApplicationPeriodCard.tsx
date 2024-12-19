@@ -130,7 +130,9 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Mégse</AlertDialogCancel>
-                <AlertDialogAction onClick={deleteApplicationPeriod}>Törlés</AlertDialogAction>
+                <AlertDialogAction onClick={deleteApplicationPeriod} className='bg-red-500 hover:bg-red-400'>
+                  Törlés
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
