@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -13,14 +13,20 @@ import { Switch } from '@/components/ui/switch';
 import UserProfileBanner from '@/components/ui/UserProfileBanner';
 import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
+import { ApplicationEntityWithPeriod, ApplicationStatus } from '@/types/application-entity';
 import { ProfileFormSchema } from '@/zod-form-schemas/ProfileFormSchema';
 
 import api from '../network/apiSetup';
 import MemberProfileData from './MemberProfileData';
 
+// Custom hook or API call to fetch user's applications
+async function fetchUserApplications() {
+  // Replace with an actual API call
+  return await api.get<ApplicationEntityWithPeriod[]>('/users/me/applications');
+}
+
 export default function ProfileForm() {
   const { toast } = useToast();
-
   const form = useForm<z.infer<typeof ProfileFormSchema>>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
@@ -30,12 +36,31 @@ export default function ProfileForm() {
       roomNumber: 0,
       canHelpNoobs: false,
       publicDesc: '',
+      id: '',
     },
   });
 
   const { data: user, error, isLoading, mutate } = useProfile();
+  const [isIdFieldDisabled, setIsIdFieldDisabled] = useState(false);
+  const [editingIsOn, setEditingIsOn] = useState(false);
 
-  async function onSubmit({ roomNumber, ...values }: z.infer<typeof ProfileFormSchema>) {
+  useEffect(() => {
+    async function checkApplicationStatus() {
+      try {
+        const applications = await fetchUserApplications();
+        const hasRestrictedStatus = applications.data.some(
+          (app: ApplicationEntityWithPeriod) =>
+            app.status === ApplicationStatus.DISTRIBUTED || app.status === ApplicationStatus.WAITING_FOR_OPS
+        );
+        setIsIdFieldDisabled(hasRestrictedStatus);
+      } catch (error) {
+        console.error('Failed to fetch applications:', error);
+      }
+    }
+    checkApplicationStatus();
+  }, []);
+
+  const onSubmit = async ({ roomNumber, ...values }: z.infer<typeof ProfileFormSchema>) => {
     setEditingIsOn(false);
     try {
       const response = await api.patch(
@@ -43,9 +68,7 @@ export default function ProfileForm() {
         JSON.stringify(values.isSchResident ? { ...values, roomNumber } : values)
       );
       if (response.status === 200) {
-        toast({
-          title: 'Sikeres módosítás!',
-        });
+        toast({ title: 'Sikeres módosítás!' });
         mutate();
       } else {
         toast({
@@ -55,12 +78,9 @@ export default function ProfileForm() {
         });
       }
     } catch (error) {
-      toast({
-        title: 'Nem várt hiba történt!',
-        variant: 'destructive',
-      });
+      toast({ title: 'Nem várt hiba történt!', variant: 'destructive' });
     }
-  }
+  };
 
   const { reset } = form;
   useEffect(() => {
@@ -72,14 +92,13 @@ export default function ProfileForm() {
         roomNumber: user.roomNumber || 0,
         canHelpNoobs: user.canHelpNoobs || false,
         publicDesc: user.publicDesc || '',
+        id: user.idNumber || '',
       });
     }
   }, [user, reset]);
 
-  const [editingIsOn, setEditingIsOn] = React.useState(false);
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading profile.</p>;
-
   if (!user) return null;
 
   return (
@@ -124,6 +143,19 @@ export default function ProfileForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name='id'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Személyi szám</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isIdFieldDisabled || !editingIsOn} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
         <Card>
@@ -159,7 +191,9 @@ export default function ProfileForm() {
               name='roomNumber'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
+                  className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${
+                    form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'
+                  }`}
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
