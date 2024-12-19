@@ -30,7 +30,7 @@ export default function LoginButton({ version }: { version: number }) {
 
           <Button onClick={handleNavToProfile}>
             <FiUser />
-            {version === 0 ? user.nickName.slice(0, 1) : user.nickName}
+            {user.nickName ? (version === 0 ? user.nickName.slice(0, 1) : user.nickName) : user.fullName}
           </Button>
         </div>
       )}
