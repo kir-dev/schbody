@@ -4,13 +4,12 @@ import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import StatusBadge from '@/components/ui/StatusBadge';
-import Ticket from '@/components/ui/Ticket';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useCurrentApplication from '@/hooks/useCurrentApplication';
 import useLastApplication from '@/hooks/useLastApplication';
 import { useCurrentPeriod } from '@/hooks/usePeriod';
 import useProfile from '@/hooks/useProfile';
+
+import SubmittedApplicationBannerCard from './SubmittedApplicationBannerCard';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
@@ -21,33 +20,13 @@ export default function ApplicationBannerCard() {
   if (!user.data || user.isLoading || currentApplication.isLoading || currentPeriod.isLoading) {
     return null;
   }
-  if (currentApplication.data) {
+  if (currentApplication.data && currentPeriod.data) {
     return (
-      <Card className='w-full'>
-        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
-          <div className='flex flex-col gap-4 justify-start'>
-            <CardTitle> Leadott jelentkezés </CardTitle>
-            <p>
-              A most zajló, <span className='font-bold'>{currentPeriod.data?.name}</span> időszakra már sikeresen
-              jelentkeztél!
-            </p>
-          </div>
-          <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
-            <Ticket user={user.data} />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {/*TODO tooltip does not work */}
-                  <StatusBadge status={currentApplication.data.status} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </CardHeader>
-      </Card>
+      <SubmittedApplicationBannerCard
+        user={user.data}
+        application={currentApplication.data}
+        currentPeriod={currentPeriod.data}
+      />
     );
   } else if (currentPeriod.data) {
     return (
@@ -69,29 +48,7 @@ export default function ApplicationBannerCard() {
       </Card>
     );
   } else if (lastApplication.data) {
-    return (
-      <Card className='w-full'>
-        <CardHeader className='md:flex-row max-md:flex-col w-full justify-between gap-2 md:items-start'>
-          <div className='flex flex-col gap-4 justify-start'>
-            <CardTitle>Eddigi jelentkezésed</CardTitle>
-          </div>
-          <div className='flex flex-col items-center gap-2 m-0 max-md:w-full'>
-            <Ticket user={user.data} />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {/*TODO tooltip does not work */}
-                  <StatusBadge status={lastApplication.data.status} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='font-sans'>Jelentkezésed jelenlegi státusza</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </CardHeader>
-      </Card>
-    );
+    return <SubmittedApplicationBannerCard user={user.data} application={lastApplication.data} />;
   }
   return null;
 }

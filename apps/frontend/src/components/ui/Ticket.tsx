@@ -1,8 +1,7 @@
-import React from 'react';
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserEntity } from '@/types/user-entity';
 
+import Image from 'next/image';
 import { Card, CardContent, CardTitle } from './card';
 
 export default function Ticket({ user }: { user: UserEntity }) {
@@ -10,10 +9,10 @@ export default function Ticket({ user }: { user: UserEntity }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className='flex gap-2 p-2 bg-red-200 relative'>
-            <img
+          <Card className='flex gap-2 p-2 bg-red-200 relative rounded-sm'>
+            <Image
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture?cb=${Date.now()} `}
-              className='min-w-[65px] w-[65px] h-[90px] overflow-hidden rounded object-cover'
+              className='min-w-[65px] w-[65px] h-[90px] overflow-hidden rounded-sm object-cover'
               alt='kep'
             />
             <div>

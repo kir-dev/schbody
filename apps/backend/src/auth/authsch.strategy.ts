@@ -17,6 +17,7 @@ export class AuthSchStrategy extends PassportStrategy(Strategy) {
         AuthSchScope.BME_STATUS,
         process.env.NODE_ENV === 'production' ? [AuthSchScope.NEPTUN] : [],
       ],
+      redirectUri: process.env.AUTHSCH_REDIRECT_URI,
     });
   }
 
