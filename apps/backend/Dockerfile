@@ -20,7 +20,7 @@ RUN yarn prisma generate
 RUN yarn build
 
 # Stage 2: Create a lightweight container with the built application
-FROM node:20-alpine AS production
+FROM node:20-bookworm AS production
 ENV NODE_ENV=production
 
 # Set the working directory inside the container
