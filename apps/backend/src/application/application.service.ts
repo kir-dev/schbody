@@ -12,7 +12,7 @@ import { ApplicationPeriodService } from 'src/application-period/application-per
 import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
-import { UpdateApplicationDto } from './dto/update-application.dto';
+import { UpdateApplicationDto, UpdateManyApplicationDto } from './dto/update-application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -185,6 +185,24 @@ export class ApplicationService {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
+    }
+  }
+
+  async updateMany(updateManyApplicationDto: UpdateManyApplicationDto): Promise<Prisma.BatchPayload> {
+    try {
+      return await this.prisma.application.updateMany({
+        where: {
+          id: {
+            in: updateManyApplicationDto.idList,
+          },
+        },
+        data: {
+          status: updateManyApplicationDto.applicationStatus,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+      throw new NotFoundException('A keresett jelentkezés nem található');
     }
   }
 

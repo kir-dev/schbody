@@ -9,7 +9,7 @@ import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
-import { UpdateApplicationDto } from './dto/update-application.dto';
+import { UpdateApplicationDto, UpdateManyApplicationDto } from './dto/update-application.dto';
 
 @ApiTags('application')
 @Controller('application')
@@ -67,6 +67,14 @@ export class ApplicationController {
     @Body() updateApplicationDto: UpdateApplicationDto
   ): Promise<Application> {
     return this.applicationService.update(id, updateApplicationDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Patch('ids')
+  updateMany(@Body() updateManyApplicationDto: UpdateManyApplicationDto): Promise<Prisma.BatchPayload> {
+    return this.applicationService.updateMany(updateManyApplicationDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
