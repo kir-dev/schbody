@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -87,7 +87,9 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
     }
   }
 
-  if (!user.data) return null;
+  if (!user.data) {
+    return redirect('/');
+  }
 
   return (
     <Form {...form}>
