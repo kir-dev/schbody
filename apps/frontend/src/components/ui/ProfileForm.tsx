@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LuBuilding2, LuFileEdit } from 'react-icons/lu';
+import { LuBuilding2, LuFileUp } from 'react-icons/lu';
 import { z } from 'zod';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,6 +58,7 @@ export default function ProfileForm() {
         console.error('Failed to fetch applications:', error);
       }
     }
+
     checkApplicationStatus();
   }, []);
 
@@ -118,7 +119,7 @@ export default function ProfileForm() {
           <CardHeader className='flex items-start flex-row justify-between'>
             <div>
               <CardTitle>
-                <LuFileEdit />
+                <LuFileUp />
                 Személyes adatok
               </CardTitle>
             </div>
