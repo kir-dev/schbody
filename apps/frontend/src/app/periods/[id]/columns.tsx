@@ -58,7 +58,7 @@ export const columns: (
           <HoverCardTrigger>
             <div className='flex gap-2 items-center'>
               <div className={`${getRoleBadgeColor(row.original.user.role, true)} h-6 w-1 rounded`} />
-              <p className=''>{row.original.user.fullName}</p>
+              <p>{row.original.user.fullName}</p>
               {row.original.user.isActiveVikStudent && <RiVerifiedBadgeLine size={16} />}
             </div>
           </HoverCardTrigger>
