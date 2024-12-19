@@ -19,7 +19,7 @@ export function BodyMemberTile({ userEntity, simple }: Props) {
         className='h-36 rounded'
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
-          currentTarget.src = 'default_pfp.jpg';
+          currentTarget.src = '/default_pfp.jpg';
         }}
       />
       <div className='flex flex-col gap-4 ml-4 mt-2'>
