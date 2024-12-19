@@ -78,7 +78,9 @@ export default function UserProfileBanner(props: {
         <Image
           src={profilePicture || '/default_pfp.jpg'}
           alt='PROFIL KEP'
-          className='md:rounded-l-lg max-md:rounded-xl max-md:my-4'
+          className='md:rounded-l max-md:rounded-xl max-md:my-4'
+          width={650}
+          height={900}
           onError={({ currentTarget }) => {
             currentTarget.src = '/default_pfp.jpg';
           }}

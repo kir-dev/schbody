@@ -188,10 +188,11 @@ export class UserService {
 
   async findProfilePicture(authSchId: string): Promise<Buffer> {
     try {
-      const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
+      const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({
+        where: { userId: authSchId },
+      });
 
-      const imageBuffer = Buffer.from(profilePic.profileImage.buffer);
-      return imageBuffer;
+      return Buffer.from(profilePic.profileImage);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
