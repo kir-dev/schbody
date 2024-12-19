@@ -36,7 +36,7 @@ export default function ProfileForm() {
       roomNumber: 0,
       canHelpNoobs: false,
       publicDesc: '',
-      id: '',
+      idNumber: '',
     },
   });
 
@@ -92,7 +92,7 @@ export default function ProfileForm() {
         roomNumber: user.roomNumber || 0,
         canHelpNoobs: user.canHelpNoobs || false,
         publicDesc: user.publicDesc || '',
-        id: user.idNumber || '',
+        idNumber: user.idNumber || '',
       });
     }
   }, [user, reset]);
@@ -145,7 +145,7 @@ export default function ProfileForm() {
             />
             <FormField
               control={form.control}
-              name='id'
+              name='idNumber'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Személyi szám</FormLabel>
