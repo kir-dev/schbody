@@ -26,11 +26,11 @@ export class UpdateUserAdminDto {
   @IsOptional()
   publicDesc: string;
 
-  @IsEnum(Role)
-  @IsOptional()
-  role: Role;
-
   @IsString()
   @IsOptional()
   idNumber: string;
+
+  @IsEnum(Role)
+  @IsOptional()
+  role: Role;
 }

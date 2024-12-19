@@ -124,7 +124,7 @@ export default function UserProfileBanner(props: {
             )}
             {props.editingIsOn && (
               <>
-                <Button type='submit'>
+                <Button type='submit' onClick={props.onSubmit}>
                   <FiSave />
                   Mentés
                 </Button>

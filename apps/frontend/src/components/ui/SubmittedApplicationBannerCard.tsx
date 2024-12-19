@@ -17,8 +17,8 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
       <CardHeader className='md:flex-row max-md:flex-col justify-between gap-2 md:items-start p-2'>
         {!currentPeriod && <CardTitle className='m-4'>Utolsó jelentkezésed</CardTitle>}
         {currentPeriod && (
-          <div className='flex flex-col gap-4 justify-start '>
-            <CardTitle className='m-4'> Leadott jelentkezés </CardTitle>
+          <div className='flex flex-col gap-4 justify-start m-4'>
+            <CardTitle> Leadott jelentkezés </CardTitle>
             <p>
               A most zajló, <span className='font-bold'>{currentPeriod.name}</span> időszakra már sikeresen
               jelentkeztél!

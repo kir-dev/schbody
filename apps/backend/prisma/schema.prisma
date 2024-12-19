@@ -102,7 +102,7 @@ model Application {
   id                  Int               @id @default(autoincrement())
   user                User              @relation(fields: [userId], references: [authSchId])
   userId              String
-  applicationPeriod   ApplicationPeriod @relation(fields: [applicationPeriodId], references: [id])
+  applicationPeriod   ApplicationPeriod @relation(fields: [applicationPeriodId], references: [id], onDelete: Cascade)
   applicationPeriodId Int
   status              ApplicationStatus @default(SUBMITTED)
   createdAt           DateTime          @default(now())
