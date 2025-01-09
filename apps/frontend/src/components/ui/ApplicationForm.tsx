@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -20,9 +20,10 @@ import useProfile from '@/hooks/useProfile';
 import { useToast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { ApplicationFormSchema } from '@/zod-form-schemas/ApplicationFormSchema';
+import LoadingCard from './LoadingCard';
 
 export default function ApplicationForm({ currentPeriod }: { currentPeriod: ApplicationPeriodEntity }) {
-  const user = useProfile();
+  const { data: userData, isLoading } = useProfile();
   const { toast } = useToast();
   const effectCalledRef = useRef(false);
   const router = useRouter();
@@ -39,15 +40,15 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
 
   const { reset } = form;
   useEffect(() => {
-    if (user.data && !effectCalledRef.current) {
+    if (userData && !effectCalledRef.current) {
       reset({
-        nickName: user.data.nickName || '',
-        email: user.data.email || '',
-        isSchResident: user.data.isSchResident || false,
-        roomNumber: user.data.roomNumber || 0,
+        nickName: userData.nickName || '',
+        email: userData.email || '',
+        isSchResident: userData.isSchResident || false,
+        roomNumber: userData.roomNumber || 0,
       });
     }
-  }, [user.data, reset]);
+  }, [userData, reset]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function onSubmit({ terms, ...values }: z.infer<typeof ApplicationFormSchema>) {
@@ -87,7 +88,13 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
     }
   }
 
-  if (!user.data) return null;
+  if (isLoading) {
+    return <LoadingCard />;
+  }
+
+  if (!userData) {
+    return redirect('/');
+  }
 
   return (
     <Form {...form}>
@@ -100,12 +107,12 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
           <CardContent className='md:grid-cols-4 grid gap-4'>
             <FormItem>
               <FormLabel>Név</FormLabel>
-              <Input disabled value={user.data.fullName} />
+              <Input disabled value={userData.fullName} />
             </FormItem>
             <FormItem>
               <FormLabel>NEPTUN</FormLabel>
               <FormControl>
-                <Input disabled value={user.data.neptun} />
+                <Input disabled value={userData.neptun} />
               </FormControl>
               <FormMessage />
             </FormItem>
