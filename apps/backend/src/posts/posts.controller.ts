@@ -38,6 +38,11 @@ export class PostsController {
     return this.postsService.findOne(Number(id));
   }
 
+  @Post(':id/upvote')
+  async upvote(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.postsService.upvote(Number(id), user);
+  }
+
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @ApiBearerAuth()

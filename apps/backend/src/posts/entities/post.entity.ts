@@ -15,7 +15,9 @@ export class PostEntity {
   @IsBoolean()
   visible: boolean = true;
   @IsNumber()
-  likes: number = 0;
+  upvotes: number = 0;
+  @IsBoolean()
+  isUpvoted: boolean = false;
   @ApiProperty({ type: User })
   author: User;
   createdAt: Date;

@@ -41,14 +41,24 @@ export class PostsService {
             nickName: true,
           },
         },
+        upvotes: true,
       },
     });
     const total = this.prisma.post.count();
     return Promise.all([posts, total])
       .then(([posts, total]) => {
         const limit = hasPagination ? Math.floor(total / pageSize) : 0;
+        const postsWithUpvotes = posts.map((post) => {
+          const upvotes = post.upvotes.length;
+          return {
+            ...post,
+            upvotes,
+            // TODO Implement the logic to check if the user has upvoted the post
+            isUpvoted: false,
+          };
+        });
         return {
-          data: posts,
+          data: postsWithUpvotes,
           total,
           page,
           limit,
@@ -117,6 +127,61 @@ export class PostsService {
         switch (e.code) {
           case 'P2000':
             throw new BadRequestException('The content is too long.');
+          case 'P2025':
+            throw new NotFoundException('This post does not exist.');
+        }
+      }
+      throw new InternalServerErrorException('An error occurred.');
+    }
+  }
+
+  async upvote(id: number, user: User) {
+    try {
+      const postToUpvote = await this.prisma.post.findUniqueOrThrow({
+        where: {
+          id,
+        },
+        include: {
+          upvotes: true,
+        },
+      });
+
+      const hasUpvoted = postToUpvote.upvotes.some((upvote) => upvote.userId === user.authSchId);
+
+      // If the user has already upvoted, remove the upvote
+      if (hasUpvoted) {
+        const upvoteId = postToUpvote.upvotes.find((upvote) => upvote.userId === user.authSchId).id;
+
+        return this.prisma.post.update({
+          where: {
+            id,
+          },
+          data: {
+            upvotes: {
+              disconnect: {
+                id: upvoteId,
+              },
+            },
+          },
+        });
+      }
+
+      // Else, add the upvote
+      return this.prisma.post.update({
+        where: {
+          id,
+        },
+        data: {
+          upvotes: {
+            create: {
+              userId: user.authSchId,
+            },
+          },
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (e.code) {
           case 'P2025':
             throw new NotFoundException('This post does not exist.');
         }
