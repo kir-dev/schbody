@@ -6,6 +6,8 @@ export type PostEntity = {
   content: string;
   visible: boolean;
   author: UserEntity;
+  likes: number;
+  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
 };
