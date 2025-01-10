@@ -23,7 +23,7 @@ export class PostsService {
     });
   }
 
-  findAll(page?: number, pageSize?: number): Promise<PaginationDto<SimplePostDto>> {
+  findAll(page?: number, pageSize?: number, user?: User): Promise<PaginationDto<SimplePostDto>> {
     const hasPagination = page !== -1 && pageSize !== -1;
     const posts = this.prisma.post.findMany({
       skip: hasPagination ? page * pageSize : undefined,
@@ -53,8 +53,7 @@ export class PostsService {
           return {
             ...post,
             upvotes,
-            // TODO Implement the logic to check if the user has upvoted the post
-            isUpvoted: false,
+            isUpvoted: user ? post.upvotes.some((upvote) => upvote.userId === user.authSchId) : false,
           };
         });
         return {

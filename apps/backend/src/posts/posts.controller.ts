@@ -1,4 +1,4 @@
-import { CurrentUser } from '@kir-dev/passport-authsch';
+import { CurrentUser, CurrentUserOptional } from '@kir-dev/passport-authsch';
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -28,9 +28,10 @@ export class PostsController {
   @Get()
   async findAll(
     @Query('page', ParseIntPipe) page: number,
-    @Query('page_size', ParseIntPipe) pageSize: number
+    @Query('page_size', ParseIntPipe) pageSize: number,
+    @CurrentUserOptional() user?: User
   ): Promise<PaginationDto<SimplePostDto>> {
-    return this.postsService.findAll(page, pageSize);
+    return this.postsService.findAll(page, pageSize, user);
   }
 
   @Get(':id')
@@ -38,6 +39,8 @@ export class PostsController {
     return this.postsService.findOne(Number(id));
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @Post(':id/upvote')
   async upvote(@Param('id') id: string, @CurrentUser() user: User) {
     return this.postsService.upvote(Number(id), user);
