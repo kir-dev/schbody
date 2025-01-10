@@ -5,6 +5,8 @@ import { randomInt } from 'crypto';
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.upvote.deleteMany();
+  await prisma.post.deleteMany();
   await prisma.application.deleteMany();
   await prisma.applicationPeriod.deleteMany();
   await prisma.user.deleteMany();
@@ -34,6 +36,8 @@ async function main() {
     },
   });
 
+  const userIds = [];
+
   // Create 20 users who the application will belong to
   for (let i = 1; i <= 20; i++) {
     const user = await prisma.user.create({
@@ -49,6 +53,8 @@ async function main() {
       },
     });
 
+    userIds.push(user.authSchId);
+
     // Randomly assign a status to the application
     const statuses = Object.values(ApplicationStatus);
     const applicationStatus = statuses[randomInt(statuses.length)];
@@ -59,6 +65,26 @@ async function main() {
         userId: user.authSchId,
         status: applicationStatus,
         applicationPeriodId: applicationPeriod.id,
+      },
+    });
+  }
+
+  // Create 5 posts with upvotes
+  for (let j = 1; j <= 5; j++) {
+    await prisma.post.create({
+      data: {
+        title: faker.lorem.sentence(),
+        content: faker.lorem.paragraphs(3),
+        preview: faker.lorem.paragraph(),
+        visible: true,
+        authorId: admin.authSchId,
+        upvotes: {
+          createMany: {
+            data: Array.from({ length: randomInt(10) }, (_, idx) => ({
+              userId: userIds[j + idx],
+            })),
+          },
+        },
       },
     });
   }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
+import { FiEdit2, FiThumbsUp, FiType, FiUser } from 'react-icons/fi';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
@@ -9,10 +9,12 @@ export default function NewsCard({
   post,
   onDelete,
   onEdit,
+  onUpvote,
 }: {
   post: PostEntity;
   onEdit: (Post: PostEntity) => void;
   onDelete: (id: number) => void;
+  onUpvote: (id: number) => void;
 }) {
   const [readMore, setReadMore] = useState(false);
   const switchDisplayMode = () => setReadMore(!readMore);
@@ -50,6 +52,11 @@ export default function NewsCard({
                   })}{' '}
                 </span>
               )}
+              <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : ''}`}>
+                {/** TODO: Change this to a muscle emoji */}
+                <FiThumbsUp onClick={() => onUpvote(post.id)} />
+                {post.upvotes}
+              </span>
             </CardDescription>
           </CardHeader>
           {!readMore && post.content.length > 250 && (

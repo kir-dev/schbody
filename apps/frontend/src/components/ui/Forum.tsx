@@ -17,6 +17,7 @@ import {
 import PostCreateOrEditDialog from '@/components/ui/PostCreateOrEditDialog';
 import usePosts from '@/hooks/usePosts';
 import useProfile from '@/hooks/useProfile';
+import { toast } from '@/lib/use-toast';
 import { PostEntity } from '@/types/post-entity';
 
 export default function Forum() {
@@ -54,6 +55,24 @@ export default function Forum() {
     }
   }
 
+  /**
+   * If the user is logged in, upvote the post with the given id,
+   * else show a toast that only logged in users can upvote.
+   * If the user has already upvoted the post, remove the upvote.
+   * @param id The id of the post to upvote
+   */
+  async function onUpvote(id: number) {
+    if (!user) {
+      toast({
+        title: 'Csak bejelentkezett felhasználók upvoteolhatnak!',
+      });
+      return;
+    }
+    await api.post(`/posts/${id}/upvote`);
+    // TODO - The post in the list should be updated with the new upvote count
+    await mutate();
+  }
+
   return (
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
@@ -67,7 +86,7 @@ export default function Forum() {
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts?.data &&
         posts.data.map((post: PostEntity) => (
-          <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />
+          <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} onUpvote={onUpvote} />
         ))}
       {posts && posts.total > 0 && (
         <Pagination>
