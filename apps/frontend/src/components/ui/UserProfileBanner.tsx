@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
