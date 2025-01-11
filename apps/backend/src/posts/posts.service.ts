@@ -157,7 +157,7 @@ export class PostsService {
           },
           data: {
             upvotes: {
-              disconnect: {
+              delete: {
                 id: upvoteId,
               },
             },

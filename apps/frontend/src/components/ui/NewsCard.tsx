@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FiEdit2, FiThumbsUp, FiType, FiUser } from 'react-icons/fi';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
 import { PostEntity } from '@/types/post-entity';
 
@@ -25,39 +25,6 @@ export default function NewsCard({
         <Card>
           <CardHeader className='relative overflow-hidden'>
             <CardTitle>{post.title}</CardTitle>
-            <CardDescription className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row'>
-              <span className='flex items-center gap-2'>
-                <FiUser />
-                {post.author.fullName}
-              </span>
-              <span className='flex items-center gap-2'>
-                <FiType />
-                {new Date(post.createdAt).toLocaleDateString('hu-HU', {
-                  minute: 'numeric',
-                  hour: 'numeric',
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric',
-                })}{' '}
-              </span>
-              {post.createdAt !== post.updatedAt && (
-                <span className='flex items-center gap-2'>
-                  <FiEdit2 />
-                  {new Date(post.updatedAt).toLocaleDateString('hu-HU', {
-                    minute: 'numeric',
-                    hour: 'numeric',
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })}{' '}
-                </span>
-              )}
-              <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : ''}`}>
-                {/** TODO: Change this to a muscle emoji */}
-                <FiThumbsUp onClick={() => onUpvote(post.id)} />
-                {post.upvotes}
-              </span>
-            </CardDescription>
           </CardHeader>
           {!readMore && post.content.length > 250 && (
             <CardContent className='relative'>
@@ -77,6 +44,44 @@ export default function NewsCard({
               </CardFooter>
             </>
           )}
+          <CardContent className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row'>
+            <span className='flex items-center gap-2'>
+              <FiUser />
+              {post.author.fullName}
+            </span>
+            <span className='flex items-center gap-2'>
+              <FiType />
+              {new Date(post.createdAt).toLocaleDateString('hu-HU', {
+                minute: 'numeric',
+                hour: 'numeric',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })}{' '}
+            </span>
+            {post.createdAt !== post.updatedAt && (
+              <span className='flex items-center gap-2'>
+                <FiEdit2 />
+                {new Date(post.updatedAt).toLocaleDateString('hu-HU', {
+                  minute: 'numeric',
+                  hour: 'numeric',
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric',
+                })}{' '}
+              </span>
+            )}
+            <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : ''}`}>
+              {/** TODO: Change this to a muscle emoji */}
+              <FiThumbsUp
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onUpvote(post.id);
+                }}
+              />
+              {post.upvotes}
+            </span>
+          </CardContent>
         </Card>
       )}
     </div>
