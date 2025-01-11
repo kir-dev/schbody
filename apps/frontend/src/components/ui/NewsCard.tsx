@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FiEdit2, FiThumbsUp, FiType, FiUser } from 'react-icons/fi';
+import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
+import { LuBicepsFlexed } from 'react-icons/lu';
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
@@ -44,7 +45,7 @@ export default function NewsCard({
               </CardFooter>
             </>
           )}
-          <CardContent className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row'>
+          <CardContent className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row text-sm text-muted-foreground'>
             <span className='flex items-center gap-2'>
               <FiUser />
               {post.author.fullName}
@@ -71,9 +72,9 @@ export default function NewsCard({
                 })}{' '}
               </span>
             )}
-            <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : ''}`}>
+            <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : 'text-secondary'}`}>
               {/** TODO: Change this to a muscle emoji */}
-              <FiThumbsUp
+              <LuBicepsFlexed
                 onClick={(e) => {
                   e.stopPropagation();
                   onUpvote(post.id);
