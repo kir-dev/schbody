@@ -19,6 +19,7 @@ import { SortableFilterableHeader } from '@/components/ui/table-headers/Sortable
 import { filterByDateRange } from '@/lib/customFilters';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import Image from 'next/image';
 
 export const columns: (
   quickMode: boolean,
@@ -57,15 +58,17 @@ export const columns: (
           <HoverCardTrigger>
             <div className='flex gap-2 items-center'>
               <div className={`${getRoleBadgeColor(row.original.user.role, true)} h-6 w-1 rounded`} />
-              <p className=''>{row.original.user.fullName}</p>
+              <p>{row.original.user.fullName}</p>
               {row.original.user.isActiveVikStudent && <RiVerifiedBadgeLine size={16} />}
             </div>
           </HoverCardTrigger>
           <HoverCardContent>
-            <img
+            <Image
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
               alt='KEP'
               className='rounded max-w-32'
+              width={128}
+              height={128}
             />
           </HoverCardContent>
         </HoverCard>
@@ -124,6 +127,7 @@ export const columns: (
       return SortableFilterableHeader(column);
     },
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [idNumber, setIdNumber] = useState(row.original.user.idNumber);
       return (
         <form
@@ -226,6 +230,7 @@ export const columns: (
     size: 100,
     enableResizing: false,
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [open, setOpen] = useState(false);
       return (
         <div className='flex gap-2 items-center justify-between'>

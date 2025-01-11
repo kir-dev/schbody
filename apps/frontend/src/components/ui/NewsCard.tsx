@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,8 +14,10 @@ export default function NewsCard({
   onEdit: (Post: PostEntity) => void;
   onDelete: (id: number) => void;
 }) {
+  const [readMore, setReadMore] = useState(false);
+  const switchDisplayMode = () => setReadMore(!readMore);
   return (
-    <>
+    <div onClick={() => switchDisplayMode()}>
       <div />
       {post && (
         <Card>
@@ -49,15 +52,26 @@ export default function NewsCard({
               )}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            {/* eslint-disable-next-line react/no-danger */}
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-          </CardContent>
-          <CardFooter>
-            <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
-          </CardFooter>
+          {!readMore && post.content.length > 250 && (
+            <CardContent className='relative'>
+              {/* eslint-disable-next-line react/no-danger */}
+              <div dangerouslySetInnerHTML={{ __html: `${post.content.slice(0, 200)}...` }} />
+              <div className='absolute bottom-6 w-full -mx-6 rounded-lg h-12 bg-gradient-to-b from-transparent to-white' />
+            </CardContent>
+          )}
+          {(readMore || post.content.length < 250) && (
+            <>
+              <CardContent>
+                {/* eslint-disable-next-line react/no-danger */}
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              </CardContent>
+              <CardFooter>
+                <PostManagementButtons onDelete={() => onDelete(post.id)} onEdit={() => onEdit(post)} />
+              </CardFooter>
+            </>
+          )}
         </Card>
       )}
-    </>
+    </div>
   );
 }

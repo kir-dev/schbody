@@ -1,6 +1,7 @@
 'use client';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -10,9 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { UserDataRow } from '@/components/ui/UserDataRow';
+import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
 
+import { LuPen, LuTrash2 } from 'react-icons/lu';
+import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
@@ -22,12 +25,19 @@ export default function UserProfileBanner(props: {
   onSubmit: () => void;
 }) {
   const router = useRouter();
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
 
-  const handleProfilePictureUpload = async () => {
+  const handleProfilePictureAction = async () => {
     setCacheBuster(Date.now());
   };
+
+  const handleDeleteProfilePicture = async () => {
+    await handleProfilePictureAction();
+    setProfilePicture(null);
+  };
+
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
       mutate(() => true, undefined, { revalidate: false });
@@ -53,30 +63,58 @@ export default function UserProfileBanner(props: {
     );
   };
 
+  useEffect(() => {
+    const getProfilePicture = async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${props.user!.authSchId}/profile-picture?cb=${cacheBuster}`;
+        const response = await fetch(url);
+        if (response.ok) {
+          setProfilePicture(url);
+        }
+      } catch {
+        setProfilePicture(null);
+      }
+    };
+
+    getProfilePicture();
+  }, [profilePicture, cacheBuster]);
+
   if (!props.user) return null;
   return (
-    <Card className='flex max-md:flex-col md:flex-row max-md:items-center  relative'>
+    <Card className='flex max-md:flex-col md:flex-row max-md:items-center relative'>
       <div className='min-w-44 min-h-44 md:w-1/5 max-md:w-44 h-full relative'>
-        <img
-          src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture?cb=${cacheBuster}`}
+        <Image
+          src={profilePicture || '/default_pfp.jpg'}
           alt='PROFIL KEP'
-          className='md:rounded-l-lg max-md:rounded-xl max-md:my-4'
+          className='md:rounded-l max-md:rounded-xl max-md:my-4'
+          width={650}
+          height={900}
           onError={({ currentTarget }) => {
-            currentTarget.onerror = null; // prevents looping
-            currentTarget.src = 'default_pfp.jpg';
+            currentTarget.src = '/default_pfp.jpg';
           }}
         />
-        <div className='w-full absolute flex bottom-2'>
+        <div className='w-full absolute flex bottom-2 gap-2 justify-center'>
           <PictureUploadDialog
             aspectRatio={650 / 900}
             modalTitle='Profilkép feltöltése'
-            onChange={handleProfilePictureUpload}
+            onChange={handleProfilePictureAction}
             endpoint='/users/me/profile-picture'
           >
-            <Button className='m-auto w-fit' variant='secondary'>
-              Kép szerkesztése
+            <Button className='w-fit' variant='secondary'>
+              {profilePicture ? <LuPen /> : 'Kép szerkesztése'}
             </Button>
           </PictureUploadDialog>
+          {profilePicture && (
+            <PictureDeleteDialog
+              modalTitle='Profilkép törlése'
+              onChange={handleDeleteProfilePicture}
+              endpoint='/users/me/profile-picture'
+            >
+              <Button variant='destructive'>
+                <LuTrash2 />
+              </Button>
+            </PictureDeleteDialog>
+          )}
         </div>
       </div>
       <CardContent className='w-full md:ml-4'>
@@ -115,7 +153,7 @@ export default function UserProfileBanner(props: {
             )}
           </div>
         </div>
-        <UserDataRow user={props.user} />
+        <UserTimeStampsBlock user={props.user} />
       </CardContent>
     </Card>
   );

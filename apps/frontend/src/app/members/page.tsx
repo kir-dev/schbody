@@ -1,6 +1,6 @@
 'use client';
 import Th1, { Th2 } from '@/components/typography/typography';
-import { BodyMemberTile } from '@/components/ui/body-member-tile';
+import { BodyMemberTile } from '@/components/ui/BodyMemberTile';
 import LoadingCard from '@/components/ui/LoadingCard';
 import { useMembers } from '@/hooks/useMembers';
 

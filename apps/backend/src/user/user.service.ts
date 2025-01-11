@@ -9,8 +9,8 @@ import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -27,7 +27,7 @@ export class UserService {
           status: true,
         },
       });
-    } catch (e) {
+    } catch (_e) {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
@@ -161,7 +161,7 @@ export class UserService {
   async delete(id: string): Promise<User> {
     try {
       return this.prisma.user.delete({ where: { authSchId: id } });
-    } catch (error) {
+    } catch (_error) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
   }
@@ -172,16 +172,33 @@ export class UserService {
     }
     try {
       await this.createOrUpdateProfilePicture(authSchId, buffer);
-    } catch (error) {
+    } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
+    }
+  }
+
+  async deleteProfilePicture(authSchId: string) {
+    try {
+      await this.prisma.profilePicture.delete({
+        where: { userId: authSchId },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new NotFoundException(`User with id ${authSchId} not found`);
+        }
+      }
+      throw e;
     }
   }
 
   async findProfilePicture(authSchId: string): Promise<Buffer> {
     try {
       const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
-      return profilePic.profileImage;
-    } catch (error) {
+
+      const imageBuffer = Buffer.from(profilePic.profileImage.buffer);
+      return imageBuffer;
+    } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
   }
