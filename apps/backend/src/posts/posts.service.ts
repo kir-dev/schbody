@@ -41,7 +41,11 @@ export class PostsService {
             nickName: true,
           },
         },
-        upvotes: true,
+        upvotes: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
     const total = this.prisma.post.count();
@@ -144,7 +148,12 @@ export class PostsService {
           id,
         },
         include: {
-          upvotes: true,
+          upvotes: {
+            select: {
+              userId: true,
+              id: true,
+            },
+          },
         },
       });
 
