@@ -35,8 +35,6 @@ export default function OwnPagination({ props }: { props: props }) {
       buttons.push(i);
     }
     setButtons(buttons);
-    console.log(buttons);
-    console.log(lastPageIndex);
   }, [props, lastPageIndex]);
   return (
     <Pagination>
