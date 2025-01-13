@@ -18,13 +18,14 @@ type props = {
   firstLastHide?: boolean;
   prevNextHide?: boolean;
   isLoading?: boolean;
+  page_size?: number;
 };
 
-const PAGES_PER_PAGE = 50;
+const DEFAULT_PAGE_SIZE = 50;
 const NEIGHBOUR_BTN_NUM = 2;
 export default function OwnPagination({ props }: { props: props }) {
   const [buttons, setButtons] = React.useState<number[]>([]);
-  const lastPageIndex = Math.ceil(props.limit / PAGES_PER_PAGE) - 1;
+  const lastPageIndex = Math.ceil(props.limit / (props.page_size ?? DEFAULT_PAGE_SIZE)) - 1;
   useEffect(() => {
     const buttons = [];
     const lowerBound = props.pageIndex - NEIGHBOUR_BTN_NUM > 0 ? props.pageIndex - NEIGHBOUR_BTN_NUM : 0;
@@ -34,6 +35,8 @@ export default function OwnPagination({ props }: { props: props }) {
       buttons.push(i);
     }
     setButtons(buttons);
+    console.log(buttons);
+    console.log(lastPageIndex);
   }, [props, lastPageIndex]);
   return (
     <Pagination>
