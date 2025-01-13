@@ -19,13 +19,15 @@ export default [
   {
     ignores: ['**/.eslintrc.js', 'eslint.config.mjs'],
   },
-  ...compat.extends(
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'next/core-web-vitals',
-    'next/typescript'
-  ),
+  ...compat.config({
+    extends: [
+      'plugin:@typescript-eslint/recommended',
+      'plugin:react/recommended',
+      'plugin:react-hooks/recommended',
+      'next/core-web-vitals',
+      'next/typescript',
+    ],
+  }),
   {
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,

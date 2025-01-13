@@ -7,7 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
  */
 @Injectable()
 export class AnonGuard extends AuthGuard('jwt') {
-  handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
+  handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, _status?: any): TUser {
     const request = context.switchToHttp().getRequest();
     request.user = user;
     return user;
