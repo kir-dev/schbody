@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
@@ -17,6 +17,10 @@ export default function Page() {
   const [search, setSearch] = React.useState('');
   const [pageIndex, setPageIndex] = React.useState(0);
   const users = useUsers(search, pageIndex);
+  useEffect(() => {
+    console.log(pageIndex);
+  }, [pageIndex]);
+
   async function onChange(newRole: Role, userId: string) {
     try {
       await api.patch(`/users/${userId}`, { role: newRole });
