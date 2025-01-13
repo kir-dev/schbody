@@ -17,6 +17,7 @@ type props = {
   limit: number;
   firstLastHide?: boolean;
   prevNextHide?: boolean;
+  isLoading?: boolean;
 };
 
 const PAGES_PER_PAGE = 50;
@@ -60,13 +61,23 @@ export default function OwnPagination({ props }: { props: props }) {
             <PaginationPrevious />
           </PaginationItem>
         )}
-        {buttons.map((button) => (
-          <PaginationItem key={button} onClick={() => props.setPageIndex(button)}>
-            <PaginationLink isActive={button === props.pageIndex} href='#'>
-              {button + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+        {props.isLoading && (
+          <>
+            {[...Array(5)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink>?</PaginationLink>
+              </PaginationItem>
+            ))}
+          </>
+        )}
+        {!props.isLoading &&
+          buttons.map((button) => (
+            <PaginationItem key={button} onClick={() => props.setPageIndex(button)}>
+              <PaginationLink isActive={button === props.pageIndex} href='#'>
+                {button + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
         {!props.prevNextHide && (
           <PaginationItem
             onClick={() => {

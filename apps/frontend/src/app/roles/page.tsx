@@ -59,6 +59,7 @@ export default function Page() {
             pageIndex: pageIndex,
             setPageIndex: setPageIndex,
             limit: users.data ? users.data.totalUsers : 10,
+            isLoading: users.isLoading,
           }}
         />
       )}
