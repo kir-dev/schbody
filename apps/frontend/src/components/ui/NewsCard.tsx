@@ -11,11 +11,13 @@ export default function NewsCard({
   onDelete,
   onEdit,
   onUpvote,
+  isLoggedInUser,
 }: {
   post: PostEntity;
   onEdit: (Post: PostEntity) => void;
   onDelete: (id: number) => void;
   onUpvote: (id: number) => void;
+  isLoggedInUser: boolean;
 }) {
   const [readMore, setReadMore] = useState(false);
   const switchDisplayMode = () => setReadMore(!readMore);
@@ -72,15 +74,16 @@ export default function NewsCard({
                 })}{' '}
               </span>
             )}
-            <span className={`flex items-center gap-2 ${post.isUpvoted ? 'text-primary' : 'text-secondary'}`}>
-              {/** TODO: Change this to a muscle emoji */}
-              <LuBicepsFlexed
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onUpvote(post.id);
-                }}
-              />
+            <span
+              className={`flex items-center gap-2 p-1 rounded-md border ${isLoggedInUser && 'hover:cursor-pointer hover:bg-gray-100 hover:border-gray-200'} ${post.isUpvoted ? 'text-blue-600' : 'text-muted-foreground '}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onUpvote(post.id);
+              }}
+            >
+              <LuBicepsFlexed />
               {post.upvotes}
+              {post.isUpvoted}
             </span>
           </CardContent>
         </Card>

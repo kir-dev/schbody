@@ -45,15 +45,18 @@ export class PostsService {
       },
     });
     const total = this.prisma.post.count();
+
     return Promise.all([posts, total])
       .then(([posts, total]) => {
         const limit = hasPagination ? Math.floor(total / pageSize) : 0;
         const postsWithUpvotes = posts.map((post) => {
           const upvotes = post.upvotes.length;
+          const isUpvoted = user ? post.upvotes.some((upvote) => upvote.userId === user.authSchId) : false;
+
           return {
             ...post,
             upvotes,
-            isUpvoted: user ? post.upvotes.some((upvote) => upvote.userId === user.authSchId) : false,
+            isUpvoted,
           };
         });
         return {

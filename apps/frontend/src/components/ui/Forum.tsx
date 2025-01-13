@@ -69,7 +69,6 @@ export default function Forum() {
       return;
     }
     await api.post(`/posts/${id}/upvote`);
-    // TODO - The post in the list should be updated with the new upvote count
     await mutate();
   }
 
@@ -86,7 +85,14 @@ export default function Forum() {
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts?.data &&
         posts.data.map((post: PostEntity) => (
-          <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} onUpvote={onUpvote} />
+          <NewsCard
+            post={post}
+            key={post.id}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onUpvote={onUpvote}
+            isLoggedInUser={user ? true : false}
+          />
         ))}
       {posts && posts.total > 0 && (
         <Pagination>

@@ -7,6 +7,7 @@ import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
+import { AnonGuard } from 'src/auth/anon.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { SimplePostDto } from './dto/simple-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -25,6 +26,7 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
+  @UseGuards(AnonGuard)
   @Get()
   async findAll(
     @Query('page', ParseIntPipe) page: number,
