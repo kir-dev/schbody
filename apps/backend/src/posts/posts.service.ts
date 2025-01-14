@@ -149,6 +149,9 @@ export class PostsService {
         },
         include: {
           upvotes: {
+            where: {
+              userId: user.authSchId,
+            },
             select: {
               userId: true,
               id: true,
