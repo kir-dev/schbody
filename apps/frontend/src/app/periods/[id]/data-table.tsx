@@ -108,7 +108,6 @@ export function DataTable<TData, TValue>({
 
   function selectGivenStatuses(value: ApplicationStatus) {
     table.getExpandedRowModel().rows.map((row) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
       else row.toggleSelected(false);
