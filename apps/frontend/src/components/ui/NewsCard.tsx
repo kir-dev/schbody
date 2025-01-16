@@ -75,7 +75,7 @@ export default function NewsCard({
               </span>
             )}
             <span
-              className={`flex items-center gap-2 p-1 rounded-md border ${isLoggedInUser && 'hover:cursor-pointer hover:bg-gray-100 hover:border-gray-200'} ${post.isUpvoted ? 'text-blue-600' : 'text-muted-foreground '}`}
+              className={`flex items-center gap-2 p-1 rounded-md border ${isLoggedInUser && 'hover:cursor-pointer hover:bg-gray-100 hover:border-gray-200'} ${post.isUpvoted ? 'text-blue-950' : 'text-muted-foreground '}`}
               onClick={(e) => {
                 e.stopPropagation();
                 onUpvote(post.id);

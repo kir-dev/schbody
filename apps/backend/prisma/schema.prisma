@@ -136,4 +136,5 @@ model Upvote {
   createdAt DateTime @default(now())
 
   @@unique([postId, userId])
+  @@index([postId])
 }
