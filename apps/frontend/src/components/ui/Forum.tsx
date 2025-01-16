@@ -71,7 +71,7 @@ export default function Forum() {
             limit: posts.total,
             isLoading: isLoading,
           }}
-        ></OwnPagination>
+         />
       )}
     </div>
   );
