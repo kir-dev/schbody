@@ -1,4 +1,5 @@
 import { UseFormReturn } from 'react-hook-form';
+import { LuUserCheck } from 'react-icons/lu';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -26,7 +27,10 @@ export default function MemberProfileData({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Körtag beállítások</CardTitle>
+        <CardTitle>
+          <LuUserCheck />
+          Körtag beállítások
+        </CardTitle>
       </CardHeader>
       <CardContent className='md:grid-cols-2 grid gap-4'>
         <FormField
