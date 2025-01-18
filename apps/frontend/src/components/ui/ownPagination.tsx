@@ -17,13 +17,22 @@ type props = {
   limit: number;
   firstLastHide?: boolean;
   prevNextHide?: boolean;
+  isLoading?: boolean;
+  page_size?: number;
 };
 
-const PAGES_PER_PAGE = 50;
+const DEFAULT_PAGE_SIZE = 50;
 const NEIGHBOUR_BTN_NUM = 2;
 export default function OwnPagination({ props }: { props: props }) {
   const [buttons, setButtons] = React.useState<number[]>([]);
-  const lastPageIndex = Math.ceil(props.limit / PAGES_PER_PAGE) - 1;
+  const lastPageIndex = Math.ceil(props.limit / (props.page_size ?? DEFAULT_PAGE_SIZE)) - 1;
+  const dummyChars = [
+    { id: 1, char: '?' },
+    { id: 2, char: '#' },
+    { id: 3, char: '@' },
+    { id: 4, char: '!' },
+    { id: 5, char: '%' },
+  ];
   useEffect(() => {
     const buttons = [];
     const lowerBound = props.pageIndex - NEIGHBOUR_BTN_NUM > 0 ? props.pageIndex - NEIGHBOUR_BTN_NUM : 0;
@@ -60,13 +69,23 @@ export default function OwnPagination({ props }: { props: props }) {
             <PaginationPrevious />
           </PaginationItem>
         )}
-        {buttons.map((button) => (
-          <PaginationItem key={button} onClick={() => props.setPageIndex(button)}>
-            <PaginationLink isActive={button === props.pageIndex} href='#'>
-              {button + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+        {props.isLoading && (
+          <>
+            {dummyChars.map((value) => (
+              <PaginationItem key={value.id}>
+                <PaginationLink>{value.char}</PaginationLink>
+              </PaginationItem>
+            ))}
+          </>
+        )}
+        {!props.isLoading &&
+          buttons.map((button) => (
+            <PaginationItem key={button} onClick={() => props.setPageIndex(button)}>
+              <PaginationLink isActive={button === props.pageIndex} href='#'>
+                {button + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
         {!props.prevNextHide && (
           <PaginationItem
             onClick={() => {

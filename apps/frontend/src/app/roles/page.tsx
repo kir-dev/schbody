@@ -17,6 +17,7 @@ export default function Page() {
   const [search, setSearch] = React.useState('');
   const [pageIndex, setPageIndex] = React.useState(0);
   const users = useUsers(search, pageIndex);
+
   async function onChange(newRole: Role, userId: string) {
     try {
       await api.patch(`/users/${userId}`, { role: newRole });
@@ -55,6 +56,7 @@ export default function Page() {
             pageIndex: pageIndex,
             setPageIndex: setPageIndex,
             limit: users.data ? users.data.totalUsers : 10,
+            isLoading: users.isLoading,
           }}
         />
       )}
@@ -72,6 +74,7 @@ export default function Page() {
             pageIndex: pageIndex,
             setPageIndex: setPageIndex,
             limit: users.data ? users.data.totalUsers : 10,
+            isLoading: users.isLoading,
           }}
         />
       )}

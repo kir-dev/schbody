@@ -6,18 +6,11 @@ import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import LoadingCard from '@/components/ui/LoadingCard';
 import NewsCard from '@/components/ui/NewsCard';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 import PostCreateOrEditDialog from '@/components/ui/PostCreateOrEditDialog';
 import usePosts from '@/hooks/usePosts';
 import useProfile from '@/hooks/useProfile';
 import { PostEntity } from '@/types/post-entity';
+import OwnPagination from '@/components/ui/ownPagination';
 
 export default function Forum() {
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -70,32 +63,15 @@ export default function Forum() {
           <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />
         ))}
       {posts && posts.total > 0 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem
-              onClick={() => {
-                if (pageIndex === 0) return;
-                setPageIndex(pageIndex - 1);
-              }}
-              aria-disabled={pageIndex <= 0}
-              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : ''}
-            >
-              <PaginationPrevious href='#' />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href='#' isActive>
-                {pageIndex + 1}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem
-              onClick={() => setPageIndex(pageIndex + 1)}
-              aria-disabled={posts.limit >= pageIndex}
-              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : ''}
-            >
-              <PaginationNext href='#' />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <OwnPagination
+          props={{
+            page_size: 10,
+            pageIndex: pageIndex,
+            setPageIndex: setPageIndex,
+            limit: posts.total,
+            isLoading: isLoading,
+          }}
+        />
       )}
     </div>
   );
