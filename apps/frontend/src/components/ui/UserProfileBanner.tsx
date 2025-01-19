@@ -77,7 +77,7 @@ export default function UserProfileBanner(props: {
     };
 
     getProfilePicture();
-  }, [profilePicture, cacheBuster]);
+  }, [profilePicture, cacheBuster, props.user]);
 
   if (!props.user) return null;
   return (

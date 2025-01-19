@@ -16,7 +16,7 @@ const config = [
   {
     ignores: ['**/.prettierrc.js'],
   },
-  ...compat.extends('plugin:@typescript-eslint/recommended', 'nestjs', 'plugin:@next/next/recommended'),
+  ...compat.extends('plugin:@typescript-eslint/recommended', 'nestjs'),
   {
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,

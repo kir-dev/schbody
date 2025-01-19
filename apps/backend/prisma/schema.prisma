@@ -52,6 +52,7 @@ model User {
   applicationPeriods ApplicationPeriod[]
   applications       Application[]
   posts              Post[]
+  upvotes            Upvote[]
   idNumber           String?
 }
 
@@ -121,6 +122,19 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  upvotes   Upvote[]
 
   @@index([authorId])
+}
+
+model Upvote {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  user      User     @relation(fields: [userId], references: [authSchId])
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
 }

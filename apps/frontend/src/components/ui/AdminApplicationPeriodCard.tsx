@@ -94,7 +94,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
     };
 
     getProfilePicture();
-  }, [periodBackground, cacheBuster]);
+  }, [periodBackground, cacheBuster, period.id]);
 
   return (
     <Card>

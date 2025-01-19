@@ -1,9 +1,7 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
-import next from '@next/eslint-plugin-next';
-import typescriptEslintEslintPlugin from '@typescript-eslint/eslint-plugin';
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
-import react from 'eslint-plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -19,18 +17,17 @@ export default [
   {
     ignores: ['**/.eslintrc.js', 'eslint.config.mjs'],
   },
-  ...compat.extends(
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'next/core-web-vitals',
-    'next/typescript'
-  ),
+  ...compat.config({
+    extends: [
+      'next/core-web-vitals',
+      // next/typescript already has @typescript-eslint/eslint-plugin bundled, but it probably has
+      // a different version than the one we're using, so we're including it manually in the plugins
+      // 'next/typescript'
+    ],
+  }),
   {
     plugins: {
-      '@typescript-eslint': typescriptEslintEslintPlugin,
-      next,
-      react,
+      '@typescript-eslint': typescriptEslintPlugin,
     },
 
     languageOptions: {
@@ -44,11 +41,11 @@ export default [
       },
     },
 
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
+    // settings: {
+    //   react: {
+    //     version: 'detect',
+    //   },
+    // },
 
     rules: {
       'no-html-link-for-pages': 'off',
