@@ -47,11 +47,9 @@ export const useKeyboardShortcut = (keys: Key[], callback: (idxOfKey?: number) =
       }
     };
 
-    // eslint-disable-next-line no-undef
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      // eslint-disable-next-line no-undef
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [keys, callback]);
