@@ -108,7 +108,6 @@ export function DataTable<TData, TValue>({
 
   function selectGivenStatuses(value: ApplicationStatus) {
     table.getExpandedRowModel().rows.map((row) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       if ((row.original.status! as ApplicationStatus) === value) row.toggleSelected(true);
       else row.toggleSelected(false);
@@ -239,9 +238,9 @@ export function DataTable<TData, TValue>({
               </TooltipTrigger>
               <TooltipContent>
                 <span className='flex gap-2 items-center'>
-                  Az összes <StatusBadge status={'PREPARED_FOR_PRINT' as ApplicationStatus} hover={false} />
+                  Az összes <StatusBadge status={'PREPARED_FOR_PRINT' as ApplicationStatus} />
                   jelentkezés
-                  <StatusBadge status={'MANUFACTURED' as ApplicationStatus} hover={false} />
+                  <StatusBadge status={'MANUFACTURED' as ApplicationStatus} />
                   -ra állítása
                 </span>
               </TooltipContent>

@@ -8,10 +8,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ApplicationEntity } from '@/types/application-entity';
 
 export function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
   const [start, setStart] = useState(column.getFilterValue()?.start || '2024-01-01T00:00');
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
   // @ts-expect-error
   const [end, setEnd] = useState(column.getFilterValue()?.end || '2025-01-01T00:00');
 

@@ -6,18 +6,12 @@ import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
 import LoadingCard from '@/components/ui/LoadingCard';
 import NewsCard from '@/components/ui/NewsCard';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 import PostCreateOrEditDialog from '@/components/ui/PostCreateOrEditDialog';
 import usePosts from '@/hooks/usePosts';
 import useProfile from '@/hooks/useProfile';
+import { toast } from '@/lib/use-toast';
 import { PostEntity } from '@/types/post-entity';
+import OwnPagination from '@/components/ui/ownPagination';
 
 export default function Forum() {
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -54,6 +48,23 @@ export default function Forum() {
     }
   }
 
+  /**
+   * If the user is logged in, upvote the post with the given id,
+   * else show a toast that only logged in users can upvote.
+   * If the user has already upvoted the post, remove the upvote.
+   * @param id The id of the post to upvote
+   */
+  async function onUpvote(id: number) {
+    if (!user) {
+      toast({
+        title: 'Csak bejelentkezett felhasználók upvoteolhatnak!',
+      });
+      return;
+    }
+    await api.post(`/posts/${id}/upvote`);
+    await mutate();
+  }
+
   return (
     <div className='space-y-4'>
       {isLoading && <LoadingCard />}
@@ -67,35 +78,25 @@ export default function Forum() {
       <PostCreateOrEditDialog p={isEditing} closeDialog={closeDialog} onSave={onCreateOrEdit} />
       {posts?.data &&
         posts.data.map((post: PostEntity) => (
-          <NewsCard post={post} key={post.id} onDelete={onDelete} onEdit={onEdit} />
+          <NewsCard
+            post={post}
+            key={post.id}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onUpvote={onUpvote}
+            isLoggedInUser={user ? true : false}
+          />
         ))}
       {posts && posts.total > 0 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem
-              onClick={() => {
-                if (pageIndex === 0) return;
-                setPageIndex(pageIndex - 1);
-              }}
-              aria-disabled={pageIndex <= 0}
-              className={pageIndex <= 0 ? 'pointer-events-none opacity-50' : ''}
-            >
-              <PaginationPrevious href='#' />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href='#' isActive>
-                {pageIndex + 1}
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem
-              onClick={() => setPageIndex(pageIndex + 1)}
-              aria-disabled={posts.limit >= pageIndex}
-              className={posts.limit >= pageIndex ? 'pointer-events-none opacity-50' : ''}
-            >
-              <PaginationNext href='#' />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <OwnPagination
+          props={{
+            page_size: 10,
+            pageIndex: pageIndex,
+            setPageIndex: setPageIndex,
+            limit: posts.total,
+            isLoading: isLoading,
+          }}
+        />
       )}
     </div>
   );

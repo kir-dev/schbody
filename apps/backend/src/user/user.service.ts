@@ -186,6 +186,21 @@ export class UserService {
     }
   }
 
+  async deleteProfilePicture(authSchId: string) {
+    try {
+      await this.prisma.profilePicture.delete({
+        where: { userId: authSchId },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          throw new NotFoundException(`User with id ${authSchId} not found`);
+        }
+      }
+      throw e;
+    }
+  }
+
   async findProfilePicture(authSchId: string): Promise<Buffer> {
     try {
       const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({

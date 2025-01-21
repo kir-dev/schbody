@@ -1,7 +1,4 @@
 {
-  "dependencies": {
-    "@nestjs/mapped-types": "^2.0.5"
-  },
   "name": "next-nest-template",
   "version": "0.0.0",
   "description": "Template repository for full-stack NestJS + NextJS projects",
@@ -22,14 +19,16 @@
     "format:check": "prettier --check apps"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.14.0",
-    "concurrently": "^9.1.0",
-    "eslint": "^9.14.0",
-    "prettier": "^3.3.3"
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.18.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2"
   },
   "workspaces": [
     "apps/*"
   ],
-  "packageManager": "yarn@4.5.3"
+  "packageManager": "yarn@4.6.0"
 }

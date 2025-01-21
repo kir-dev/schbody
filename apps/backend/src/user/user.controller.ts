@@ -2,6 +2,7 @@ import { CurrentUser } from '@kir-dev/passport-authsch';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -56,6 +57,13 @@ export class UserController {
     file: Express.Multer.File
   ) {
     await this.userService.saveProfilePicture(user.authSchId, file.buffer, file.mimetype);
+  }
+
+  @Delete('me/profile-picture')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  async deleteProfilePicture(@CurrentUser() user: User) {
+    await this.userService.deleteProfilePicture(user.authSchId);
   }
 
   @Patch('me')

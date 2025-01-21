@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
@@ -14,6 +14,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { UserDataRow } from '@/components/ui/UserDataRow';
 import { UserEntity } from '@/types/user-entity';
 
+import { LuPen, LuTrash2 } from 'react-icons/lu';
+import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
 
 export default function UserProfileBanner(props: {
@@ -27,9 +29,15 @@ export default function UserProfileBanner(props: {
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
 
-  const handleProfilePictureUpload = async () => {
+  const handleProfilePictureAction = async () => {
     setCacheBuster(Date.now());
   };
+
+  const handleDeleteProfilePicture = async () => {
+    await handleProfilePictureAction();
+    setProfilePicture(null);
+  };
+
   const onLogout = () => {
     fetch('/auth/logout').then(() => {
       mutate(() => true, undefined, { revalidate: false });
@@ -69,7 +77,7 @@ export default function UserProfileBanner(props: {
     };
 
     getProfilePicture();
-  }, [profilePicture, cacheBuster]);
+  }, [profilePicture, cacheBuster, props.user]);
 
   if (!props.user) return null;
   return (
@@ -85,17 +93,28 @@ export default function UserProfileBanner(props: {
             currentTarget.src = '/default_pfp.jpg';
           }}
         />
-        <div className='w-full absolute flex bottom-2'>
+        <div className='w-full absolute flex bottom-2 gap-2 justify-center'>
           <PictureUploadDialog
             aspectRatio={650 / 900}
             modalTitle='Profilkép feltöltése'
-            onChange={handleProfilePictureUpload}
+            onChange={handleProfilePictureAction}
             endpoint='/users/me/profile-picture'
           >
-            <Button className='m-auto w-fit' variant='secondary'>
-              Kép szerkesztése
+            <Button className='w-fit' variant='secondary'>
+              {profilePicture ? <LuPen /> : 'Kép szerkesztése'}
             </Button>
           </PictureUploadDialog>
+          {profilePicture && (
+            <PictureDeleteDialog
+              modalTitle='Profilkép törlése'
+              onChange={handleDeleteProfilePicture}
+              endpoint='/users/me/profile-picture'
+            >
+              <Button variant='destructive'>
+                <LuTrash2 />
+              </Button>
+            </PictureDeleteDialog>
+          )}
         </div>
       </div>
 
