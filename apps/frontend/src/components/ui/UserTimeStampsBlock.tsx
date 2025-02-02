@@ -1,9 +1,9 @@
 import React from 'react';
-import { FiEdit2, FiUser } from 'react-icons/fi';
 
 import { CardDescription } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserEntity } from '@/types/user-entity';
+import { LuPencil, LuUser } from 'react-icons/lu';
 
 export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) {
   return (
@@ -12,7 +12,7 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
         <Tooltip>
           <TooltipTrigger asChild>
             <span className='flex gap-2 items-center'>
-              <FiUser />
+              <LuUser />
               {user?.createdAt &&
                 new Date(user.createdAt!).toLocaleDateString('hu-HU', {
                   minute: 'numeric',
@@ -32,7 +32,7 @@ export function UserTimeStampsBlock({ user }: { user: UserEntity | undefined }) 
         <Tooltip>
           <TooltipTrigger asChild>
             <span className='flex gap-2 items-center'>
-              <FiEdit2 />
+              <LuPencil />
               {user?.createdAt &&
                 new Date(user.updatedAt!).toLocaleDateString('hu-HU', {
                   minute: 'numeric',

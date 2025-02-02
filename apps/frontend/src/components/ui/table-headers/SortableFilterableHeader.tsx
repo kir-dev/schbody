@@ -26,7 +26,7 @@ export function SortableFilterableHeader(column: Column<ApplicationEntity>) {
           <div className='flex w-full justify-between mb-2'>
             <p className='font-bold'>Szöveg szűrés</p>
             <p
-              className='underline'
+              className='underline text-sm cursor-pointer'
               onClick={() => {
                 column.setFilterValue(undefined);
               }}

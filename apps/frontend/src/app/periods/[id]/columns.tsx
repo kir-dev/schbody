@@ -2,7 +2,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
-import { FiArrowRightCircle, FiCheck, FiCopy } from 'react-icons/fi';
+import { FiArrowRightCircle, FiCheck } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
 import api from '@/components/network/apiSetup';
@@ -20,6 +20,7 @@ import { filterByDateRange } from '@/lib/customFilters';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 import Image from 'next/image';
+import { LuCopy } from 'react-icons/lu';
 
 export const columns: (
   quickMode: boolean,
@@ -93,8 +94,8 @@ export const columns: (
     cell: ({ row }) => {
       return (
         <div className='flex items-center'>
-          <span className='block w-24 text-ellipsis overflow-clip font-mono'>{row.original.user.email}</span>
-          <FiCopy
+          <span className='block w-24 text-ellipsis overflow-clip'>{row.original.user.email}</span>
+          <LuCopy
             onClick={() => {
               navigator.clipboard.writeText(row.original.user.email as string);
               toast({
@@ -115,7 +116,7 @@ export const columns: (
     },
     cell: ({ row }) => {
       if (row.original.user.isSchResident) {
-        return <span className='font-bold font-mono'>{row.original.user.roomNumber}</span>;
+        return <span>{row.original.user.roomNumber}</span>;
       }
       return <span>Külsős</span>;
     },
@@ -200,7 +201,7 @@ export const columns: (
     },
   },
   {
-    id: 'Frissítve',
+    id: 'Modosítva',
     accessorKey: 'updatedAt',
     enableResizing: false, // Disable resizing
     size: 140, // Fixed size for consistency
@@ -246,16 +247,17 @@ export const columns: (
                 <StatusBadge status={row.original.status as ApplicationStatus} />
               </Button>
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent className='w-fit'>
               <Command>
                 <CommandInput placeholder='Keresés...' />
                 <CommandList>
                   <CommandEmpty>Nincs ilyen státusz</CommandEmpty>
-                  <CommandGroup>
+                  <CommandGroup className='w-96 mt-4 flex flex-wrap justify-center content-center'>
                     {Object.entries(ApplicationStatus).map(([key, status]) => (
                       <CommandItem
                         key={key}
                         value={status}
+                        className='inline-block w-fit p-0 m-0.5'
                         onSelect={(value) => {
                           onStatusChange(row.original, value as ApplicationStatus);
                           setOpen(false);

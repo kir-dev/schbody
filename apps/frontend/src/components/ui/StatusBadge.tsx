@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import {
-  FiArrowDownCircle,
-  FiArrowRightCircle,
-  FiCheckCircle,
-  FiClock,
-  FiDisc,
-  FiMinusCircle,
-  FiPauseCircle,
-  FiPrinter,
-  FiRotateCcw,
-  FiTruck,
-} from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
 import { statusConvert } from '@/lib/status';
 import { ApplicationStatus } from '@/types/application-entity';
+import {
+  LuCircleArrowDown,
+  LuCircleCheckBig,
+  LuCircleDashed,
+  LuCircleEllipsis,
+  LuCirclePause,
+  LuCirclePlay,
+  LuCircleUser,
+  LuCircleX,
+  LuClock4,
+  LuRotateCcw,
+} from 'react-icons/lu';
 
 export default function StatusBadge({ status }: Readonly<{ status: ApplicationStatus }>) {
   const convertedStatus = statusConvert(status);
@@ -45,25 +45,25 @@ export default function StatusBadge({ status }: Readonly<{ status: ApplicationSt
   const icon: React.JSX.Element = useMemo(() => {
     switch (ApplicationStatus[convertedStatus]) {
       case ApplicationStatus.SUBMITTED:
-        return <FiDisc />;
+        return <LuCircleDashed />;
       case ApplicationStatus.ACCEPTED:
-        return <FiCheckCircle />;
+        return <LuCircleCheckBig />;
       case ApplicationStatus.REJECTED:
-        return <FiMinusCircle />;
+        return <LuCircleX />;
       case ApplicationStatus.PREPARED_FOR_PRINT:
-        return <FiPrinter />;
+        return <LuCircleEllipsis />;
       case ApplicationStatus.MANUFACTURED:
-        return <FiArrowDownCircle />;
+        return <LuCircleArrowDown />;
       case ApplicationStatus.DISTRIBUTED:
-        return <FiTruck />;
+        return <LuCircleUser />;
       case ApplicationStatus.WAITING_FOR_OPS:
-        return <FiPauseCircle />;
+        return <LuCirclePause />;
       case ApplicationStatus.VALID:
-        return <FiArrowRightCircle />;
+        return <LuCirclePlay />;
       case ApplicationStatus.REVOKED:
-        return <FiRotateCcw />;
+        return <LuRotateCcw />;
       case ApplicationStatus.EXPIRED:
-        return <FiClock />;
+        return <LuClock4 />;
     }
   }, [convertedStatus]);
 

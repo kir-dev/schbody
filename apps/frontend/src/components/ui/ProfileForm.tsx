@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { LuBuilding2, LuCrown } from 'react-icons/lu';
+import { LuBuilding2, LuCrown, LuPencil, LuSave, LuX } from 'react-icons/lu';
 import { z } from 'zod';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,7 +19,6 @@ import { ProfileFormSchema } from '@/zod-form-schemas/ProfileFormSchema';
 import api from '../network/apiSetup';
 import MemberProfileData from './MemberProfileData';
 import { Button } from '@/components/ui/button';
-import { FiEdit2, FiSave, FiX } from 'react-icons/fi';
 
 export default function ProfileForm() {
   const { toast } = useToast();
@@ -95,7 +94,7 @@ export default function ProfileForm() {
             {!editingIsOn && (
               <>
                 <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
-                  <FiEdit2 />
+                  <LuPencil />
                   Adatok szerkesztése
                 </Button>
               </>
@@ -103,11 +102,11 @@ export default function ProfileForm() {
             {editingIsOn && (
               <>
                 <Button type='submit'>
-                  <FiSave />
+                  <LuSave />
                   Mentés
                 </Button>
                 <Button variant='destructive' onClick={() => setEditingIsOn(false)}>
-                  <FiX />
+                  <LuX />
                   Mégse
                 </Button>
               </>

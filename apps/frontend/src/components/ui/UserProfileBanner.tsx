@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FiLogOut } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
@@ -14,7 +13,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
 import { UserEntity } from '@/types/user-entity';
 
-import { LuPen, LuTrash2 } from 'react-icons/lu';
+import { LuLogOut, LuPen, LuTrash2 } from 'react-icons/lu';
 import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
 
@@ -124,7 +123,7 @@ export default function UserProfileBanner(props: { user: UserEntity | undefined 
           </div>
           <div className='max-md:w-full'>
             <Button variant='destructive' onClick={onLogout}>
-              <FiLogOut />
+              <LuLogOut />
               Kijelentkezés
             </Button>
           </div>

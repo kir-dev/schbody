@@ -1,9 +1,8 @@
-import { FiEdit2, FiUser } from 'react-icons/fi';
-
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
 import { Role, UserEntity } from '@/types/user-entity';
 import Image from 'next/image';
+import { LuPencil, LuUser } from 'react-icons/lu';
 
 export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
   return (
@@ -21,7 +20,7 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
             <CardTitle>{props.user.fullName}</CardTitle>
             <CardDescription className='flex sm:gap-4 max-sm:gap-0 max-sm:flex-col sm:flex-row'>
               <p className='flex items-center gap-2'>
-                <FiUser />
+                <LuUser />
                 {new Date(props.user.createdAt).toLocaleDateString('hu-HU', {
                   day: '2-digit',
                   month: 'short',
@@ -29,7 +28,7 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
                 })}
               </p>
               <p className='flex items-center gap-2'>
-                <FiEdit2 />
+                <LuPencil />
                 {new Date(props.user.updatedAt).toLocaleDateString('hu-HU', {
                   day: '2-digit',
                   month: 'short',
