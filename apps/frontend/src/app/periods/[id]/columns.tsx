@@ -2,7 +2,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { AxiosError } from 'axios';
 import { useState } from 'react';
-import { FiArrowRightCircle, FiCheck } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 
 import api from '@/components/network/apiSetup';
@@ -20,7 +19,7 @@ import { filterByDateRange } from '@/lib/customFilters';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 import Image from 'next/image';
-import { LuCopy } from 'react-icons/lu';
+import { LuCheck, LuCircleArrowRight, LuCopy } from 'react-icons/lu';
 
 export const columns: (
   quickMode: boolean,
@@ -162,7 +161,7 @@ export const columns: (
             className='w-24 py-1 h-auto'
           />
           <Button type='submit' className='h-fit w-fit px-2' variant='secondary'>
-            <FiCheck />
+            <LuCheck />
           </Button>
         </form>
       );
@@ -278,7 +277,7 @@ export const columns: (
               disabled={(row.original.status as ApplicationStatus) === ('REJECTED' as ApplicationStatus)}
               onClick={() => onStatusChange(row.original, ApplicationStatus.DISTRIBUTED)}
             >
-              <FiArrowRightCircle />
+              <LuCircleArrowRight />
               Kiosztás
             </Button>
           )}

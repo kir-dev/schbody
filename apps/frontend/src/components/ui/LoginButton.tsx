@@ -1,9 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FiKey, FiLogIn, FiUser } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import useProfile from '@/hooks/useProfile';
+import { LuKeyRound, LuLogIn, LuUser } from 'react-icons/lu';
 
 export default function LoginButton({ version }: { version: number }) {
   const { data: user } = useProfile();
@@ -23,13 +23,13 @@ export default function LoginButton({ version }: { version: number }) {
         <div className='flex gap-2 items-center'>
           {(user.role === 'BODY_MEMBER' || user.role === 'BODY_ADMIN' || user.role === 'SUPERUSER') && (
             <Button variant='secondary' onClick={() => router.push('/admin')}>
-              <FiKey />
+              <LuKeyRound />
               Admin
             </Button>
           )}
 
           <Button onClick={handleNavToProfile}>
-            <FiUser />
+            <LuUser />
             {version === 0 ? user.nickName.slice(0, 1) : user.nickName}
           </Button>
         </div>
@@ -37,7 +37,7 @@ export default function LoginButton({ version }: { version: number }) {
       {!user && (
         <Button className='ml-0 max-md:m-2' onClick={handleLogin}>
           {version === 1 && 'Bejelentkezés'}
-          {version === 0 && <FiLogIn />}
+          {version === 0 && <LuLogIn />}
         </Button>
       )}
     </>

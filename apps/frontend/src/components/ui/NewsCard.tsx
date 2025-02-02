@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
-import { LuBicepsFlexed } from 'react-icons/lu';
+import { LuBicepsFlexed, LuPencil, LuType, LuUser } from 'react-icons/lu';
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import PostManagementButtons from '@/components/ui/PostManagementButtons';
@@ -49,11 +48,11 @@ export default function NewsCard({
           )}
           <CardContent className='flex max-md:gap-2 md:gap-8 max-md:flex-col md:flex-row text-sm text-muted-foreground'>
             <span className='flex items-center gap-2'>
-              <FiUser />
+              <LuUser />
               {post.author.fullName}
             </span>
             <span className='flex items-center gap-2'>
-              <FiType />
+              <LuType />
               {new Date(post.createdAt).toLocaleDateString('hu-HU', {
                 minute: 'numeric',
                 hour: 'numeric',
@@ -64,7 +63,7 @@ export default function NewsCard({
             </span>
             {post.createdAt !== post.updatedAt && (
               <span className='flex items-center gap-2'>
-                <FiEdit2 />
+                <LuPencil />
                 {new Date(post.updatedAt).toLocaleDateString('hu-HU', {
                   minute: 'numeric',
                   hour: 'numeric',
