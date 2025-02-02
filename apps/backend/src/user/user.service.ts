@@ -11,9 +11,15 @@ import { optimizeImage } from 'src/util';
 
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApplicationService } from '../application/application.service';
 
 @Injectable()
 export class UserService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly applicationService: ApplicationService
+  ) {}
+
   async findPendingProfilePictures() {
     try {
       return this.prisma.profilePicture.findMany({
@@ -31,7 +37,6 @@ export class UserService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
@@ -53,9 +58,14 @@ export class UserService {
 
   async setProfilePictureStatus(id: string, status: any) {
     try {
-      return this.prisma.profilePicture.update({
-        where: { userId: id },
-        data: { status },
+      return this.prisma.$transaction(async (tx) => {
+        if (status !== ProfilePictureStatus.PENDING) {
+          await this.applicationService.setActiveApplicationsStatus(id, status, tx);
+        }
+        return tx.profilePicture.update({
+          where: { userId: id },
+          data: { status: status },
+        });
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
