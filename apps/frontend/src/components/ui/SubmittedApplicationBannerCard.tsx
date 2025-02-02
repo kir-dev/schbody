@@ -1,11 +1,10 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import StatusBadge from '@/components/ui/StatusBadge';
 import Ticket from '@/components/ui/Ticket';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationEntity } from '@/types/application-entity';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
 import Journey from '@/components/ui/Journey';
+import StatusBadge from '@/components/ui/StatusBadge';
 
 type Props = {
   user: UserEntity;
@@ -24,22 +23,15 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
               A most zajló, <span className='font-bold'>{currentPeriod.name}</span> időszakra már sikeresen
               jelentkeztél!
             </p>
-            <Journey defaultStatus={ApplicationStatus.ACCEPTED}></Journey>
           </div>
         )}
-        <div className='flex flex-col items-center gap-2 mx-2 max-md:w-full'>
+        <div className='flex flex-col items-center md:items-end gap-2 mx-2 max-md:w-full mb-1'>
           <Ticket user={user} />
-          <div className='mb-1'>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <StatusBadge status={application.status} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className='font-sans'>Jelentkezésed státusza</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div className='max-md:hidden'>
+            <Journey defaultStatus={application.status}></Journey>
+          </div>
+          <div className='md:hidden'>
+            <StatusBadge status={application.status} />
           </div>
         </div>
       </CardHeader>
