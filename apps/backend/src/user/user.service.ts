@@ -181,7 +181,7 @@ export class UserService {
       throw new BadRequestException('Invalid image format');
     }
     try {
-      await this.createOrUpdateProfilePicture(authSchId, buffer);
+      return this.createOrUpdateProfilePicture(authSchId, buffer);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
@@ -189,8 +189,11 @@ export class UserService {
 
   async deleteProfilePicture(authSchId: string) {
     try {
-      await this.prisma.profilePicture.delete({
-        where: { userId: authSchId },
+      return this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx);
+        return tx.profilePicture.delete({
+          where: { userId: authSchId },
+        });
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -217,12 +220,16 @@ export class UserService {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
-      await this.prisma.profilePicture.update({
-        where: { userId: userId },
-        data: {
-          ...data,
-          status: ProfilePictureStatus.PENDING,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
+
+        return tx.profilePicture.update({
+          where: { userId: userId },
+          data: {
+            ...data,
+            status: ProfilePictureStatus.PENDING,
+          },
+        });
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
