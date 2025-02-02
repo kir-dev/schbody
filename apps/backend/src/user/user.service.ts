@@ -12,12 +12,14 @@ import { optimizeImage } from 'src/util';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApplicationService } from '../application/application.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly applicationService: ApplicationService
+    private readonly applicationService: ApplicationService,
+    private emailService: EmailService
   ) {}
 
   async findPendingProfilePictures() {
@@ -58,7 +60,7 @@ export class UserService {
 
   async setProfilePictureStatus(id: string, status: any) {
     try {
-      return this.prisma.$transaction(async (tx) => {
+      const transactionResult = await this.prisma.$transaction(async (tx) => {
         if (status !== ProfilePictureStatus.PENDING) {
           await this.applicationService.setActiveApplicationsStatus(id, status, tx);
         }
@@ -67,6 +69,13 @@ export class UserService {
           data: { status: status },
         });
       });
+      const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
+      await this.emailService.sendEmail(
+        user.email,
+        '[SCHBody] A profilképed állapota módosult',
+        'Amennyiben volt aktív, elbírálás alatt álló jelentkezésed, annak státusza megváltozott. Kérjük, hogy ellenőrizd a jelentkezésed státuszát a SCHBody felületén.'
+      );
+      return transactionResult;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -189,12 +198,19 @@ export class UserService {
 
   async deleteProfilePicture(authSchId: string) {
     try {
-      return this.prisma.$transaction(async (tx) => {
+      const transactionResult = await this.prisma.$transaction(async (tx) => {
         await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx);
         return tx.profilePicture.delete({
           where: { userId: authSchId },
         });
       });
+      const user = await this.prisma.user.findUnique({ where: { authSchId } });
+      await this.emailService.sendEmail(
+        user.email,
+        '[SCHBody] A profilképed törlésre került',
+        'A profilképed törlésre került, amennyiben van aktív, elbírálás alatt álló jelentkezésed, most elutasítottá vált. Ahhoz, hogy jelentkezésed újra elfogadható legyen, tölts fel egy új profilképet.'
+      );
+      return transactionResult;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
@@ -222,7 +238,6 @@ export class UserService {
     try {
       await this.prisma.$transaction(async (tx) => {
         await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
-
         return tx.profilePicture.update({
           where: { userId: userId },
           data: {

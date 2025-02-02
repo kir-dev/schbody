@@ -4,9 +4,10 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ApplicationModule } from '../application/application.module';
 import { PrismaService } from 'nestjs-prisma';
+import { EmailModule } from '../email/email.module';
 
 @Module({
-  imports: [ApplicationModule],
+  imports: [ApplicationModule, EmailModule],
   controllers: [UserController],
   providers: [UserService, PrismaService],
   exports: [UserService],
