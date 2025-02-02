@@ -92,12 +92,10 @@ export default function ProfileForm() {
         <Card>
           <div className='z-1 float-right mt-6 mr-6 flex gap-4'>
             {!editingIsOn && (
-              <>
-                <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
-                  <LuPencil />
-                  Adatok szerkesztése
-                </Button>
-              </>
+              <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
+                <LuPencil />
+                Adatok szerkesztése
+              </Button>
             )}
             {editingIsOn && (
               <>

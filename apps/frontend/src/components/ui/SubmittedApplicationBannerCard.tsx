@@ -3,8 +3,8 @@ import Ticket from '@/components/ui/Ticket';
 import { ApplicationEntity } from '@/types/application-entity';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
-import Journey from '@/components/ui/Journey';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Journey from '@/components/ui/Journey';
 
 type Props = {
   user: UserEntity;
@@ -28,7 +28,7 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
         <div className='flex flex-col items-center md:items-end gap-2 mx-2 max-md:w-full mb-1'>
           <Ticket user={user} />
           <div className='max-md:hidden'>
-            <Journey defaultStatus={application.status}></Journey>
+            <Journey defaultStatus={application.status} />
           </div>
           <div className='md:hidden'>
             <StatusBadge status={application.status} />
