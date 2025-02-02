@@ -18,6 +18,8 @@ import { ProfileFormSchema } from '@/zod-form-schemas/ProfileFormSchema';
 
 import api from '../network/apiSetup';
 import MemberProfileData from './MemberProfileData';
+import { Button } from '@/components/ui/button';
+import { FiEdit2, FiSave, FiX } from 'react-icons/fi';
 
 export default function ProfileForm() {
   const { toast } = useToast();
@@ -46,6 +48,7 @@ export default function ProfileForm() {
       if (response.status === 200) {
         toast({
           title: 'Sikeres módosítás!',
+          description: 'A profilod adatai mentésre kerültek!',
         });
         mutate();
       } else {
@@ -86,14 +89,31 @@ export default function ProfileForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-        <UserProfileBanner
-          user={user}
-          editingIsOn={editingIsOn}
-          setEditingIsOn={setEditingIsOn}
-          onSubmit={() => onSubmit(form.getValues())}
-        />
+        <UserProfileBanner user={user} />
         <Card>
-          <CardHeader className='flex items-start flex-row justify-between'>
+          <div className='z-1 float-right mt-6 mr-6 flex gap-4'>
+            {!editingIsOn && (
+              <>
+                <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
+                  <FiEdit2 />
+                  Adatok szerkesztése
+                </Button>
+              </>
+            )}
+            {editingIsOn && (
+              <>
+                <Button type='submit'>
+                  <FiSave />
+                  Mentés
+                </Button>
+                <Button variant='destructive' onClick={() => setEditingIsOn(false)}>
+                  <FiX />
+                  Mégse
+                </Button>
+              </>
+            )}
+          </div>
+          <CardHeader className='flex items-start flex-row justify-between mt-2'>
             <div>
               <CardTitle>
                 <LuCrown />
@@ -101,17 +121,20 @@ export default function ProfileForm() {
               </CardTitle>
             </div>
           </CardHeader>
-          <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+          <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
               name='nickName'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Becenév</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!editingIsOn} />
+                <FormItem className='flex flex-row gap-2 items-center justify-between rounded-lg border max-md:py-2 p-4 shadow-sm'>
+                  <div className='flex-1'>
+                    <FormLabel className='flex-1'>Becenév</FormLabel>
+                    <FormDescription>Hogyan szólíthatunk?</FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl className='flex-1'>
+                    <Input {...field} disabled={!editingIsOn} className='m-0' />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -119,19 +142,20 @@ export default function ProfileForm() {
               control={form.control}
               name='email'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kapcsolattartási email cím</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!editingIsOn} />
+                <FormItem className='flex items-center gap-2 justify-between rounded-lg border max-md:py-2 p-4 shadow-sm'>
+                  <div className='flex-1'>
+                    <FormLabel className='flex-1'>Email cím</FormLabel>
+                    <FormDescription>Ide küldjük majd a fontos infókat</FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl className='flex-1 m-0 border'>
+                    <Input {...field} className='m-0' disabled={!editingIsOn} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
+          <CardHeader className='pt-2'>
             <CardTitle>
               <LuBuilding2 />
               Kollégiumi bentlakás
@@ -170,7 +194,7 @@ export default function ProfileForm() {
                 >
                   <div className='space-y-0.5'>
                     <FormLabel>Szoba szám</FormLabel>
-                    <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
+                    <FormDescription>Ezt a szobád ajtaján tudod megnézni</FormDescription>
                     <FormMessage />
                   </div>
                   <div className='flex self-center'>

@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
+import { FiLogOut } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
@@ -18,12 +18,7 @@ import { LuPen, LuTrash2 } from 'react-icons/lu';
 import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
 
-export default function UserProfileBanner(props: {
-  user: UserEntity | undefined;
-  editingIsOn: boolean;
-  setEditingIsOn: (e: boolean) => void;
-  onSubmit: () => void;
-}) {
+export default function UserProfileBanner(props: { user: UserEntity | undefined }) {
   const router = useRouter();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
@@ -127,30 +122,11 @@ export default function UserProfileBanner(props: {
             <Th2 className='mb-4'>{props.user!.neptun}</Th2>
             <RoleBadge role={props.user!.role} hover={false} />
           </div>
-          <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
-            {!props.editingIsOn && (
-              <>
-                <Button variant='secondary' onClick={() => props.setEditingIsOn(true)}>
-                  <FiEdit2 />
-                  Adatok szerkesztése
-                </Button>
-                <Button variant='destructive' onClick={onLogout}>
-                  <FiLogOut />
-                  Kijelentkezés
-                </Button>
-              </>
-            )}
-            {props.editingIsOn && (
-              <>
-                <Button type='submit'>
-                  <FiSave />
-                  Mentés
-                </Button>
-                <Button variant='destructive' onClick={() => props.setEditingIsOn(false)}>
-                  Mégse
-                </Button>
-              </>
-            )}
+          <div className='max-md:w-full'>
+            <Button variant='destructive' onClick={onLogout}>
+              <FiLogOut />
+              Kijelentkezés
+            </Button>
           </div>
         </div>
         <UserTimeStampsBlock user={props.user} />
