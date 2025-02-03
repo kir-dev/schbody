@@ -55,7 +55,7 @@ export class ApplicationController {
   @Get('all')
   getAllUserApplications(
     @CurrentUser() user: User
-  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>> {
+  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>[]> {
     return this.applicationService.getAllUserApplications(user);
   }
 

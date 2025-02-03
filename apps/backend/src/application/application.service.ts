@@ -169,8 +169,10 @@ export class ApplicationService {
     }
   }
 
-  async getAllUserApplications(user: User): Promise<Application[]> {
-    return await this.prisma.application.findMany({
+  async getAllUserApplications(
+    user: User
+  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>[]> {
+    return this.prisma.application.findMany({
       where: {
         userId: user.authSchId,
       },
