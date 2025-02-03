@@ -112,9 +112,9 @@ export default function UserProfileBanner(props: {
             </div>
             <div className='mb-4 mr-5' />
             {/* Render the applications data in a table */}
-            <div className='overflow-y-auto border border-gray-300 max-h-32 rounded-md shadow-md mb-8'>
+            <div className='overflow-y-auto border border-gray-300 max-h-32 rounded-md shadow-md mb-8 overflow-x-hidden'>
               {/* <h3 className='text-lg font-semibold mb-2'>Aktív jelentkezési időszakok:</h3>*/}
-              <table className='table-auto w-full text-left'>
+              <table className='table-auto w-full text-left '>
                 <thead className='bg-gray-100 sticky top-0 z-10'>
                   <tr>
                     <th className='px-4 py-2'>Jelentkezett</th>
