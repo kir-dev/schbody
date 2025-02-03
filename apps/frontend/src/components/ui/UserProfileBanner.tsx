@@ -12,7 +12,7 @@ import RoleBadge from '@/components/ui/RoleBadge';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { UserTimeStampsBlock } from '@/components/ui/UserTimeStampsBlock';
-import { useMyApplications } from '@/hooks/useMyApplications';
+import { useMyAllApplications } from '@/hooks/useMyApplications';
 import { UserEntity } from '@/types/user-entity';
 
 import PictureUploadDialog from './PictureUploadDialog';
@@ -27,7 +27,7 @@ export default function UserProfileBanner(props: {
   const [cacheBuster, setCacheBuster] = useState(Date.now());
   const { mutate } = useSWRConfig();
   //const [applications, setApplications] = useState<ApplicationPeriodEntity[] | undefined>(undefined);
-  const { data: applications } = useMyApplications();
+  const { data: applications } = useMyAllApplications();
 
   /*  useEffect(() => {
     if (!applications) {
@@ -124,17 +124,7 @@ export default function UserProfileBanner(props: {
                 </thead>
                 <tbody>
                   {applications &&
-                    [
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                      applications,
-                    ].map((app) => (
+                    applications.map((app) => (
                       <tr key={app.id} className='odd:bg-white even:bg-gray-50'>
                         <td className='px-4 py-2'>
                           {new Date(app.applicationPeriod.applicationPeriodStartAt).toLocaleDateString()}
