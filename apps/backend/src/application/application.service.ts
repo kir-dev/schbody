@@ -212,7 +212,7 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      return await this.prisma.application.delete({
+      return this.prisma.application.delete({
         where: {
           id,
         },

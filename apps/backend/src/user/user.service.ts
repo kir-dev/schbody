@@ -69,12 +69,11 @@ export class UserService {
           data: { status: status },
         });
       });
-      const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
-      await this.emailService.sendEmail(
-        user.email,
-        '[SCHBody] A profilképed állapota módosult',
-        'Amennyiben volt aktív, elbírálás alatt álló jelentkezésed, annak státusza megváltozott. Kérjük, hogy ellenőrizd a jelentkezésed státuszát a SCHBody felületén.'
-      );
+      if (status !== ProfilePictureStatus.PENDING) {
+        const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
+        const activeApplications = await this.applicationService.getActiveApplications(id);
+        await this.emailService.sendProfilePictureStatusChangeEmail(user.email, status, activeApplications.length > 0);
+      }
       return transactionResult;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -205,10 +204,11 @@ export class UserService {
         });
       });
       const user = await this.prisma.user.findUnique({ where: { authSchId } });
-      await this.emailService.sendEmail(
+      const activeApplications = await this.applicationService.getActiveApplications(authSchId);
+      await this.emailService.sendProfilePictureStatusChangeEmail(
         user.email,
-        '[SCHBody] A profilképed törlésre került',
-        'A profilképed törlésre került, amennyiben van aktív, elbírálás alatt álló jelentkezésed, most elutasítottá vált. Ahhoz, hogy jelentkezésed újra elfogadható legyen, tölts fel egy új profilképet.'
+        'REJECTED',
+        activeApplications.length > 0
       );
       return transactionResult;
     } catch (e) {
@@ -236,7 +236,7 @@ export class UserService {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
-      await this.prisma.$transaction(async (tx) => {
+      return await this.prisma.$transaction(async (tx) => {
         await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
         return tx.profilePicture.update({
           where: { userId: userId },
