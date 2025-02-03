@@ -36,12 +36,12 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
   };
 
   const shrinkVariants = {
-    hidden: (index: number) => ({
+    hidden: () => ({
       width: 0,
       margin: 0,
       transition: { duration: farestIndex * 0.07 + 0.2, ease: 'easeInOut' },
     }),
-    visible: (index: number) => ({
+    visible: () => ({
       width: 'auto',
       marginLeft: 2,
       marginRight: 2,
@@ -63,7 +63,7 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
           </div>
         )}
         <motion.div
-          className='max-lg:hidden flex items-end'
+          className='max-lg:hidden flex items-end mr-1'
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
         >
