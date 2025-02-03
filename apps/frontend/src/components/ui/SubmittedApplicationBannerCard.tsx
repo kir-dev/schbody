@@ -21,16 +21,31 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
   const badgeVariants = {
     hidden: (index: number) => ({
       opacity: 0,
-      y: 50,
-      width: 0,
-      margin: 0,
+      y: 40,
+      transition: { duration: 0.3, ease: 'easeInOut', delay: Math.abs(farestIndex - index) * 0.05 }, // Opacity & position first
     }),
     visible: (index: number) => ({
       opacity: 1,
-      width: 'auto',
-      margin: '0 0.25rem',
       y: 0,
-      transition: { duration: 0.3, ease: 'easeInOut', delay: Math.abs(activeIndex - index) * 0.1 },
+      transition: {
+        duration: 0.4,
+        ease: 'easeInOut',
+        delay: Math.abs(activeIndex - index) * 0.05 + farestIndex * 0.02,
+      },
+    }),
+  };
+
+  const shrinkVariants = {
+    hidden: (index: number) => ({
+      width: 0,
+      margin: 0,
+      transition: { duration: farestIndex * 0.07 + 0.2, ease: 'easeInOut' },
+    }),
+    visible: (index: number) => ({
+      width: 'auto',
+      marginLeft: 2,
+      marginRight: 2,
+      transition: { duration: farestIndex * 0.04 + 0.3, ease: 'easeInOut' },
     }),
   };
 
@@ -55,17 +70,23 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
           {statusEntries.map(([key], index) => (
             <motion.div
               key={key}
-              className='flex flex-col gap-2 items-center'
               initial='hidden'
               animate={isHovered || key === application.status ? 'visible' : 'hidden'}
               variants={badgeVariants}
               custom={index}
             >
-              {(key as ApplicationStatus) === application.status && <Ticket user={user} />}
-              <StatusBadge
-                status={key as ApplicationStatus}
-                short={(key as ApplicationStatus) !== application.status}
-              />
+              <motion.div
+                className='flex flex-col gap-2 items-center'
+                initial='hidden'
+                animate={isHovered || key === application.status ? 'visible' : 'hidden'}
+                variants={shrinkVariants} // Separate width animation
+              >
+                {(key as ApplicationStatus) === application.status && <Ticket user={user} />}
+                <StatusBadge
+                  status={key as ApplicationStatus}
+                  short={(key as ApplicationStatus) !== application.status}
+                />
+              </motion.div>
             </motion.div>
           ))}
         </motion.div>
