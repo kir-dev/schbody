@@ -112,25 +112,39 @@ export default function UserProfileBanner(props: {
             </div>
             <div className='mb-4 mr-5' />
             {/* Render the applications data in a table */}
-            <div className='overflow-y-auto border border-gray-300 max-h-64 rounded-md shadow-md mb-8'>
-              <h3 className='text-lg font-semibold mb-2'>Aktív jelentkezési időszakok:</h3>
+            <div className='overflow-y-auto border border-gray-300 max-h-32 rounded-md shadow-md mb-8'>
+              {/* <h3 className='text-lg font-semibold mb-2'>Aktív jelentkezési időszakok:</h3>*/}
               <table className='table-auto w-full text-left'>
                 <thead className='bg-gray-100 sticky top-0 z-10'>
                   <tr>
                     <th className='px-4 py-2'>Jelentkezett</th>
                     <th className='px-4 py-2'>Lejár</th>
+                    <th className='px-4 py-2'>Státusz</th>
                   </tr>
                 </thead>
                 <tbody>
                   {applications &&
-                    [applications].map((app) => (
+                    [
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                      applications,
+                    ].map((app) => (
                       <tr key={app.id} className='odd:bg-white even:bg-gray-50'>
                         <td className='px-4 py-2'>
                           {new Date(app.applicationPeriod.applicationPeriodStartAt).toLocaleDateString()}
                         </td>
-                        {/*todo plusz hat honap*/}
                         <td className='px-4 py-2'>
-                          {new Date(app.applicationPeriod.applicationPeriodEndAt).toLocaleDateString()}
+                          {new Date(
+                            new Date(app.applicationPeriod.applicationPeriodStartAt).setMonth(
+                              new Date(app.applicationPeriod.applicationPeriodStartAt).getMonth() + 6
+                            )
+                          ).toLocaleDateString()}
                         </td>
                         <td>
                           <StatusBadge status={app.status} />
