@@ -169,6 +169,14 @@ export class ApplicationService {
     }
   }
 
+  async getAllUserApplications(user: User): Promise<Application[]> {
+    return await this.prisma.application.findMany({
+      where: {
+        userId: user.authSchId,
+      },
+    });
+  }
+
   async update(id: number, updateApplicationDto: UpdateApplicationDto): Promise<Application> {
     try {
       return await this.prisma.application.update({
