@@ -174,6 +174,14 @@ export class ApplicationService {
       where: {
         userId: user.authSchId,
       },
+      orderBy: {
+        applicationPeriod: {
+          applicationPeriodEndAt: 'desc',
+        },
+      },
+      include: {
+        applicationPeriod: true,
+      },
     });
   }
 

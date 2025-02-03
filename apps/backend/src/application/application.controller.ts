@@ -53,7 +53,9 @@ export class ApplicationController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @Get('all')
-  getAllUserApplications(@CurrentUser() user: User): Promise<Application[]> {
+  getAllUserApplications(
+    @CurrentUser() user: User
+  ): Promise<Prisma.ApplicationGetPayload<{ include: { applicationPeriod: true } }>> {
     return this.applicationService.getAllUserApplications(user);
   }
 
