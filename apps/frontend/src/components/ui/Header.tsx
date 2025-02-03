@@ -25,7 +25,7 @@ export default function Header() {
 
   return (
     <header className='bg-amber-200 overflow-hidden'>
-      <div className='flex flex-row 2xl:mx-64 xl:mx-32 max-xl:mx-8 max-md:mx-2 items-center justify-between'>
+      <div className='flex flex-row container mx-auto items-center justify-between'>
         <TTitle>
           <Link className='md:hidden' href='/' onClick={() => setIsOpen(false)}>
             Body
