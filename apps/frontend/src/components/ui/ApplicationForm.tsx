@@ -180,7 +180,7 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
                   className={`flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
-                    <FormLabel>Szoba szám</FormLabel>
+                    <FormLabel>Szobaszám</FormLabel>
                     <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
                     <FormMessage />
                   </div>

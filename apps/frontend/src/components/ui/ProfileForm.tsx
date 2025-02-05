@@ -190,7 +190,7 @@ export default function ProfileForm() {
                   className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
-                    <FormLabel>Szoba szám</FormLabel>
+                    <FormLabel>Szobaszám</FormLabel>
                     <FormDescription>Ezt a szobád ajtaján tudod megnézni</FormDescription>
                     <FormMessage />
                   </div>
