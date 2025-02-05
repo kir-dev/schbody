@@ -90,9 +90,9 @@ export default function ProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
         <UserProfileBanner user={user} />
         <Card>
-          <div className='z-1 float-right mt-6 mr-6 flex gap-4'>
+          <div className='md:z-1 md:float-right md:mt-6 md:mx-6 flex gap-4 max-md:w-full max-md:p-6 max-md:pb-0 max-md:justify-center'>
             {!editingIsOn && (
-              <Button variant='secondary' onClick={() => setEditingIsOn(true)}>
+              <Button variant='secondary' className='w-full' onClick={() => setEditingIsOn(true)}>
                 <LuPencil />
                 Adatok szerkesztése
               </Button>
@@ -123,13 +123,13 @@ export default function ProfileForm() {
               control={form.control}
               name='nickName'
               render={({ field }) => (
-                <FormItem className='flex flex-row gap-2 items-center justify-between rounded-lg border max-md:py-2 p-4 shadow-sm'>
-                  <div className='flex-1'>
-                    <FormLabel className='flex-1'>Becenév</FormLabel>
+                <FormItem className='flex flex-col md:flex-row gap-2 items-start md:items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='flex-1 space-y-0.5'>
+                    <FormLabel>Becenév</FormLabel>
                     <FormDescription>Hogyan szólíthatunk?</FormDescription>
                     <FormMessage />
                   </div>
-                  <FormControl className='flex-1'>
+                  <FormControl className='max-md:flex-1'>
                     <Input {...field} disabled={!editingIsOn} className='m-0' />
                   </FormControl>
                 </FormItem>
@@ -139,9 +139,9 @@ export default function ProfileForm() {
               control={form.control}
               name='email'
               render={({ field }) => (
-                <FormItem className='flex items-center gap-2 justify-between rounded-lg border max-md:py-2 p-4 shadow-sm'>
-                  <div className='flex-1'>
-                    <FormLabel className='flex-1'>Email cím</FormLabel>
+                <FormItem className='flex flex-col md:flex-row gap-2 items-start md:items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='flex-1 space-y-0.5'>
+                    <FormLabel>Email cím</FormLabel>
                     <FormDescription>Ide küldjük majd a fontos infókat</FormDescription>
                     <FormMessage />
                   </div>

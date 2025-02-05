@@ -14,7 +14,7 @@ export default function Page() {
       <div className='flex w-full gap-4 max-lg:flex-col'>
         <Button onClick={() => router.push('/profile-picture-check')}>
           <LuUserCheck />
-          Profileképek ellenőrzése
+          Profilképek ellenőrzése
         </Button>
         <Button onClick={() => router.push('/roles')}>
           <LuShield />

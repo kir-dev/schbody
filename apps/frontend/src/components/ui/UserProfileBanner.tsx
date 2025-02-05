@@ -122,7 +122,7 @@ export default function UserProfileBanner(props: { user: UserEntity | undefined 
             <RoleBadge role={props.user!.role} hover={false} />
           </div>
           <div className='max-md:w-full'>
-            <Button variant='destructive' onClick={onLogout}>
+            <Button variant='destructive' className='max-md:w-full' onClick={onLogout}>
               <LuLogOut />
               Kijelentkezés
             </Button>
