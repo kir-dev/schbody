@@ -3,9 +3,10 @@ import Ticket from '@/components/ui/Ticket';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
-import StatusBadge from '@/components/ui/StatusBadge';
-import React, { useState } from 'react';
+import StatusBadge, { colorfx, iconfx } from '@/components/ui/StatusBadge';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
   user: UserEntity;
@@ -17,12 +18,14 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
   const activeIndex = statusEntries.findIndex(([key]) => key === application.status);
   const farestIndex = Math.max(statusEntries.length - 1 - activeIndex, activeIndex);
   const [isHovered, setIsHovered] = useState(false);
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const badgeVariants = {
     hidden: (index: number) => ({
       opacity: 0,
       y: 40,
-      transition: { duration: 0.3, ease: 'easeInOut', delay: Math.abs(farestIndex - index) * 0.05 }, // Opacity & position first
+      transition: { duration: 0.3, ease: 'easeInOut', delay: Math.abs(farestIndex - index) * 0.05 + 2 }, // Opacity & position first
     }),
     visible: (index: number) => ({
       opacity: 1,
@@ -38,8 +41,9 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
   const shrinkVariants = {
     hidden: () => ({
       width: 0,
-      margin: 0,
-      transition: { duration: farestIndex * 0.07 + 0.2, ease: 'easeInOut' },
+      marginLeft: 0,
+      marginRight: 0,
+      transition: { duration: farestIndex * 0.07 + 0.2, ease: 'easeInOut', delay: 2 },
     }),
     visible: () => ({
       width: 'auto',
@@ -47,6 +51,33 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
       marginRight: 2,
       transition: { duration: farestIndex * 0.04 + 0.3, ease: 'easeInOut' },
     }),
+  };
+
+  const badgeExpandedVariants = {
+    hidden: () => ({
+      width: 0,
+      opacity: 0,
+      transition: { duration: 0.4, ease: 'easeInOut' },
+    }),
+    visible: () => ({
+      width: 'auto',
+      opacity: 1,
+      transition: { duration: 0.4, ease: 'easeInOut' },
+    }),
+  };
+
+  const handleMouseEnter = (key: string) => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+      hoverTimeout.current = null;
+    }
+    setHoveredKey(key);
+  };
+
+  const handleMouseLeave = (key: string) => {
+    hoverTimeout.current = setTimeout(() => {
+      setHoveredKey(null);
+    }, 1500);
   };
 
   return (
@@ -71,21 +102,34 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
             <motion.div
               key={key}
               initial='hidden'
-              animate={isHovered || key === application.status ? 'visible' : 'hidden'}
+              animate={isHovered ? 'visible' : 'hidden'}
               variants={badgeVariants}
               custom={index}
             >
               <motion.div
                 className='flex flex-col gap-2 items-center'
                 initial='hidden'
-                animate={isHovered || key === application.status ? 'visible' : 'hidden'}
-                variants={shrinkVariants} // Separate width animation
+                animate={isHovered ? 'visible' : 'hidden'}
+                variants={shrinkVariants}
               >
                 {(key as ApplicationStatus) === application.status && <Ticket user={user} />}
-                <StatusBadge
-                  status={key as ApplicationStatus}
-                  short={(key as ApplicationStatus) !== application.status}
-                />
+                <Badge
+                  variant={colorfx(key as ApplicationStatus)}
+                  hover={false}
+                  className='w-fit flex items-center overflow-hidden'
+                  onMouseEnter={() => handleMouseEnter(key)}
+                  onMouseLeave={() => handleMouseLeave(key)}
+                >
+                  <div className='py-1 -mx-1'>{iconfx(key as ApplicationStatus)}</div>
+                  <motion.div
+                    className='whitespace-nowrap'
+                    initial='hidden'
+                    animate={hoveredKey && hoveredKey === key ? 'visible' : 'hidden'}
+                    variants={badgeExpandedVariants}
+                  >
+                    <p className='ml-3'>{key as ApplicationStatus}</p>
+                  </motion.div>
+                </Badge>
               </motion.div>
             </motion.div>
           ))}

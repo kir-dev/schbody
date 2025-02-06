@@ -17,6 +17,61 @@ import {
 } from 'react-icons/lu';
 import { motion } from 'framer-motion';
 
+export function colorfx(convertedStatus: ApplicationStatus) {
+  // @ts-ignore
+  switch (ApplicationStatus[convertedStatus]) {
+    case ApplicationStatus.SUBMITTED:
+      return 'blue';
+    case ApplicationStatus.ACCEPTED:
+      return 'cyan';
+    case ApplicationStatus.REJECTED:
+      return 'red';
+    case ApplicationStatus.PREPARED_FOR_PRINT:
+      return 'yellow';
+    case ApplicationStatus.MANUFACTURED:
+      return 'orange';
+    case ApplicationStatus.DISTRIBUTED:
+      return 'purple';
+    case ApplicationStatus.WAITING_FOR_OPS:
+      return 'gray';
+    case ApplicationStatus.VALID:
+      return 'green';
+    case ApplicationStatus.REVOKED:
+      return 'red';
+    case ApplicationStatus.EXPIRED:
+      return 'gray';
+    default:
+      return 'gray';
+  }
+}
+export function iconfx(convertedStatus: ApplicationStatus) {
+  // @ts-ignore
+  switch (ApplicationStatus[convertedStatus]) {
+    case ApplicationStatus.SUBMITTED:
+      return <LuCircleDashed />;
+    case ApplicationStatus.ACCEPTED:
+      return <LuCircleCheckBig />;
+    case ApplicationStatus.REJECTED:
+      return <LuCircleX />;
+    case ApplicationStatus.PREPARED_FOR_PRINT:
+      return <LuCircleEllipsis />;
+    case ApplicationStatus.MANUFACTURED:
+      return <LuCircleArrowDown />;
+    case ApplicationStatus.DISTRIBUTED:
+      return <LuCircleUser />;
+    case ApplicationStatus.WAITING_FOR_OPS:
+      return <LuCirclePause />;
+    case ApplicationStatus.VALID:
+      return <LuCirclePlay />;
+    case ApplicationStatus.REVOKED:
+      return <LuRotateCcw />;
+    case ApplicationStatus.EXPIRED:
+      return <LuClock4 />;
+    default:
+      return <LuClock4 />;
+  }
+}
+
 export default function StatusBadge({ status, short }: Readonly<{ status: ApplicationStatus; short?: boolean }>) {
   const convertedStatus = statusConvert(status);
   const [hovered, setHovered] = React.useState(false);
@@ -76,6 +131,19 @@ export default function StatusBadge({ status, short }: Readonly<{ status: Applic
     }
   }, [convertedStatus]);
 
+  const shrinkVariants = {
+    hidden: () => ({
+      width: 0,
+      opacity: 0,
+      transition: { duration: 0.4, ease: 'easeInOut' },
+    }),
+    visible: () => ({
+      width: 'auto',
+      opacity: 1,
+      transition: { duration: 0.4, ease: 'easeInOut' },
+    }),
+  };
+
   if (short) {
     return (
       <Badge
@@ -88,9 +156,9 @@ export default function StatusBadge({ status, short }: Readonly<{ status: Applic
         <div className='py-1 -mx-1'>{icon}</div>
         <motion.div
           className='whitespace-nowrap'
-          initial={{ width: 0, opacity: 0 }}
-          animate={{ width: hovered ? 'auto' : 0, opacity: hovered ? 1 : 0 }}
-          transition={{ duration: 0.4, ease: 'easeInOut' }}
+          initial='hidden'
+          animate={hovered ? 'visible' : 'hidden'}
+          variants={shrinkVariants}
         >
           <p className='ml-3'>{ApplicationStatus[convertedStatus]}</p>
         </motion.div>
