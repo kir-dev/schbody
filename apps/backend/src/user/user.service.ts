@@ -11,9 +11,17 @@ import { optimizeImage } from 'src/util';
 
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApplicationService } from '../application/application.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly applicationService: ApplicationService,
+    private emailService: EmailService
+  ) {}
+
   async findPendingProfilePictures() {
     try {
       return this.prisma.profilePicture.findMany({
@@ -31,7 +39,6 @@ export class UserService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
@@ -53,10 +60,22 @@ export class UserService {
 
   async setProfilePictureStatus(id: string, status: any) {
     try {
-      return this.prisma.profilePicture.update({
-        where: { userId: id },
-        data: { status },
+      const transactionResult = await this.prisma.$transaction(async (tx) => {
+        if (status !== ProfilePictureStatus.PENDING) {
+          await this.applicationService.setActiveApplicationsStatus(id, status, tx);
+        }
+        return tx.profilePicture.update({
+          where: { userId: id },
+          data: { status: status },
+        });
       });
+      const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
+      await this.emailService.sendEmail(
+        user.email,
+        '[SCHBody] A profilképed állapota módosult',
+        'Amennyiben volt aktív, elbírálás alatt álló jelentkezésed, annak státusza megváltozott. Kérjük, hogy ellenőrizd a jelentkezésed státuszát a SCHBody felületén.'
+      );
+      return transactionResult;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -171,7 +190,7 @@ export class UserService {
       throw new BadRequestException('Invalid image format');
     }
     try {
-      await this.createOrUpdateProfilePicture(authSchId, buffer);
+      return this.createOrUpdateProfilePicture(authSchId, buffer);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
@@ -179,9 +198,19 @@ export class UserService {
 
   async deleteProfilePicture(authSchId: string) {
     try {
-      await this.prisma.profilePicture.delete({
-        where: { userId: authSchId },
+      const transactionResult = await this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx);
+        return tx.profilePicture.delete({
+          where: { userId: authSchId },
+        });
       });
+      const user = await this.prisma.user.findUnique({ where: { authSchId } });
+      await this.emailService.sendEmail(
+        user.email,
+        '[SCHBody] A profilképed törlésre került',
+        'A profilképed törlésre került, amennyiben van aktív, elbírálás alatt álló jelentkezésed, most elutasítottá vált. Ahhoz, hogy jelentkezésed újra elfogadható legyen, tölts fel egy új profilképet.'
+      );
+      return transactionResult;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
@@ -207,12 +236,15 @@ export class UserService {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
-      await this.prisma.profilePicture.update({
-        where: { userId: userId },
-        data: {
-          ...data,
-          status: ProfilePictureStatus.PENDING,
-        },
+      await this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
+        return tx.profilePicture.update({
+          where: { userId: userId },
+          data: {
+            ...data,
+            status: ProfilePictureStatus.PENDING,
+          },
+        });
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
