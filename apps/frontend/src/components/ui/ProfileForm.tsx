@@ -65,6 +65,11 @@ export default function ProfileForm() {
     }
   }
 
+  function onReset() {
+    setEditingIsOn(false);
+    form.reset();
+  }
+
   const { reset } = form;
   useEffect(() => {
     if (user) {
@@ -103,7 +108,7 @@ export default function ProfileForm() {
                   <LuSave />
                   Mentés
                 </Button>
-                <Button variant='destructive' onClick={() => setEditingIsOn(false)}>
+                <Button variant='destructive' onClick={onReset}>
                   <LuX />
                   Mégse
                 </Button>
@@ -129,7 +134,7 @@ export default function ProfileForm() {
                     <FormDescription>Hogyan szólíthatunk?</FormDescription>
                     <FormMessage />
                   </div>
-                  <FormControl className='max-md:flex-1'>
+                  <FormControl className='flex-1'>
                     <Input {...field} disabled={!editingIsOn} className='m-0' />
                   </FormControl>
                 </FormItem>

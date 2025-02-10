@@ -12,14 +12,14 @@ export default function PostManagementButtons(props: PostManagementButtonsProps)
   const { data: user } = useProfile();
 
   return (
-    <div className='flex w-full justify-end overflow-hidden '>
+    <div>
       {(user?.role === Role.BODY_ADMIN || user?.role === Role.SUPERUSER) && (
         <div className='flex gap-2'>
-          <Button variant='secondary' onClick={props.onEdit}>
+          <Button className='text-xs h-min' variant='secondary' onClick={props.onEdit}>
             <LuPencil />
             Módosítás
           </Button>
-          <Button variant='destructive' onClick={props.onDelete}>
+          <Button className='text-xs h-min' variant='destructive' onClick={props.onDelete}>
             <LuTrash2 />
             Törlés
           </Button>

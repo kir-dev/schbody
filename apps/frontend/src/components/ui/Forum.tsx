@@ -58,6 +58,7 @@ export default function Forum() {
     if (!user) {
       toast({
         title: 'Csak bejelentkezett felhasználók upvoteolhatnak!',
+        description: 'Jelentkezz be!',
       });
       return;
     }
