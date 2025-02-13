@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { FiEdit2, FiType, FiUser } from 'react-icons/fi';
-import { LuHash } from 'react-icons/lu';
+import { LuHash, LuPencil, LuType, LuUser } from 'react-icons/lu';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,15 +18,15 @@ export function ApplicationPeriodCard(props: { period: ApplicationPeriodEntity }
                 {props.period.id}
               </p>
               <p className='flex items-center gap-2'>
-                <FiUser />
+                <LuUser />
                 {props.period.author.fullName}
               </p>
               <p className='flex items-center gap-2'>
-                <FiType />
+                <LuType />
                 {props.period.createdAt.toString().slice(0, 10)}
               </p>
               <p className='flex items-center gap-2'>
-                <FiEdit2 />
+                <LuPencil />
                 {props.period.updatedAt.toString().slice(0, 10)}
               </p>
             </CardDescription>

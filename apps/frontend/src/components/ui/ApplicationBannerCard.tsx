@@ -1,6 +1,5 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +9,7 @@ import { useCurrentPeriod } from '@/hooks/usePeriod';
 import useProfile from '@/hooks/useProfile';
 
 import SubmittedApplicationBannerCard from './SubmittedApplicationBannerCard';
+import { LuFastForward } from 'react-icons/lu';
 
 export default function ApplicationBannerCard() {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function ApplicationBannerCard() {
             </CardDescription>
           </div>
           <Button className='max-md:w-full' onClick={() => router.push('/application-form')}>
-            <FiFastForward />
+            <LuFastForward />
             Jelentkezés
           </Button>
         </CardHeader>

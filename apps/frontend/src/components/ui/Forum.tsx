@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import { FiMessageSquare } from 'react-icons/fi';
 
 import api from '@/components/network/apiSetup';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import useProfile from '@/hooks/useProfile';
 import { toast } from '@/lib/use-toast';
 import { PostEntity } from '@/types/post-entity';
 import OwnPagination from '@/components/ui/ownPagination';
+import { LuMessageCircle } from 'react-icons/lu';
 
 export default function Forum() {
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -58,6 +58,7 @@ export default function Forum() {
     if (!user) {
       toast({
         title: 'Csak bejelentkezett felhasználók upvoteolhatnak!',
+        description: 'Jelentkezz be!',
       });
       return;
     }
@@ -71,7 +72,7 @@ export default function Forum() {
       {user && (user.role === 'BODY_ADMIN' || user.role === 'BODY_MEMBER' || user.role === 'SUPERUSER') && (
         <div className='flex w-full justify-end mt-4'>
           <Button className='max-md:w-full' onClick={() => setIsEditing(undefined)}>
-            <FiMessageSquare /> Új hír közzététele
+            <LuMessageCircle /> Új hír közzététele
           </Button>
         </div>
       )}

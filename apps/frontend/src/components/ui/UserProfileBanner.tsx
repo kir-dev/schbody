@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { FiEdit2, FiLogOut, FiSave } from 'react-icons/fi';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
@@ -11,19 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import RoleBadge from '@/components/ui/RoleBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { UserDataRow } from '@/components/ui/UserDataRow';
+import { UserTimeStampsBlock } from '@/components/ui/UserDataRow';
 import { UserEntity } from '@/types/user-entity';
 
-import { LuPen, LuTrash2 } from 'react-icons/lu';
+import { LuLogOut, LuPen, LuTrash2 } from 'react-icons/lu';
 import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
 
-export default function UserProfileBanner(props: {
-  user: UserEntity | undefined;
-  editingIsOn: boolean;
-  setEditingIsOn: (e: boolean) => void;
-  onSubmit: () => void;
-}) {
+export default function UserProfileBanner(props: { user: UserEntity | undefined }) {
   const router = useRouter();
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState(Date.now());
@@ -117,7 +111,6 @@ export default function UserProfileBanner(props: {
           )}
         </div>
       </div>
-
       <CardContent className='w-full md:ml-4'>
         <div className='flex md:flex-row max-md:flex-col max-md:items-center max-md:gap-4 mt-10 justify-between '>
           <div className='max-md:flex max-md:flex-col max-md:items-center'>
@@ -128,33 +121,14 @@ export default function UserProfileBanner(props: {
             <Th2 className='mb-4'>{props.user!.neptun}</Th2>
             <RoleBadge role={props.user!.role} hover={false} />
           </div>
-          <div className='flex gap-4 max-lg:flex-col lg:flex-row max-md:w-full'>
-            {!props.editingIsOn && (
-              <>
-                <Button variant='secondary' onClick={() => props.setEditingIsOn(true)}>
-                  <FiEdit2 />
-                  Adatok szerkesztése
-                </Button>
-                <Button variant='destructive' onClick={onLogout}>
-                  <FiLogOut />
-                  Kijelentkezés
-                </Button>
-              </>
-            )}
-            {props.editingIsOn && (
-              <>
-                <Button type='submit' onClick={props.onSubmit}>
-                  <FiSave />
-                  Mentés
-                </Button>
-                <Button variant='destructive' onClick={() => props.setEditingIsOn(false)}>
-                  Mégse
-                </Button>
-              </>
-            )}
+          <div className='max-md:w-full'>
+            <Button variant='destructive' className='max-md:w-full' onClick={onLogout}>
+              <LuLogOut />
+              Kijelentkezés
+            </Button>
           </div>
         </div>
-        <UserDataRow user={props.user} />
+        <UserTimeStampsBlock user={props.user} />
       </CardContent>
     </Card>
   );

@@ -24,7 +24,7 @@ export default function Ticket({ user }: { user: UserEntity }) {
                   <p>{user.isSchResident ? user.roomNumber : 'Külsős'}</p>
                 </div>
                 <div className='bg-gray-200 rounded px-1 py-0 text-xs w-fit mt-1'>
-                  <p>{Math.round(Math.random() * 10000)}</p>
+                  <p>{user.authSchId.slice(1, 5)}</p>
                 </div>
                 <span className='text-4xl m-0 absolute bottom-1 right-1 hover:scale-110 transition transform duration-150'>
                   🍑

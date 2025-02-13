@@ -38,6 +38,6 @@ export const ApplicationFormSchema = z
     },
     {
       path: ['room_number'],
-      message: 'A szoba szám megadása kötelező, ha kolis vagy.',
+      message: 'A szobaszám megadása kötelező, ha kolis vagy.',
     }
   );

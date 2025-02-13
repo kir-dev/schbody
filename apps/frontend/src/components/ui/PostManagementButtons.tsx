@@ -1,9 +1,8 @@
 'use client';
-import { FiEdit2, FiTrash } from 'react-icons/fi';
-
 import { Button } from '@/components/ui/button';
 import useProfile from '@/hooks/useProfile';
 import { Role } from '@/types/user-entity';
+import { LuPencil, LuTrash2 } from 'react-icons/lu';
 
 type PostManagementButtonsProps = {
   onEdit: () => void;
@@ -13,15 +12,15 @@ export default function PostManagementButtons(props: PostManagementButtonsProps)
   const { data: user } = useProfile();
 
   return (
-    <div className='flex w-full justify-end overflow-hidden '>
+    <div>
       {(user?.role === Role.BODY_ADMIN || user?.role === Role.SUPERUSER) && (
         <div className='flex gap-2'>
-          <Button variant='secondary' onClick={props.onEdit}>
-            <FiEdit2 />
+          <Button className='text-xs h-min' variant='secondary' onClick={props.onEdit}>
+            <LuPencil />
             Módosítás
           </Button>
-          <Button variant='destructive' onClick={props.onDelete}>
-            <FiTrash />
+          <Button className='text-xs h-min' variant='destructive' onClick={props.onDelete}>
+            <LuTrash2 />
             Törlés
           </Button>
         </div>

@@ -190,7 +190,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
-    <div className={quickModeEnabled ? '2xl:-mx-64 xl:-mx-32 max-xl:-mx-8 max-md:-mx-4 px-4 py-0 -mt-4' : ''}>
+    <div className={quickModeEnabled ? '-mx-[calc((100vw-100%)/2)] w-screen ' : ''}>
       <GeneratingDialog open={generatingDialogOpened} />
       <AcceptDialog
         open={autoChangeStatusDialogOpened}
@@ -218,7 +218,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
       )}
       <div>
         <div className='flex justify-between'>
-          <Th2>Jelentkezők</Th2>
+          <Th2 className={quickModeEnabled ? 'ml-4' : ''}>Jelentkezők</Th2>
           <div className='flex flex-row items-center gap-4'>
             {/* <div className='max-md:order-1 bg-white flex flex-row items-center max-md:w-full justify-between rounded-lg border py-2 px-4 shadow-sm gap-4 md:w-fit'>
               <Label htmlFor='automatic-status-change'>Automatikus státuszváltás exportáláskor</Label>

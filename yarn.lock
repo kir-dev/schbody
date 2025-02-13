@@ -465,13 +465,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@date-fns/tz@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@date-fns/tz@npm:1.2.0"
-  checksum: 10c0/411e9d4303b10951f6fd0189d18fb845f0d934a575df2176bc10daf664282c765fb6b057a977e446bbb1229151d89e7788978600a019f1fc24b5c75276d496bd
-  languageName: node
-  linkType: hard
-
 "@emnapi/runtime@npm:^1.2.0":
   version: 1.2.0
   resolution: "@emnapi/runtime@npm:1.2.0"
@@ -1266,7 +1259,7 @@ __metadata:
     next: "npm:^15.1.4"
     postcss: "npm:^8.5.0"
     react: "npm:^19.0.0"
-    react-day-picker: "npm:9.5.0"
+    react-day-picker: "npm:8.10.1"
     react-dom: "npm:^19.0.0"
     react-easy-crop: "npm:^5.2.0"
     react-hook-form: "npm:^7.54.2"
@@ -5365,13 +5358,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns-jalali@npm:^4.1.0-0":
-  version: 4.1.0-0
-  resolution: "date-fns-jalali@npm:4.1.0-0"
-  checksum: 10c0/f9ad98d9f7e8e5abe0d070dc806b0c8baded2b1208626c42e92cbd2605b5171f5714d6b79b20cc2666267d821699244c9d0b5e93274106cf57d6232da77596ed
-  languageName: node
-  linkType: hard
-
 "date-fns@npm:^4.1.0":
   version: 4.1.0
   resolution: "date-fns@npm:4.1.0"
@@ -6672,6 +6658,28 @@ __metadata:
   version: 0.2.0
   resolution: "forwarded@npm:0.2.0"
   checksum: 10c0/9b67c3fac86acdbc9ae47ba1ddd5f2f81526fa4c8226863ede5600a3f7c7416ef451f6f1e240a3cc32d0fd79fcfe6beb08fd0da454f360032bde70bf80afbb33
+  languageName: node
+  linkType: hard
+
+"framer-motion@npm:^12.0.6":
+  version: 12.0.6
+  resolution: "framer-motion@npm:12.0.6"
+  dependencies:
+    motion-dom: "npm:^12.0.0"
+    motion-utils: "npm:^12.0.0"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/06d01186a52163225ded9e60563b1aba9a52b14db2516bc7c87de0efd48bf149531d5f6ad4db254254e61ec142aed04e4b119d35063ef13b537c4da35aece762
   languageName: node
   linkType: hard
 
@@ -8634,6 +8642,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"motion-dom@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "motion-dom@npm:12.0.0"
+  dependencies:
+    motion-utils: "npm:^12.0.0"
+  checksum: 10c0/d67209bc217f16b9a0305afa4bfc366997d02df76eea9ab29062f98beeff5fdfc60ae1b422ab397f525ae775c640ac9ba061c9f45aacd6cd71a23dce06661384
+  languageName: node
+  linkType: hard
+
+"motion-utils@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "motion-utils@npm:12.0.0"
+  checksum: 10c0/ca6cc7542d00afab011130fcd940e5f5a412b21a4eaeb17c0a497dcb86de311dda90741eeca7de1276cc8c1dff7ac1e6a8df1e8cebb1191a2c43bfe8368dc70b
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -8766,6 +8790,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.20.0"
     concurrently: "npm:^9.1.2"
     eslint: "npm:^9.18.0"
+    framer-motion: "npm:^12.0.6"
     prettier: "npm:^3.4.2"
   languageName: unknown
   linkType: soft
@@ -9932,16 +9957,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-day-picker@npm:9.5.0":
-  version: 9.5.0
-  resolution: "react-day-picker@npm:9.5.0"
-  dependencies:
-    "@date-fns/tz": "npm:^1.2.0"
-    date-fns: "npm:^4.1.0"
-    date-fns-jalali: "npm:^4.1.0-0"
+"react-day-picker@npm:8.10.1":
+  version: 8.10.1
+  resolution: "react-day-picker@npm:8.10.1"
   peerDependencies:
-    react: ">=16.8.0"
-  checksum: 10c0/3c9d06c393f3135c63aca98b38e52738d3c78ed3bed1a2a730595cc27dbf0b1d964899ce9656cc3c223d598309b714528873dd32a0c48e41f03495917b7508c3
+    date-fns: ^2.28.0 || ^3.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/a0ff28c4b61b3882e6a825b19e5679e2fdf3256cf1be8eb0a0c028949815c1ae5a6561474c2c19d231c010c8e0e0b654d3a322610881e0655abca05a2e03d9df
   languageName: node
   linkType: hard
 

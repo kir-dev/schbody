@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { LuBuilding2, LuCrown } from 'react-icons/lu';
 import { z } from 'zod';
@@ -19,6 +19,7 @@ import { ProfileFormSchema } from '@/zod-form-schemas/ProfileFormSchema';
 
 import api from '../network/apiSetup';
 import MemberProfileData from './MemberProfileData';
+import { Button } from '@/components/ui/button';
 
 // Custom hook or API call to fetch user's applications
 async function fetchUserApplications() {
@@ -28,6 +29,7 @@ async function fetchUserApplications() {
 
 export default function ProfileForm() {
   const { toast } = useToast();
+
   const form = useForm<z.infer<typeof ProfileFormSchema>>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues: {
@@ -70,7 +72,10 @@ export default function ProfileForm() {
         JSON.stringify(values.isSchResident ? { ...values, roomNumber } : values)
       );
       if (response.status === 200) {
-        toast({ title: 'Sikeres módosítás!' });
+        toast({
+          title: 'Sikeres módosítás!',
+          description: 'A profilod adatai mentésre kerültek!',
+        });
         mutate();
       } else {
         toast({
@@ -85,7 +90,12 @@ export default function ProfileForm() {
         variant: 'destructive',
       });
     }
-  };
+  }
+
+  function onReset() {
+    setEditingIsOn(false);
+    form.reset();
+  }
 
   const { reset } = form;
   useEffect(() => {
@@ -102,21 +112,38 @@ export default function ProfileForm() {
     }
   }, [user, reset]);
 
+  const [editingIsOn, setEditingIsOn] = React.useState(false);
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading profile.</p>;
+
   if (!user) return null;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-        <UserProfileBanner
-          user={user}
-          editingIsOn={editingIsOn}
-          setEditingIsOn={setEditingIsOn}
-          onSubmit={() => onSubmit(form.getValues())}
-        />
+        <UserProfileBanner user={user} />
         <Card>
-          <CardHeader className='flex items-start flex-row justify-between'>
+          <div className='md:z-1 md:float-right md:mt-6 md:mx-6 flex gap-4 max-md:w-full max-md:p-6 max-md:pb-0 max-md:justify-center'>
+            {!editingIsOn && (
+              <Button variant='secondary' className='w-full' onClick={() => setEditingIsOn(true)}>
+                <LuPencil />
+                Adatok szerkesztése
+              </Button>
+            )}
+            {editingIsOn && (
+              <>
+                <Button type='submit'>
+                  <LuSave />
+                  Mentés
+                </Button>
+                <Button variant='destructive' onClick={onReset}>
+                  <LuX />
+                  Mégse
+                </Button>
+              </>
+            )}
+          </div>
+          <CardHeader className='flex items-start flex-row justify-between mt-2'>
             <div>
               <CardTitle>
                 <LuCrown />
@@ -124,17 +151,20 @@ export default function ProfileForm() {
               </CardTitle>
             </div>
           </CardHeader>
-          <CardContent className='w-full md:grid-cols-2 md:grid gap-4 '>
+          <CardContent className='md:grid-cols-2 grid gap-4'>
             <FormField
               control={form.control}
               name='nickName'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Becenév</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!editingIsOn} />
+                <FormItem className='flex flex-col md:flex-row gap-2 items-start md:items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='flex-1 space-y-0.5'>
+                    <FormLabel>Becenév</FormLabel>
+                    <FormDescription>Hogyan szólíthatunk?</FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl className='flex-1'>
+                    <Input {...field} disabled={!editingIsOn} className='m-0' />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -142,12 +172,15 @@ export default function ProfileForm() {
               control={form.control}
               name='email'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kapcsolattartási email cím</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!editingIsOn} />
+                <FormItem className='flex flex-col md:flex-row gap-2 items-start md:items-center justify-between rounded-lg border p-4 shadow-sm'>
+                  <div className='flex-1 space-y-0.5'>
+                    <FormLabel>Email cím</FormLabel>
+                    <FormDescription>Ide küldjük majd a fontos infókat</FormDescription>
+                    <FormMessage />
+                  </div>
+                  <FormControl className='flex-1 m-0 border'>
+                    <Input {...field} className='m-0' disabled={!editingIsOn} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -165,9 +198,7 @@ export default function ProfileForm() {
               )}
             />
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
+          <CardHeader className='pt-2'>
             <CardTitle>
               <LuBuilding2 />
               Kollégiumi bentlakás
@@ -202,13 +233,11 @@ export default function ProfileForm() {
               name='roomNumber'
               render={({ field }) => (
                 <FormItem
-                  className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${
-                    form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className={`flex flex-col md:flex-row gap-1 md:items-center justify-between rounded-lg border p-4 shadow-sm ${form.watch('isSchResident') ? 'opacity-100' : 'opacity-0'}`}
                 >
                   <div className='space-y-0.5'>
-                    <FormLabel>Szoba szám</FormLabel>
-                    <FormDescription>Ezt a szobád ajtaján tudod megnézni xd</FormDescription>
+                    <FormLabel>Szobaszám</FormLabel>
+                    <FormDescription>Ezt a szobád ajtaján tudod megnézni</FormDescription>
                     <FormMessage />
                   </div>
                   <div className='flex self-center'>

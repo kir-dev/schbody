@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { FiKey, FiMeh, FiSmile, FiUser } from 'react-icons/fi';
 
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Role } from '@/types/user-entity';
+import { LuCirclePower, LuCircleUserRound, LuCrown, LuKeyRound } from 'react-icons/lu';
 
 export function getRoleBadgeColor(role: Role, bg?: boolean) {
   const convertedRole = role as unknown as Role;
@@ -50,13 +50,13 @@ export default function RoleBadge({ role, short, hover = true }: RoleBageProps) 
   const icon: React.JSX.Element = useMemo(() => {
     switch (Role[convertedRole]) {
       case Role.USER:
-        return <FiUser />;
+        return <LuCircleUserRound />;
       case Role.BODY_MEMBER:
-        return <FiMeh />;
+        return <LuKeyRound />;
       case Role.BODY_ADMIN:
-        return <FiSmile />;
+        return <LuCrown />;
       case Role.SUPERUSER:
-        return <FiKey />;
+        return <LuCirclePower />;
     }
   }, [convertedRole]);
 

@@ -1,9 +1,9 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FiFastForward } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { LuFastForward } from 'react-icons/lu';
 
 export default function SecondBannerCard() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function SecondBannerCard() {
           <CardDescription>Nézd meg, mi történt Body weben az elmúlt időszakban!</CardDescription>
         </div>
         <Button className='max-md:w-full' onClick={() => router.push('/impressum/2024')}>
-          <FiFastForward />
+          <LuFastForward />
           2024 Recap
         </Button>
       </CardHeader>
