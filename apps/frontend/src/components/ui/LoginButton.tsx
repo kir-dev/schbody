@@ -1,9 +1,10 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { FiKey, FiLogIn, FiUser } from 'react-icons/fi';
+import { FiKey, FiLogIn } from 'react-icons/fi';
 
 import { Button } from '@/components/ui/button';
 import useProfile from '@/hooks/useProfile';
+import { LuUser } from 'react-icons/lu';
 
 export default function LoginButton({ version }: { version: number }) {
   const { data: user } = useProfile();

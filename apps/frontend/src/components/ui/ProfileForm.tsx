@@ -1,9 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LuBuilding2, LuCrown } from 'react-icons/lu';
+import { LuBuilding2, LuCrown, LuPencil, LuSave, LuX } from 'react-icons/lu';
 import { z } from 'zod';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -90,7 +90,7 @@ export default function ProfileForm() {
         variant: 'destructive',
       });
     }
-  }
+  };
 
   function onReset() {
     setEditingIsOn(false);
@@ -112,7 +112,6 @@ export default function ProfileForm() {
     }
   }, [user, reset]);
 
-  const [editingIsOn, setEditingIsOn] = React.useState(false);
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading profile.</p>;
 
