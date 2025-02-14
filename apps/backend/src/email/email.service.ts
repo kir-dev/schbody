@@ -40,6 +40,7 @@ export class EmailService {
     status: ProfilePictureStatus,
     hadActiveApplication: boolean
   ) {
+    console.log('email');
     const html = await render(profilePicStatusChangeEmail(status, hadActiveApplication));
     const response = await this.sendEmail(
       address,

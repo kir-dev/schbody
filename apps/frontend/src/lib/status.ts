@@ -1,4 +1,4 @@
-import { ApplicationStatus } from '@/types/application-entity';
+import { ApplicationStatus } from '@frontend/types/application-entity';
 
 export function getStatusKey(status: ApplicationStatus): string | undefined {
   const statusEntries = Object.entries(ApplicationStatus) as [string, ApplicationStatus][];

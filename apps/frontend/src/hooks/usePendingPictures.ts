@@ -12,3 +12,7 @@ export function usePendingPictures() {
     shouldRetryOnError: false,
   });
 }
+
+/*export function useProilePictureStatus() {
+  return useSWR<booelan>;
+}*/

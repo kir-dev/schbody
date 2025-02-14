@@ -1,10 +1,10 @@
 import React from 'react';
 import { Body, Html, Preview, Text } from '@react-email/components';
 import { ProfilePictureStatus } from '@prisma/client';
-import StatusBadge from '@frontend/src/components/status-badge';
-import { ApplicationStatus } from '@frontend/src/types/application-entity';
+import StatusBadge from '@frontend/components/ui/StatusBadge';
 import { Header } from './header';
 import { Footer } from './footer';
+import { ApplicationStatus } from '@frontend/types/application-entity';
 
 export const profilePicStatusChangeEmail = (newStatus: ProfilePictureStatus, hadActiveApplication: boolean) => {
   return (

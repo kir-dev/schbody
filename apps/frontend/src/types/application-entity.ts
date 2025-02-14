@@ -1,5 +1,5 @@
-import { ApplicationPeriodEntity } from '@/types/application-period-entity';
-import { UserEntity } from '@/types/user-entity';
+import { UserEntity } from '@frontend/types/user-entity';
+import { ApplicationPeriodEntity } from '@frontend/types/application-period-entity';
 
 export enum ApplicationStatus {
   SUBMITTED = 'Benyújtott',
