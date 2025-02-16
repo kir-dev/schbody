@@ -9,19 +9,28 @@
     "target": "es2017",
     "sourceMap": true,
     "baseUrl": "./",
+    "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "paths" : {
-      "@/*": ["src/*"],
-      "@backend/*": ["/src/*"],
-      "@components/*": ["src/components/*"],
-      "@frontend/*": ["../frontend/src/*"],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@backend/*": [
+        "/src/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@frontend/*": [
+        "../frontend/src/*"
+      ]
     },
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "jsx": "react",
+    "jsx": "react"
   }
 }
