@@ -61,6 +61,7 @@ export class UserService {
 
   async setProfilePictureStatus(id: string, status: any) {
     Logger.log('called');
+    console.log('called');
     try {
       const transactionResult = this.prisma.$transaction(async (tx) => {
         if (status !== ProfilePictureStatus.PENDING) {
