@@ -65,7 +65,11 @@ export default function Page() {
       <div className='grid max-lg:grid-cols-1 lg:grid-cols-2 gap-2'>
         {users.data &&
           users.data.users.map((user) => (
-            <UserCard key={user.id} user={user} onChange={(newRole: Role) => onChange(newRole, user.authSchId)} />
+            <UserCard
+              key={user.authSchId}
+              user={user}
+              onChange={(newRole: Role) => onChange(newRole, user.authSchId)}
+            />
           ))}
       </div>
       {search.length < 3 && (

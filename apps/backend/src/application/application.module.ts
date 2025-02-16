@@ -5,8 +5,9 @@ import { ApplicationController } from './application.controller';
 import { ApplicationService } from './application.service';
 
 @Module({
+  imports: [ApplicationPeriodModule],
   controllers: [ApplicationController],
   providers: [ApplicationService],
-  imports: [ApplicationPeriodModule],
+  exports: [ApplicationService],
 })
 export class ApplicationModule {}

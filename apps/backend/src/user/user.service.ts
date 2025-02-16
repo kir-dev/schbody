@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,9 +12,17 @@ import { optimizeImage } from 'src/util';
 
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApplicationService } from '@/application/application.service';
+import { EmailService } from '@/email/email.service';
 
 @Injectable()
 export class UserService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly applicationService: ApplicationService,
+    private emailService: EmailService
+  ) {}
+
   async findPendingProfilePictures() {
     try {
       return this.prisma.profilePicture.findMany({
@@ -31,7 +40,6 @@ export class UserService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
-  constructor(private readonly prisma: PrismaService) {}
 
   async updateAdmin(id: string, updateUserDto: UpdateUserAdminDto, currentUserRole: string) {
     const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
@@ -52,11 +60,27 @@ export class UserService {
   }
 
   async setProfilePictureStatus(id: string, status: any) {
+    Logger.log('called');
+    console.log('called');
     try {
-      return this.prisma.profilePicture.update({
-        where: { userId: id },
-        data: { status },
+      const transactionResult = this.prisma.$transaction(async (tx) => {
+        if (status !== ProfilePictureStatus.PENDING) {
+          await this.applicationService.setActiveApplicationsStatus(id, status, tx);
+          Logger.log('set');
+        }
+        return tx.profilePicture.update({
+          where: { userId: id },
+          data: { status: status },
+        });
       });
+      Logger.log('returned from transaction');
+      if (status !== ProfilePictureStatus.PENDING) {
+        const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
+        const activeApplications = await this.applicationService.getActiveApplications(id);
+        await this.emailService.sendProfilePictureStatusChangeEmail(user.email, status, activeApplications.length > 0);
+        Logger.log('email sent');
+      }
+      return transactionResult;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -171,7 +195,7 @@ export class UserService {
       throw new BadRequestException('Invalid image format');
     }
     try {
-      await this.createOrUpdateProfilePicture(authSchId, buffer);
+      return this.createOrUpdateProfilePicture(authSchId, buffer);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
@@ -179,9 +203,20 @@ export class UserService {
 
   async deleteProfilePicture(authSchId: string) {
     try {
-      await this.prisma.profilePicture.delete({
-        where: { userId: authSchId },
+      const transactionResult = await this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx);
+        return tx.profilePicture.delete({
+          where: { userId: authSchId },
+        });
       });
+      const user = await this.prisma.user.findUnique({ where: { authSchId } });
+      const activeApplications = await this.applicationService.getActiveApplications(authSchId);
+      await this.emailService.sendProfilePictureStatusChangeEmail(
+        user.email,
+        'REJECTED',
+        activeApplications.length > 0
+      );
+      return transactionResult;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
@@ -207,12 +242,15 @@ export class UserService {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const data = { userId, profileImage: image, mimeType };
     try {
-      await this.prisma.profilePicture.update({
-        where: { userId: userId },
-        data: {
-          ...data,
-          status: ProfilePictureStatus.PENDING,
-        },
+      return await this.prisma.$transaction(async (tx) => {
+        await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
+        return tx.profilePicture.update({
+          where: { userId: userId },
+          data: {
+            ...data,
+            status: ProfilePictureStatus.PENDING,
+          },
+        });
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

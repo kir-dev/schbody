@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -20,8 +21,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ProfilePictureStatus, Role } from '@prisma/client';
 import { ImageParserPipe } from 'src/util';
 
-import { Roles } from '../auth/decorators/Roles.decorator';
-import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '@/auth/decorators/Roles.decorator';
+import { RolesGuard } from '@/auth/roles.guard';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -78,6 +79,7 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   async searchUser(@Query('query') query: string) {
+    Logger.log('search');
     return this.userService.searchUser(query);
   }
   @Get('members')
@@ -121,6 +123,7 @@ export class UserController {
   @ApiBearerAuth()
   @Roles(Role.BODY_MEMBER, Role.BODY_ADMIN)
   async setProfilePictureStatus(@Param('id') id: string, @Param('status') status: ProfilePictureStatus) {
+    Logger.log('valami');
     return this.userService.setProfilePictureStatus(id, status);
   }
 

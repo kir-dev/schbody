@@ -8,14 +8,29 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
-    "outDir": "./dist",
     "baseUrl": "./",
+    "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@backend/*": [
+        "/src/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@frontend/*": [
+        "../frontend/src/*"
+      ]
+    },
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "jsx": "react"
   }
 }

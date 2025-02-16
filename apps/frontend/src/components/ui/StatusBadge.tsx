@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { Badge } from '@/components/ui/badge';
-import { statusConvert } from '@/lib/status';
-import { ApplicationStatus } from '@/types/application-entity';
 import {
   LuCircleArrowDown,
   LuCircleCheckBig,
@@ -16,6 +13,9 @@ import {
   LuRotateCcw,
 } from 'react-icons/lu';
 import { motion } from 'framer-motion';
+import { statusConvert } from '@frontend/lib/status';
+import { ApplicationStatus } from '@frontend/types/application-entity';
+import { Badge } from '@frontend/components/ui/badge';
 
 export default function StatusBadge({ status, short }: Readonly<{ status: ApplicationStatus; short?: boolean }>) {
   const convertedStatus = statusConvert(status);
@@ -49,6 +49,8 @@ export default function StatusBadge({ status, short }: Readonly<{ status: Applic
         return 'red';
       case ApplicationStatus.EXPIRED:
         return 'gray';
+      default:
+        return 'gray';
     }
   }, [convertedStatus]);
   const icon: React.JSX.Element = useMemo(() => {
@@ -72,6 +74,8 @@ export default function StatusBadge({ status, short }: Readonly<{ status: Applic
       case ApplicationStatus.REVOKED:
         return <LuRotateCcw />;
       case ApplicationStatus.EXPIRED:
+        return <LuClock4 />;
+      default:
         return <LuClock4 />;
     }
   }, [convertedStatus]);
