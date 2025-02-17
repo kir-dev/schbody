@@ -178,6 +178,16 @@ export const columns: (
     },
   },
   {
+    id: 'Profilkép',
+    accessorKey: 'user.profilePicture.status',
+    header: ({ column }) => {
+      return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      return row.original.user.profilePicture?.status || 'Nincs profilkép';
+    },
+  },
+  {
     id: 'Leadva',
     accessorKey: 'createdAt',
     enableResizing: false, // Disable resizing
