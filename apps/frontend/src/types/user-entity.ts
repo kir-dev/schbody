@@ -5,6 +5,12 @@ export enum Role {
   SUPERUSER = 'SUPERUSER',
 }
 
+export enum ProfilePictureStatus {
+  ACCEPTED = 'Jóváhagyott profilkép',
+  PENDING = 'Elbírálás alatt álló profilkép',
+  REJECTED = 'Elutasított profilkép',
+}
+
 export type UserEntity = {
   id: number;
   authSchId: string;
@@ -22,6 +28,9 @@ export type UserEntity = {
   updatedAt: string;
   profileSeenAt: string | null;
   idNumber: string | null;
+  profilePicture?: {
+    status: ProfilePictureStatus;
+  };
 };
 
 export type UserEntityPagination = {

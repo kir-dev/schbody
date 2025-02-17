@@ -59,6 +59,11 @@ export class ApplicationPeriodService {
             isSchResident: true,
             role: true,
             idNumber: true,
+            profilePicture: {
+              select: {
+                status: true,
+              },
+            },
           },
         },
       },

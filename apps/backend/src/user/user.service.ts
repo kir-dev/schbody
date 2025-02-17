@@ -79,6 +79,13 @@ export class UserService {
           { nickName: { contains: query, mode: 'insensitive' } },
         ],
       },
+      include: {
+        profilePicture: {
+          select: {
+            status: true,
+          },
+        },
+      },
     });
     return {
       users,
@@ -90,6 +97,13 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     const user = this.prisma.user.findUnique({
       where: { authSchId: id },
+      include: {
+        profilePicture: {
+          select: {
+            status: true,
+          },
+        },
+      },
     });
 
     if (user === null) {
@@ -129,6 +143,13 @@ export class UserService {
         orderBy: { fullName: 'asc' },
         skip: hasPagination ? page * pageSize : undefined,
         take: hasPagination ? pageSize : undefined,
+        include: {
+          profilePicture: {
+            select: {
+              status: true,
+            },
+          },
+        },
       }),
     ]);
 

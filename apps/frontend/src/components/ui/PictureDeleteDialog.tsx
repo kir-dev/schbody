@@ -38,7 +38,9 @@ export default function PictureDeleteDialog({ children, onChange, endpoint, moda
         <DialogHeader className='h-fit'>
           <div className='h-full flex-col justify-between items-center gap-4 mb-2'>
             <DialogTitle>{modalTitle}</DialogTitle>
-            <DialogDescription>Biztos törlöd a profilképed?</DialogDescription>
+            <DialogDescription>
+              Elfogadott profilkép nélkül nem tudsz kondibelépőt átvenni a következő jelentkezési időszakban.
+            </DialogDescription>
           </div>
           <div className='flex justify-end gap-2'>
             <Button onClick={() => setIsOpen(false)} variant='outline'>
