@@ -119,7 +119,7 @@ export class UserController {
   @Patch(':id/profile-picture/:status')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
-  @Roles(Role.BODY_MEMBER, Role.BODY_ADMIN)
+  @Roles(Role.BODY_ADMIN)
   async setProfilePictureStatus(@Param('id') id: string, @Param('status') status: ProfilePictureStatus) {
     return this.userService.setProfilePictureStatus(id, status);
   }

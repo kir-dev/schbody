@@ -65,7 +65,7 @@ export default function ProfilePictureTinderCard({
             <img
               src={
                 isMutating
-                  ? ''
+                  ? '/images/placeholder.png'
                   : `${process.env.NEXT_PUBLIC_API_URL}/users/${user.authSchId}/profile-picture?cb=${Date.now()}`
               }
               className='h-96 rounded hover:animate-zoom-in object-cover w-72'
