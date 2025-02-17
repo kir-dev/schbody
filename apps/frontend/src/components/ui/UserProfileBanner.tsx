@@ -16,6 +16,7 @@ import { UserEntity } from '@/types/user-entity';
 import { LuLogOut, LuPen, LuTrash2 } from 'react-icons/lu';
 import PictureDeleteDialog from './PictureDeleteDialog';
 import PictureUploadDialog from './PictureUploadDialog';
+import PfpStatusBadge from '@/components/ui/PfpStatusBadge';
 
 export default function UserProfileBanner(props: { user: UserEntity | undefined }) {
   const router = useRouter();
@@ -87,28 +88,31 @@ export default function UserProfileBanner(props: { user: UserEntity | undefined 
             currentTarget.src = '/default_pfp.jpg';
           }}
         />
-        <div className='w-full absolute flex bottom-2 gap-2 justify-center'>
-          <PictureUploadDialog
-            aspectRatio={650 / 900}
-            modalTitle='Profilkép feltöltése'
-            onChange={handleProfilePictureAction}
-            endpoint='/users/me/profile-picture'
-          >
-            <Button className='w-fit' variant='secondary'>
-              {profilePicture ? <LuPen /> : 'Kép szerkesztése'}
-            </Button>
-          </PictureUploadDialog>
-          {profilePicture && (
-            <PictureDeleteDialog
-              modalTitle='Profilkép törlése'
-              onChange={handleDeleteProfilePicture}
+        <div className='p-2 w-full absolute flex bottom-0 gap-2 justify-between'>
+          {props.user.profilePicture && <PfpStatusBadge status={props.user.profilePicture.status} />}
+          <div className={'flex gap-2'}>
+            <PictureUploadDialog
+              aspectRatio={650 / 900}
+              modalTitle='Profilkép feltöltése'
+              onChange={handleProfilePictureAction}
               endpoint='/users/me/profile-picture'
             >
-              <Button variant='destructive'>
-                <LuTrash2 />
+              <Button className='w-fit' variant='secondary'>
+                {profilePicture ? <LuPen /> : 'Kép szerkesztése'}
               </Button>
-            </PictureDeleteDialog>
-          )}
+            </PictureUploadDialog>
+            {profilePicture && (
+              <PictureDeleteDialog
+                modalTitle='Biztos törlöd a profilképed?'
+                onChange={handleDeleteProfilePicture}
+                endpoint='/users/me/profile-picture'
+              >
+                <Button variant='secondary'>
+                  <LuTrash2 />
+                </Button>
+              </PictureDeleteDialog>
+            )}
+          </div>
         </div>
       </div>
       <CardContent className='w-full md:ml-4'>

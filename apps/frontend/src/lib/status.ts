@@ -1,4 +1,5 @@
 import { ApplicationStatus } from '@/types/application-entity';
+import { ProfilePictureStatus } from '@/types/user-entity';
 
 export function getStatusKey(status: ApplicationStatus): string | undefined {
   const statusEntries = Object.entries(ApplicationStatus) as [string, ApplicationStatus][];
@@ -20,6 +21,10 @@ export function getStatusName(status: ApplicationStatus): string {
   return 'Ismeretlen státusz';
 }
 
-export function statusConvert(status: ApplicationStatus): keyof typeof ApplicationStatus {
+export function applicationStatusConvert(status: ApplicationStatus): keyof typeof ApplicationStatus {
   return status as unknown as keyof typeof ApplicationStatus;
+}
+
+export function pfpStatusConvert(status: ProfilePictureStatus): keyof typeof ProfilePictureStatus {
+  return status as unknown as keyof typeof ProfilePictureStatus;
 }
