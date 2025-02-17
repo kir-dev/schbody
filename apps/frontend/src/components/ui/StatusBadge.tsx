@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { Badge } from '@/components/ui/badge';
-import { statusConvert } from '@/lib/status';
+import { applicationStatusConvert } from '@/lib/status';
 import { ApplicationStatus } from '@/types/application-entity';
 import {
   LuCircleArrowDown,
@@ -18,7 +18,7 @@ import {
 import { motion } from 'framer-motion';
 
 export default function StatusBadge({ status, short }: Readonly<{ status: ApplicationStatus; short?: boolean }>) {
-  const convertedStatus = statusConvert(status);
+  const convertedStatus = applicationStatusConvert(status);
   const [hovered, setHovered] = React.useState(false);
   const handleMouseEnter = () => {
     setHovered(true);
