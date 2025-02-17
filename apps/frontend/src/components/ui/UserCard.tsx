@@ -2,9 +2,21 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
 import { Role, UserEntity } from '@/types/user-entity';
 import Image from 'next/image';
-import { LuPencil, LuUser } from 'react-icons/lu';
+import { LuPencil, LuUser, LuUserCheck, LuUserMinus, LuUserSearch } from 'react-icons/lu';
+import api from '@/components/network/apiSetup';
+import { toast } from '@/lib/use-toast';
+import { Button } from '@/components/ui/button';
 
+/*admin component*/
 export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
+  async function sendStatusChange(string: string) {
+    const resp = await api.patch('/users/' + props.user.authSchId + '/profile-picture/' + string);
+    toast({
+      title: 'Profilkép státusz módosítva!',
+      description: resp.statusText,
+    });
+  }
+
   return (
     <Card>
       <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-auto gap-4'>
@@ -12,9 +24,9 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
           <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
             alt='KEP'
-            className='lg:rounded-l-lg max-lg:rounded-lg max-w-20 h-fit aspect-auto -m-4 max-md:-my-4'
-            width={64}
-            height={64}
+            className='lg:rounded-l-lg max-lg:rounded-lg aspect-auto -m-4 max-md:-my-4'
+            width={100}
+            height={100}
           />
           <div className='overflow-scroll text-nowrap truncate justify-between flex flex-col h-auto'>
             <CardTitle>{props.user.fullName}</CardTitle>
@@ -38,7 +50,26 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
             </CardDescription>
           </div>
         </div>
-        <div className='flex-2'>
+        <div className='flex flex-col gap-2 items-center justify-center'>
+          <div className='flex gap-2'>
+            <Button onClick={() => sendStatusChange('ACCEPTED')} title='Profilkép gyors elfogadása'>
+              <LuUserCheck />
+            </Button>
+            <Button
+              onClick={() => sendStatusChange('PENDING')}
+              title='Profilkép gyors pendingre állítása'
+              variant='secondary'
+            >
+              <LuUserSearch />
+            </Button>
+            <Button
+              onClick={() => sendStatusChange('REJECTED')}
+              title='Profilkép gyors elutasítása'
+              variant='destructive'
+            >
+              <LuUserMinus />
+            </Button>
+          </div>
           <RoleBadgeSelector onChange={props.onChange} role={props.user.role as Role} />
         </div>
       </CardHeader>

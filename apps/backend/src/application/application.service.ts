@@ -6,13 +6,14 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
-import { Application, Prisma, Role, User } from '@prisma/client';
+import { Application, ApplicationStatus, Prisma, PrismaClient, Role, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ApplicationService {
@@ -218,5 +219,44 @@ export class ApplicationService {
       });
     }
     throw new ForbiddenException('Nem törölheted mások jelentkezését');
+  }
+
+  async getActiveApplications(userId: string) {
+    return this.prisma.application.findMany({
+      where: {
+        userId,
+        status: {
+          in: ['ACCEPTED', 'REJECTED', 'SUBMITTED'],
+        },
+      },
+    });
+  }
+
+  async setActiveApplicationsStatus(
+    userId: string,
+    status: ApplicationStatus,
+    tx: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+    >
+  ) {
+    try {
+      const activeApplications = await this.getActiveApplications(userId);
+      await Promise.all(
+        activeApplications.map((application) =>
+          tx.application.update({
+            where: { id: application.id },
+            data: { status: status },
+          })
+        )
+      );
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException(`User not found`);
+        }
+      }
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 }

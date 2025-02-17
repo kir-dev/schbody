@@ -9,6 +9,7 @@ import { ApplicationPeriodModule } from './application-period/application-period
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { UserModule } from './user/user.module';
+import { EmailService } from './email/email.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { UserModule } from './user/user.module';
   ],
 
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EmailService],
 })
 export class AppModule {}
