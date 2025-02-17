@@ -90,7 +90,7 @@ export default function UserProfileBanner(props: { user: UserEntity | undefined 
         />
         <div className='p-2 w-full absolute flex bottom-0 gap-2 justify-between'>
           {props.user.profilePicture && <PfpStatusBadge status={props.user.profilePicture.status} />}
-          <div className={'flex gap-2'}>
+          <div className='flex gap-2'>
             <PictureUploadDialog
               aspectRatio={650 / 900}
               modalTitle='Profilkép feltöltése'
