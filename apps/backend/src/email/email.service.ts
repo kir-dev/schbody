@@ -49,12 +49,13 @@ export class EmailService {
       status === ProfilePictureStatus.ACCEPTED ? 'picture-accepted.html' : 'picture-rejected.html'
     );
     const namedHtml = html.replace(/{{name}}/g, name);
-
-    const response = await this.sendEmail(
-      address,
-      status === ProfilePictureStatus.ACCEPTED ? 'Profilképed elfogadva' : 'Profilképed elutasítva',
-      namedHtml
-    );
+    const subject =
+      status === ProfilePictureStatus.ACCEPTED
+        ? 'Profilképed elfogadva'
+        : hadActiveApplication
+          ? 'Profilképed elutasítva'
+          : 'Profilképed és jelentkezésed elutasítva';
+    await this.sendEmail(address, subject, namedHtml);
   }
 
   private getHtmlTemplate(fileName: string): string {
