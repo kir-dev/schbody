@@ -10,10 +10,10 @@ import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApplicationService } from '@/application/application.service';
 import { EmailService } from '@/email/email.service';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -80,7 +80,8 @@ export class UserService {
         await this.emailService.sendProfilePictureStatusChangeEmail(user.email, status, activeApplications.length > 0);
         Logger.log('email sent');
       }
-      return transactionResult;
+      const { profileImage: _profileImage, ...response } = await transactionResult;
+      return response;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
