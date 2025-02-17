@@ -70,11 +70,14 @@ export class UserService {
         });
       });
       const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
-      await this.emailService.sendEmail(
+      /*await this.emailService.sendEmail(
         user.email,
         '[SCHBody] A profilképed állapota módosult',
         'Amennyiben volt aktív, elbírálás alatt álló jelentkezésed, annak státusza megváltozott. Kérjük, hogy ellenőrizd a jelentkezésed státuszát a SCHBody felületén.'
-      );
+      );*/
+      if (status !== ProfilePictureStatus.PENDING) {
+        await this.emailService.sendProfilePictureStatusChangeEmail(user.nickName, user.email, status, true);
+      }
       return transactionResult;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -82,6 +85,7 @@ export class UserService {
           throw new NotFoundException(`User not found`);
         }
       }
+      console.log(error);
       throw new InternalServerErrorException('Something went wrong');
     }
   }
@@ -205,11 +209,7 @@ export class UserService {
         });
       });
       const user = await this.prisma.user.findUnique({ where: { authSchId } });
-      await this.emailService.sendEmail(
-        user.email,
-        '[SCHBody] A profilképed törlésre került',
-        'A profilképed törlésre került, amennyiben van aktív, elbírálás alatt álló jelentkezésed, most elutasítottá vált. Ahhoz, hogy jelentkezésed újra elfogadható legyen, tölts fel egy új profilképet.'
-      );
+      await this.emailService.sendTemplateEmail(user.email, 'Profilképed törölve lett', 'picture-deleted.html');
       return transactionResult;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
