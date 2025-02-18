@@ -17,7 +17,7 @@ export default function Footer() {
           </Link>
         </div>
         <KirCard />
-        <p className='text-sm text-center lg:text-right '>&copy; 2024 SCHBody</p>
+        <p className='text-sm text-center lg:text-right '>&copy; 2025 SCHBody</p>
       </div>
     </footer>
   );
