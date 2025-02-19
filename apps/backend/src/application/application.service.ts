@@ -15,6 +15,7 @@ import { ApplicationPeriodService } from 'src/application-period/application-per
 import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { BulkUpdateApplicationDto } from './dto/bulk-update-application.dto';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 
@@ -51,10 +52,19 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      const currentUser = await this.prisma.user.findUnique({
-        where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
+      const currentUser = await this.prisma.user.findFirstOrThrow({
+        where: {
+          authSchId: user.authSchId,
+        },
+        include: {
+          profilePicture: {
+            select: {
+              status: true,
+            },
+          },
+        },
       });
-      if (!currentUser) {
+      if (!currentUser || !currentUser.profilePicture) {
         throw new NotAcceptableException('Hiányos profil');
       }
       return await this.prisma.application.create({
@@ -64,6 +74,7 @@ export class ApplicationService {
               authSchId: user.authSchId,
             },
           },
+          status: currentUser.profilePicture.status === 'PENDING' ? 'SUBMITTED' : currentUser.profilePicture.status === 'ACCEPTED' ? 'ACCEPTED' : 'REJECTED',
           applicationPeriod: {
             connect: {
               id: createApplicationDto.applicationPeriodId,
