@@ -20,6 +20,8 @@ import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 import Image from 'next/image';
 import { LuCheck, LuCircleArrowRight, LuCopy } from 'react-icons/lu';
+import PfpStatusBadge from '@/components/ui/PfpStatusBadge';
+import WarningBadge from '@/components/ui/WarningBadge';
 
 export const columns: (
   quickMode: boolean,
@@ -56,10 +58,16 @@ export const columns: (
       return (
         <HoverCard>
           <HoverCardTrigger>
-            <div className='flex gap-2 items-center'>
-              <div className={`${getRoleBadgeColor(row.original.user.role, true)} h-6 w-1 rounded`} />
-              <p>{row.original.user.fullName}</p>
-              {row.original.user.isActiveVikStudent && <RiVerifiedBadgeLine size={16} />}
+            <div className='flex gap-2 items-center justify-between'>
+              <div className='flex gap-2 items-center'>
+                <div className={`${getRoleBadgeColor(row.original.user.role, true)} h-6 w-1 rounded`} />
+                <p>{row.original.user.fullName} </p>
+              </div>
+              {row.original.user.isActiveVikStudent && (
+                <span className='text-sm'>
+                  <RiVerifiedBadgeLine size={16} />
+                </span>
+              )}
             </div>
           </HoverCardTrigger>
           <HoverCardContent>
@@ -82,6 +90,10 @@ export const columns: (
     size: 120, // Fixed size for consistency
     header: ({ column }) => {
       return SortableFilterableHeader(column);
+    },
+    cell: ({ row }) => {
+      if (row.original.user.neptun) return row.original.user.neptun;
+      return <WarningBadge />;
     },
   },
   {
@@ -153,16 +165,18 @@ export const columns: (
           }}
         >
           <Input
-            placeholder='123456AB'
             onChange={(e) => {
               setIdNumber(e.target.value);
             }}
             value={idNumber ? idNumber : ''}
             className='w-24 py-1 h-auto'
           />
-          <Button type='submit' className='h-fit w-fit px-2' variant='secondary'>
-            <LuCheck />
-          </Button>
+          {(idNumber || row.original.user.idNumber) && (
+            <Button type='submit' className='h-fit w-fit px-2' variant='secondary'>
+              <LuCheck />
+            </Button>
+          )}
+          {!(idNumber || row.original.user.idNumber) && <WarningBadge />}
         </form>
       );
     },
@@ -184,7 +198,8 @@ export const columns: (
       return SortableFilterableHeader(column);
     },
     cell: ({ row }) => {
-      return row.original.user.profilePicture?.status || 'Nincs profilkép';
+      if (row.original.user.profilePicture) return <PfpStatusBadge status={row.original.user.profilePicture?.status} />;
+      return <WarningBadge />;
     },
   },
   {
