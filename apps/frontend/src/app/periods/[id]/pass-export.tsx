@@ -53,7 +53,7 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     ? 'https://placehold.co/650x900/jpeg'
                     : `${process.env.NEXT_PUBLIC_API_URL}/users/${a.user.authSchId}/profile-picture`
                 }
-                style={{ width: '2.6cm', height: '3.5cm', borderRadius: '5%' }}
+                style={{ width: '2.6cm', height: '3.5cm', borderRadius: '10px' }}
               />
               <View style={{ flexDirection: 'column' }}>
                 <Text
