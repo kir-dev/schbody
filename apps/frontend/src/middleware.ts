@@ -30,5 +30,5 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ['/profile', '/application-form', '/periods', '/applications', '/periods/:path*', '/profile', 'profile-picture-check', '/roles'],
+  matcher: ['/profile', '/application-form', '/periods', '/applications', '/periods/:path*', '/profile-picture-check', '/roles'],
 };
