@@ -17,7 +17,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  if (request.nextUrl.pathname.startsWith('/periods')) {
+  if (request.nextUrl.pathname.startsWith('/periods') ||
+      request.nextUrl.pathname.startsWith('/roles') ||
+      request.nextUrl.pathname.startsWith('/profile-picture-check'))
+  {
     if (role === 'BODY_MEMBER' || role === 'BODY_ADMIN' || role === 'SUPERUSER') {
       return NextResponse.next();
     }
@@ -27,5 +30,5 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ['/profile', '/application-form', '/periods', '/applications', '/periods/:path*'],
+  matcher: ['/profile', '/application-form', '/periods', '/applications', '/periods/:path*', '/profile', 'profile-picture-check', '/roles'],
 };
