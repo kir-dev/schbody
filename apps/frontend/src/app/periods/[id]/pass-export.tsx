@@ -62,8 +62,8 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     padding: '0 2mm 1mm 2mm',
                     fontSize: '8pt',
                     width: '37.5mm',
-                    borderRadius: '20%',
                     marginTop: '5mm',
+                    borderRadius: '10px',
                   }}
                 >
                   {a.user.fullName}
@@ -74,11 +74,11 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     backgroundColor: 'lightgray',
                     padding: '0mm 1mm 1mm 1mm',
                     width: '15mm',
-                    borderRadius: '20%',
+                    borderRadius: '10px',
                   }}
                 >
                   <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Szobaszám</Text>
-                  <Text style={{ width: '100%', fontSize: '8pt', textAlign: 'center' }}>
+                  <Text style={{ width: '100px', fontSize: '8pt', textAlign: 'center' }}>
                     {a.user.roomNumber || 'Külsős'}
                   </Text>
                 </View>
@@ -88,7 +88,7 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     backgroundColor: 'lightgray',
                     padding: '0mm 1mm 1mm 1mm',
                     width: '15mm',
-                    borderRadius: '20%',
+                    borderRadius: '10px',
                   }}
                 >
                   <Text style={{ fontSize: '3pt', textAlign: 'center' }}>Azonosító</Text>
@@ -101,8 +101,8 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
                     marginTop: '11mm',
                     height: '9mm',
                     width: '1.6cm',
-                    borderTopLeftRadius: '20%',
-                    borderTopRightRadius: '20%',
+                    borderTopLeftRadius: '20px',
+                    borderTopRightRadius: '20px',
                     fontSize: '8pt',
                     fontWeight: 'bold',
                     padding: '0.5mm 0 1mm 0',
