@@ -54,7 +54,12 @@ export class ApplicationService {
               authSchId: user.authSchId,
             },
           },
-          status: currentUser.profilePicture.status === 'PENDING' ? 'SUBMITTED' : currentUser.profilePicture.status === 'ACCEPTED' ? 'ACCEPTED' : 'REJECTED',
+          status:
+            currentUser.profilePicture.status === 'PENDING'
+              ? 'SUBMITTED'
+              : currentUser.profilePicture.status === 'ACCEPTED'
+                ? 'ACCEPTED'
+                : 'REJECTED',
           applicationPeriod: {
             connect: {
               id: createApplicationDto.applicationPeriodId,
@@ -222,12 +227,13 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      return await this.prisma.application.delete({
+      return this.prisma.application.delete({
         where: {
           id,
         },
       });
     }
+
     throw new ForbiddenException('Nem törölheted mások jelentkezését');
   }
 
