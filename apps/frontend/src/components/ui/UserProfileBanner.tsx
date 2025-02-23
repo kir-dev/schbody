@@ -1,7 +1,6 @@
 'use client';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RiVerifiedBadgeLine } from 'react-icons/ri';
 import { useSWRConfig } from 'swr';
 
@@ -78,7 +77,7 @@ export default function UserProfileBanner(props: { user: UserEntity | undefined 
   return (
     <Card className='flex max-md:flex-col md:flex-row max-md:items-center relative'>
       <div className='min-w-44 min-h-44 md:w-1/5 max-md:w-44 h-full relative'>
-        <Image
+        <img
           src={profilePicture || '/default_pfp.jpg'}
           alt='PROFIL KEP'
           className='md:rounded-l max-md:rounded-xl max-md:my-4'

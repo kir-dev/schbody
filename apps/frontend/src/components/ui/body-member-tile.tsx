@@ -2,7 +2,6 @@ import { Mail } from 'lucide-react';
 
 import { MemberEntity } from '@/types/user-entity';
 
-import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardTitle } from './card';
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
 export function BodyMemberTile({ userEntity }: Props) {
   return (
     <Card style={{ wordBreak: 'break-word' }} className='p-4 flex w-full gap-4'>
-      <Image
+      <img
         src={`${process.env.NEXT_PUBLIC_API_URL}/users/${userEntity.authSchId}/profile-picture`}
         alt='PROFIL KEP'
         className='h-36 rounded'
