@@ -25,7 +25,7 @@ export function AcceptDialog({ open, title, description, onAccept, onDecline }: 
             Igen
           </Button>
           <Button onClick={onDecline} variant='secondary'>
-            Mégse
+            Nem
           </Button>
         </div>
       </DialogContent>
