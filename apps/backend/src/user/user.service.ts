@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
+import { ApplicationStatus, Prisma, ProfilePictureStatus, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
@@ -61,20 +61,17 @@ export class UserService {
   async setProfilePictureStatus(id: string, status: any) {
     try {
       const transactionResult = await this.prisma.$transaction(async (tx) => {
-        if (status !== ProfilePictureStatus.PENDING) {
-          await this.applicationService.setActiveApplicationsStatus(id, status, tx);
+        let appStatus = status;
+        if (status === 'PENDING') {
+          appStatus = ApplicationStatus.SUBMITTED;
         }
+        await this.applicationService.setActiveApplicationsStatus(id, appStatus, tx);
         return tx.profilePicture.update({
           where: { userId: id },
           data: { status: status },
         });
       });
       const user = await this.prisma.user.findUnique({ where: { authSchId: id } });
-      /*await this.emailService.sendEmail(
-        user.email,
-        '[SCHBody] A profilképed állapota módosult',
-        'Amennyiben volt aktív, elbírálás alatt álló jelentkezésed, annak státusza megváltozott. Kérjük, hogy ellenőrizd a jelentkezésed státuszát a SCHBody felületén.'
-      );*/
       if (status !== ProfilePictureStatus.PENDING) {
         await this.emailService.sendProfilePictureStatusChangeEmail(user.nickName, user.email, status, true);
       }
