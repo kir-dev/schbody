@@ -19,6 +19,8 @@ import { getStatusKey } from '@/lib/status';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
+import { generateXlsx } from '@/lib/xlsx';
+import { saveAs } from 'file-saver';
 import { ApplicationExport } from './application-export';
 import { PassExport } from './pass-export';
 
@@ -187,6 +189,30 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
     }
   };
 
+  /**
+   * Handles the export of applications to an Excel file.
+   * This function exports the selected applications which have the status {@link ApplicationStatus.DISTRIBUTED}
+   * to an Excel file.
+   */
+  const onExportToExcel = async (data: ApplicationEntity[]) => {
+    const distributedApplications = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
+
+    type ExcelData = {
+      'Teljes név': string;
+      'NEPTUN kód': string;
+      'SZIG szám': string;
+    };
+
+    const dataToExport: ExcelData[] = distributedApplications.map((a) => ({
+      'Teljes név': a.user.fullName,
+      'NEPTUN kód': a.user.neptun ?? '-',
+      'SZIG szám': a.user.idNumber ?? '-',
+    }));
+
+    const excelFile = generateXlsx(dataToExport, 'schbody_applications_export');
+    saveAs(excelFile, 'schbody_applications_export.xlsx');
+  };
+
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
 
   return (
@@ -251,6 +277,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
             onExportPassesClicked={onPassExport}
             onExportApplicationsClicked={onApplicationsExport}
             onSetToManufactured={onSetToManufactured}
+            onExportToExcelClicked={onExportToExcel}
           />
         )}
       </div>

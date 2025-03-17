@@ -51,6 +51,7 @@ interface DataTableProps<TData, TValue> {
   onExportPassesClicked: (data: TData[]) => void;
   onExportApplicationsClicked: (data: TData[]) => void;
   onSetToManufactured: (data: TData[]) => void;
+  onExportToExcelClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -60,6 +61,7 @@ export function DataTable<TData, TValue>({
   onExportApplicationsClicked,
   onExportPassesClicked,
   onSetToManufactured,
+  onExportToExcelClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -204,6 +206,15 @@ export function DataTable<TData, TValue>({
                 }
               >
                 Nem kollégisták exportálása (csak kiosztott)
+              </MenubarItem>
+              <MenubarItem
+                onClick={() => {
+                  onExportToExcelClicked(
+                    data.filter((a) => (a as ApplicationEntity).status === ('DISTRIBUTED' as ApplicationStatus))
+                  );
+                }}
+              >
+                Minden kiosztott jelentkezés exportálása Excel file-ba
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>

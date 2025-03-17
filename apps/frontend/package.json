@@ -49,6 +49,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^4.1.0",
+    "file-saver": "^2.0.5",
     "hamburger-react": "^2.5.2",
     "input-otp": "^1.4.2",
     "js-cookie": "^3.0.5",
@@ -66,10 +67,12 @@
     "table": "^6.9.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.2.2",
+    "@types/file-saver": "^2",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.17.12",
     "@types/react": "19.0.10",
