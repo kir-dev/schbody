@@ -11,9 +11,9 @@ import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
+import { DefaultArgs } from '@prisma/client/runtime/library';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ApplicationService {
@@ -32,10 +32,19 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      const currentUser = await this.prisma.user.findUnique({
-        where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
+      const currentUser = await this.prisma.user.findFirstOrThrow({
+        where: {
+          authSchId: user.authSchId,
+        },
+        include: {
+          profilePicture: {
+            select: {
+              status: true,
+            },
+          },
+        },
       });
-      if (!currentUser) {
+      if (!currentUser || !currentUser.profilePicture) {
         throw new NotAcceptableException('Hiányos profil');
       }
       return await this.prisma.application.create({
@@ -45,6 +54,12 @@ export class ApplicationService {
               authSchId: user.authSchId,
             },
           },
+          status:
+            currentUser.profilePicture.status === 'PENDING'
+              ? 'SUBMITTED'
+              : currentUser.profilePicture.status === 'ACCEPTED'
+                ? 'ACCEPTED'
+                : 'REJECTED',
           applicationPeriod: {
             connect: {
               id: createApplicationDto.applicationPeriodId,
@@ -212,12 +227,13 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      return await this.prisma.application.delete({
+      return this.prisma.application.delete({
         where: {
           id,
         },
       });
     }
+
     throw new ForbiddenException('Nem törölheted mások jelentkezését');
   }
 
