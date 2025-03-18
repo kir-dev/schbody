@@ -1,6 +1,5 @@
 import { ApplicationEntity } from '@/types/application-entity';
 import { Document, Font, Image, Page, Text, View } from '@react-pdf/renderer';
-import React from 'react';
 
 type Props = {
   applicationData: ApplicationEntity[];
@@ -33,7 +32,7 @@ export const PassExport = ({ applicationData, periodName, periodId, cacheBuster,
       >
         {applicationData.map((a) => (
           <View key={a.id}>
-            <Image
+            <img
               src={`${process.env.NEXT_PUBLIC_API_URL}/application-periods/${periodId}/pass-bg?cb=${cacheBuster}`}
               style={{ width: '7.5cm', height: '4.3cm', position: 'absolute', top: 0, left: 0, zIndex: -1 }}
             />
