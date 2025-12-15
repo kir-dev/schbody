@@ -71,7 +71,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "15.2.2",
+    "@next/eslint-plugin-next": "^16.0.10",
     "@types/file-saver": "^2",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20.17.12",

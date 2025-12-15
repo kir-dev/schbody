@@ -5,7 +5,7 @@ import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 import { UserEntity } from '@/types/user-entity';
 import StatusBadge from '@/components/ui/StatusBadge';
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 type Props = {
   user: UserEntity;
@@ -18,7 +18,7 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
   const farestIndex = Math.max(statusEntries.length - 1 - activeIndex, activeIndex);
   const [isHovered, setIsHovered] = useState(false);
 
-  const badgeVariants = {
+  const badgeVariants: Variants = {
     hidden: (index: number) => ({
       opacity: 0,
       y: 40,
@@ -35,7 +35,7 @@ export default function SubmittedApplicationBannerCard({ user, application, curr
     }),
   };
 
-  const shrinkVariants = {
+  const shrinkVariants: Variants = {
     hidden: () => ({
       width: 0,
       margin: 0,

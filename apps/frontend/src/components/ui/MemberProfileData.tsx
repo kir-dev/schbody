@@ -6,22 +6,20 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 
+type MemberProfileFormValues = {
+  canHelpNoobs: boolean;
+  nickName: string;
+  email: string;
+  publicDesc?: string | undefined;
+  isSchResident?: boolean | undefined;
+  roomNumber?: number | null | undefined;
+};
+
 export default function MemberProfileData({
   form,
   editingIsOn,
 }: {
-  form: UseFormReturn<
-    {
-      canHelpNoobs: boolean;
-      nickName: string;
-      email: string;
-      publicDesc?: string | undefined;
-      isSchResident?: boolean | undefined;
-      roomNumber?: number | null | undefined;
-    },
-    any,
-    undefined
-  >;
+  form: UseFormReturn<MemberProfileFormValues>;
   editingIsOn: boolean;
 }) {
   return (
@@ -33,7 +31,7 @@ export default function MemberProfileData({
         </CardTitle>
       </CardHeader>
       <CardContent className='md:grid-cols-2 grid gap-4'>
-        <FormField
+        <FormField<MemberProfileFormValues>
           control={form.control}
           name='canHelpNoobs'
           render={({ field }) => (
@@ -44,18 +42,12 @@ export default function MemberProfileData({
                 <FormMessage />
               </div>
               <FormControl>
-                <Switch
-                  disabled={!editingIsOn}
-                  checked={field.value}
-                  onCheckedChange={(data) => {
-                    field.onChange(data);
-                  }}
-                />
+                <Switch disabled={!editingIsOn} checked={!!field.value} onCheckedChange={field.onChange} />
               </FormControl>
             </FormItem>
           )}
         />
-        <FormField
+        <FormField<MemberProfileFormValues>
           control={form.control}
           name='publicDesc'
           render={({ field }) => (
@@ -71,7 +63,11 @@ export default function MemberProfileData({
                 <Textarea
                   placeholder='...'
                   className='resize-none'
-                  {...field}
+                  value={typeof field.value === 'string' ? field.value : ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
                   disabled={!editingIsOn || !form.watch('canHelpNoobs')}
                 />
               </FormControl>

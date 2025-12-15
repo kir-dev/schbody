@@ -49,7 +49,7 @@ export default function Page() {
         <CardDescription>Tiszt</CardDescription>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-8 text-center'>
           <StatCard title='alkalommal látogattátok meg az oldalt' value={70698} icon={<LuRocket />} />
-          <StatCard title='-an csatlakoztatok az oldalhoz' value={702} icon={<LuUserPlus />} />
+          <StatCard title='gym bro csatlakozott' value={702} icon={<LuUserPlus />} />
           <StatCard title='felhasználóval rendelkezünk' value={2053} icon={<LuUser />} />
           <StatCard title='jelentkezést adtatok le idén' value={2457} icon={<LuArrowRight />} />
           <StatCard title='vicces profilképet utasítuttunk vissza' value={78} icon={<LuBaby />} />
@@ -88,7 +88,7 @@ function StatCard({ title, value, icon }: { title: string; value: number; icon: 
     <Card className='py-2 sm:py-4 md:py-8 px-2'>
       <span className='font-bold text-4xl md:text-6xl flex items-center gap-2 justify-center'>
         {icon}
-        {value > 10000 ? `${value / 1000}k` : value}
+        {value > 10000 ? `${Math.round(value / 1000)} k` : value}
       </span>
       <p>{title}</p>
     </Card>
