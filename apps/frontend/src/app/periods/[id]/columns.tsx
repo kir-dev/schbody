@@ -18,7 +18,6 @@ import { SortableFilterableHeader } from '@/components/ui/table-headers/Sortable
 import { filterByDateRange } from '@/lib/customFilters';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
-import Image from 'next/image';
 import { LuCheck, LuCircleArrowRight, LuCopy } from 'react-icons/lu';
 import PfpStatusBadge from '@/components/ui/PfpStatusBadge';
 import WarningBadge from '@/components/ui/WarningBadge';
@@ -71,7 +70,7 @@ export const columns: (
             </div>
           </HoverCardTrigger>
           <HoverCardContent>
-            <Image
+            <img
               src={`${process.env.NEXT_PUBLIC_API_URL}/users/${row.original.user.authSchId}/profile-picture`}
               alt='KEP'
               className='rounded max-w-32'

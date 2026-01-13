@@ -1,11 +1,10 @@
+import api from '@/components/network/apiSetup';
+import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
-import { Role, UserEntity } from '@/types/user-entity';
-import Image from 'next/image';
-import { LuPencil, LuUser, LuUserCheck, LuUserMinus, LuUserSearch } from 'react-icons/lu';
-import api from '@/components/network/apiSetup';
 import { toast } from '@/lib/use-toast';
-import { Button } from '@/components/ui/button';
+import { Role, UserEntity } from '@/types/user-entity';
+import { LuPencil, LuUser, LuUserCheck, LuUserMinus, LuUserSearch } from 'react-icons/lu';
 
 /*admin component*/
 export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
@@ -21,7 +20,7 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
     <Card>
       <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-auto gap-4'>
         <div className='flex gap-8'>
-          <Image
+          <img
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
             alt='KEP'
             className='lg:rounded-l-lg max-lg:rounded-lg aspect-auto -m-4 max-md:-my-4'

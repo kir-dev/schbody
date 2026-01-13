@@ -24,7 +24,6 @@ import { downloadPdf, mockApplication } from '@/lib/pdf';
 import { toast } from '@/lib/use-toast';
 import { ApplicationPeriodEntity } from '@/types/application-period-entity';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Th2 } from '../typography/typography';
 import PictureUploadDialog from './PictureUploadDialog';
@@ -148,7 +147,7 @@ export default function AdminApplicationPeriodCard({ period, cacheBuster, setCac
           </div>
         </div>
         <div className='flex max-md:flex-col md:flex-row gap-4 max-md:items-center md:items-end'>
-          <Image
+          <img
             src={periodBackground || 'https://placehold.co/750x430/pink/white/jpeg'}
             width={75 * 4}
             height={43 * 4}
