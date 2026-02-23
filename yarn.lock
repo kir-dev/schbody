@@ -1661,7 +1661,7 @@ __metadata:
     clsx: "npm:^2.1.1"
     cmdk: "npm:1.0.4"
     date-fns: "npm:^4.1.0"
-    eslint-config-next: "npm:15.2.2"
+    eslint-config-next: "npm:15.4.8"
     eslint-config-prettier: "npm:^10.0.1"
     eslint-plugin-prettier: "npm:5.2.1"
     eslint-plugin-simple-import-sort: "npm:^12.1.1"
@@ -1698,12 +1698,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/eslint-plugin-next@npm:15.2.2":
-  version: 15.2.2
-  resolution: "@next/eslint-plugin-next@npm:15.2.2"
+"@next/eslint-plugin-next@npm:15.4.8":
+  version: 15.4.8
+  resolution: "@next/eslint-plugin-next@npm:15.4.8"
   dependencies:
     fast-glob: "npm:3.3.1"
-  checksum: 10c0/fce7a9f4be9541b1a67ca6a94903559bfdcec293e658a94ca8dac987de5dc7039d317b8d0c90eb119bf701eba12dab425875d3478aceca7b29fe6bd1cfd886ef
+  checksum: 10c0/37ed005e71f464d8f63d7c8a514440c36621e58031d91d42b19b82b42af6d2c4a699e4ecdbfd81aabcd2d75d3bcc8b518240d3e28b0774673268774bb7185f7e
   languageName: node
   linkType: hard
 
@@ -6645,11 +6645,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-next@npm:15.2.2":
-  version: 15.2.2
-  resolution: "eslint-config-next@npm:15.2.2"
+"eslint-config-next@npm:15.4.8":
+  version: 15.4.8
+  resolution: "eslint-config-next@npm:15.4.8"
   dependencies:
-    "@next/eslint-plugin-next": "npm:15.2.2"
+    "@next/eslint-plugin-next": "npm:15.4.8"
     "@rushstack/eslint-patch": "npm:^1.10.3"
     "@typescript-eslint/eslint-plugin": "npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
     "@typescript-eslint/parser": "npm:^5.4.2 || ^6.0.0 || ^7.0.0 || ^8.0.0"
@@ -6665,7 +6665,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/b59c19a1c269ba7715fa3fc4b41bf0480ae2065999139ac5a14cb275fb3a8999c615f977769f0d7a7c18578f3cd33afcbb8756d6df4b65b5a727466c4aff70ea
+  checksum: 10c0/3bd0eae05c08aa39c0904d7ffd8af1fe480f88ad503f3093a96c14b3f7e798cb84605f919547c6166b494273cfca5fbb526042d65e5b8f4e43546dadec4a12f7
   languageName: node
   linkType: hard
 
