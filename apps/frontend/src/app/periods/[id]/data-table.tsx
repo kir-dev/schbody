@@ -52,6 +52,7 @@ interface DataTableProps<TData, TValue> {
   onExportApplicationsClicked: (data: TData[]) => void;
   onSetToManufactured: (data: TData[]) => void;
   onExportToExcelClicked: (data: TData[]) => void;
+  onExportProfilePicturesClicked: (data: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -62,6 +63,7 @@ export function DataTable<TData, TValue>({
   onExportPassesClicked,
   onSetToManufactured,
   onExportToExcelClicked,
+  onExportProfilePicturesClicked,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -215,6 +217,13 @@ export function DataTable<TData, TValue>({
                 }}
               >
                 Minden kiosztott jelentkezés exportálása Excel file-ba
+              </MenubarItem>
+              <Separator />
+              <MenubarItem
+                disabled={table.getFilteredSelectedRowModel().rows.length === 0}
+                onClick={() => onExportProfilePicturesClicked(data.filter((_, i) => rowSelection[i]))}
+              >
+                Kijelöltek profilképeinek exportálása
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>

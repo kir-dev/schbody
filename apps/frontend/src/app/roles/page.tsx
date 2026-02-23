@@ -4,21 +4,24 @@ import React from 'react';
 import api from '@/components/network/apiSetup';
 import Th1 from '@/components/typography/typography';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import LoadingCard from '@/components/ui/LoadingCard';
 import NotFoundCard from '@/components/ui/NotFoundCard';
 import OwnPagination from '@/components/ui/ownPagination';
 import UserCard from '@/components/ui/UserCard';
 import { useUsers } from '@/hooks/useUsers';
+import { exportProfilePictures } from '@/lib/profile-pictures';
 import { toast } from '@/lib/use-toast';
 import { Role } from '@/types/user-entity';
+import { LuDownload } from 'react-icons/lu';
 
 export default function Page() {
   const [search, setSearch] = React.useState('');
   const [pageIndex, setPageIndex] = React.useState(0);
   const users = useUsers(search, pageIndex);
 
-  async function onChange(newRole: Role, userId: string) {
+  async function onRoleChange(newRole: Role, userId: string) {
     try {
       await api.patch(`/users/${userId}`, { role: newRole });
       await users.mutate();
@@ -32,11 +35,19 @@ export default function Page() {
     }
   }
 
+  async function mutateUsers() {
+    await users.mutate();
+  }
+
   return (
     <>
       <div className='flex justify-between md:flex-row max-md:flex-col items-center'>
         <Th1>Jogosultságok kezelése</Th1>
         <div className='flex gap-2'>
+          <Button onClick={() => exportProfilePictures()}>
+            <LuDownload />
+            Minden profilkép exportálása
+          </Button>
           <Input
             placeholder='Keresés név alapján...'
             value={search}
@@ -68,7 +79,8 @@ export default function Page() {
             <UserCard
               key={user.authSchId}
               user={user}
-              onChange={(newRole: Role) => onChange(newRole, user.authSchId)}
+              onChange={(newRole: Role) => onRoleChange(newRole, user.authSchId)}
+              mutateUsers={mutateUsers}
             />
           ))}
       </div>

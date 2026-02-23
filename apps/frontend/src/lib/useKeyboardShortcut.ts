@@ -47,11 +47,9 @@ export const useKeyboardShortcut = (keys: Key[], callback: (idxOfKey?: number) =
       }
     };
 
-     
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-       
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [keys, callback]);

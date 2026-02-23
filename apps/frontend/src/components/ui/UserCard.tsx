@@ -1,6 +1,6 @@
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoleBadgeSelector } from '@/components/ui/RoleBadgeSelector';
-import { Role, UserEntity } from '@/types/user-entity';
+import { ProfilePictureStatus, Role, UserEntity } from '@/types/user-entity';
 import Image from 'next/image';
 import { LuPencil, LuUser, LuUserCheck, LuUserMinus, LuUserSearch } from 'react-icons/lu';
 import api from '@/components/network/apiSetup';
@@ -8,13 +8,18 @@ import { toast } from '@/lib/use-toast';
 import { Button } from '@/components/ui/button';
 
 /*admin component*/
-export default function UserCard(props: { user: UserEntity; onChange: (newRole: Role) => Promise<void> }) {
+export default function UserCard(props: {
+  user: UserEntity;
+  onChange: (newRole: Role) => Promise<void>;
+  mutateUsers: () => Promise<void>;
+}) {
   async function sendStatusChange(string: string) {
     const resp = await api.patch('/users/' + props.user.authSchId + '/profile-picture/' + string);
     toast({
       title: 'Profilkép státusz módosítva!',
       description: resp.statusText,
     });
+    await props.mutateUsers();
   }
 
   return (
@@ -23,12 +28,13 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
         <div className='flex gap-8'>
           <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/users/${props.user.authSchId}/profile-picture`}
-            alt='KEP'
+            alt={`Picture of ${props.user.nickName ?? props.user.fullName}`}
             className='lg:rounded-l-lg max-lg:rounded-lg aspect-auto -m-4 max-md:-my-4'
             width={100}
             height={100}
           />
           <div className='overflow-scroll text-nowrap truncate justify-between flex flex-col h-auto'>
+            <p className='text-xs font-mono'>{props.user.authSchId}</p>
             <CardTitle>{props.user.fullName}</CardTitle>
             <CardDescription className='flex sm:gap-4 max-sm:gap-0 max-sm:flex-col sm:flex-row'>
               <p className='flex items-center gap-2'>
@@ -52,20 +58,24 @@ export default function UserCard(props: { user: UserEntity; onChange: (newRole: 
         </div>
         <div className='flex flex-col gap-2 items-center justify-center'>
           <div className='flex gap-2'>
-            <Button onClick={() => sendStatusChange('ACCEPTED')} title='Profilkép gyors elfogadása'>
+            <Button
+              onClick={() => sendStatusChange('ACCEPTED')}
+              title='Profilkép gyors elfogadása'
+              variant={props.user.profilePicture?.status === ProfilePictureStatus.ACCEPTED ? 'default' : 'outline'}
+            >
               <LuUserCheck />
             </Button>
             <Button
               onClick={() => sendStatusChange('PENDING')}
               title='Profilkép gyors pendingre állítása'
-              variant='secondary'
+              variant={props.user.profilePicture?.status === ProfilePictureStatus.PENDING ? 'default' : 'outline'}
             >
               <LuUserSearch />
             </Button>
             <Button
               onClick={() => sendStatusChange('REJECTED')}
               title='Profilkép gyors elutasítása'
-              variant='destructive'
+              variant={props.user.profilePicture?.status === ProfilePictureStatus.REJECTED ? 'default' : 'outline'}
             >
               <LuUserMinus />
             </Button>

@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Prisma, ProfilePictureStatus, User } from '@prisma/client';
+import archiver from 'archiver';
 import { PrismaService } from 'nestjs-prisma';
 import { optimizeImage } from 'src/util';
 
@@ -240,6 +241,37 @@ export class UserService {
       }
       throw e;
     }
+  }
+
+  async exportProfilePictures(userIds?: string[]): Promise<Buffer> {
+    const where: Prisma.ProfilePictureWhereInput = { status: ProfilePictureStatus.ACCEPTED };
+    if (userIds && userIds.length > 0) {
+      where.userId = { in: userIds };
+    }
+    const pictures = await this.prisma.profilePicture.findMany({
+      where,
+      select: {
+        profileImage: true,
+        user: { select: { fullName: true, authSchId: true } },
+      },
+    });
+
+    return new Promise((resolve, reject) => {
+      const archive = archiver('zip', { zlib: { level: 6 } });
+      const chunks: Buffer[] = [];
+      archive.on('data', (chunk: Buffer) => chunks.push(chunk));
+      archive.on('end', () => resolve(Buffer.concat(chunks)));
+      archive.on('error', (err: Error) => reject(err));
+
+      for (const picture of pictures) {
+        const imageBuffer = Buffer.from(picture.profileImage.buffer);
+        const safeName =
+          picture.user.fullName.replace(/[^\w\s\-áéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '_').trim() || picture.user.authSchId;
+        archive.append(imageBuffer, { name: `${safeName}-${picture.user.authSchId}.jpg` });
+      }
+
+      archive.finalize();
+    });
   }
 
   async findProfilePicture(authSchId: string): Promise<Buffer> {
