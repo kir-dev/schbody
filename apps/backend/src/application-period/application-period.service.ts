@@ -134,6 +134,7 @@ export class ApplicationPeriodService {
         throw e;
       }
     }
+
     const startDate = new Date(createApplicationPeriodDto.applicationPeriodStartAt);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(createApplicationPeriodDto.applicationPeriodEndAt);
@@ -160,29 +161,6 @@ export class ApplicationPeriodService {
       await this.createOrUpdatePassBg(periodId, buffer);
     } catch (_error) {
       throw new NotFoundException(`Period with id ${periodId} not found`);
-    }
-  }
-
-  private async createOrUpdatePassBg(periodId: number, backgroundImage: Buffer) {
-    const { image, mimeType } = await optimizeImage(backgroundImage, false);
-    const data = {
-      periodId,
-      backgroundImage: image,
-      mimeType,
-    };
-    try {
-      await this.prisma.passBackgroundPicture.update({
-        where: { periodId },
-        data,
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
-          await this.prisma.passBackgroundPicture.create({ data });
-          return;
-        }
-      }
-      throw e;
     }
   }
 
@@ -242,6 +220,29 @@ export class ApplicationPeriodService {
         throw new BadRequestException('Invalid date format');
       }
       throw new BadRequestException('Application period not found');
+    }
+  }
+
+  private async createOrUpdatePassBg(periodId: number, backgroundImage: Buffer) {
+    const { image, mimeType } = await optimizeImage(backgroundImage, false);
+    const imageBytes = new Uint8Array(
+      image.buffer.slice(image.byteOffset, image.byteOffset + image.byteLength)
+    ) as Uint8Array<ArrayBuffer>;
+    try {
+      await this.prisma.passBackgroundPicture.update({
+        where: { periodId },
+        data: { backgroundImage: imageBytes, mimeType },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          await this.prisma.passBackgroundPicture.create({
+            data: { periodId, backgroundImage: imageBytes, mimeType },
+          });
+          return;
+        }
+      }
+      throw e;
     }
   }
 }
