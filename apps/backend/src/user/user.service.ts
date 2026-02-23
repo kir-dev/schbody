@@ -287,14 +287,17 @@ export class UserService {
 
   private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer) {
     const { image, mimeType } = await optimizeImage(profileImage, true);
-    const data = { userId, profileImage: image, mimeType };
+    const imageBytes = new Uint8Array(
+      image.buffer.slice(image.byteOffset, image.byteOffset + image.byteLength)
+    ) as Uint8Array<ArrayBuffer>;
     try {
       await this.prisma.$transaction(async (tx) => {
         await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
         return tx.profilePicture.update({
           where: { userId: userId },
           data: {
-            ...data,
+            profileImage: imageBytes,
+            mimeType,
             status: ProfilePictureStatus.PENDING,
           },
         });
@@ -302,7 +305,7 @@ export class UserService {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          await this.prisma.profilePicture.create({ data });
+          await this.prisma.profilePicture.create({ data: { userId, profileImage: imageBytes, mimeType } });
           return;
         }
       }
