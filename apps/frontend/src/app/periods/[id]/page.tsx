@@ -20,6 +20,7 @@ import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 
 import { generateXlsx } from '@/lib/xlsx';
+import { exportProfilePictures } from '@/lib/profile-pictures';
 import { saveAs } from 'file-saver';
 import { ApplicationExport } from './application-export';
 import { PassExport } from './pass-export';
@@ -194,6 +195,9 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
    * This function exports the selected applications which have the status {@link ApplicationStatus.DISTRIBUTED}
    * to an Excel file.
    */
+  const onExportProfilePictures = (data: ApplicationEntity[]) =>
+    exportProfilePictures(data.map((a) => a.user.authSchId));
+
   const onExportToExcel = async (data: ApplicationEntity[]) => {
     const distributedApplications = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
 
@@ -278,6 +282,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
             onExportApplicationsClicked={onApplicationsExport}
             onSetToManufactured={onSetToManufactured}
             onExportToExcelClicked={onExportToExcel}
+            onExportProfilePicturesClicked={onExportProfilePictures}
           />
         )}
       </div>

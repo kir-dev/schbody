@@ -4,11 +4,11 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   StreamableFile,
   UploadedFile,
   UseGuards,
@@ -107,6 +107,16 @@ export class UserController {
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   async findPendingProfilePictures() {
     return this.userService.findPendingProfilePictures();
+  }
+
+  @Post('profile-pictures/export')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN)
+  @Header('Content-Type', 'application/zip')
+  @Header('Content-Disposition', 'attachment; filename="profile-pictures.zip"')
+  async exportProfilePictures(@Body('userIds') userIds?: string[]): Promise<StreamableFile> {
+    return new StreamableFile(await this.userService.exportProfilePictures(userIds));
   }
 
   @Patch(':id')

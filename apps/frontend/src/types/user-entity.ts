@@ -6,9 +6,9 @@ export enum Role {
 }
 
 export enum ProfilePictureStatus {
-  ACCEPTED = 'Jóváhagyott profilkép',
-  PENDING = 'Elbírálás alatt álló profilkép',
-  REJECTED = 'Elutasított profilkép',
+  ACCEPTED = 'ACCEPTED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
 }
 
 export type UserEntity = {
