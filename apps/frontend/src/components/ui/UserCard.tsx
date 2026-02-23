@@ -22,7 +22,6 @@ export default function UserCard(props: {
     await props.mutateUsers();
   }
 
-  // @ts-ignore
   return (
     <Card>
       <CardHeader className='flex flex-row w-full justify-between items-center p-4 overflow-auto gap-4'>

@@ -257,7 +257,7 @@ export class UserService {
     });
 
     return new Promise((resolve, reject) => {
-      const archive = archiver('zip', { zlib: { level: 0 } });
+      const archive = archiver('zip', { zlib: { level: 6 } });
       const chunks: Buffer[] = [];
       archive.on('data', (chunk: Buffer) => chunks.push(chunk));
       archive.on('end', () => resolve(Buffer.concat(chunks)));
@@ -265,8 +265,9 @@ export class UserService {
 
       for (const picture of pictures) {
         const imageBuffer = Buffer.from(picture.profileImage.buffer);
-        const safeName = picture.user.fullName.replace(/[^\w\s\-áéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '_');
-        archive.append(imageBuffer, { name: `${safeName}.jpg` });
+        const safeName =
+          picture.user.fullName.replace(/[^\w\s\-áéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '_').trim() || picture.user.authSchId;
+        archive.append(imageBuffer, { name: `${safeName}-${picture.user.authSchId}.jpg` });
       }
 
       archive.finalize();

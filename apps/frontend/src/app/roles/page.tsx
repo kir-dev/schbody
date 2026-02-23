@@ -1,5 +1,4 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import api from '@/components/network/apiSetup';
@@ -18,7 +17,6 @@ import { Role } from '@/types/user-entity';
 import { LuDownload } from 'react-icons/lu';
 
 export default function Page() {
-  const router = useRouter();
   const [search, setSearch] = React.useState('');
   const [pageIndex, setPageIndex] = React.useState(0);
   const users = useUsers(search, pageIndex);
