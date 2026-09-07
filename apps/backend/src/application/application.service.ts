@@ -16,6 +16,15 @@ import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { DefaultArgs } from '@prisma/client/runtime/library';
 
+/**
+ * A Prisma client scoped to an interactive transaction (the value passed to the
+ * `$transaction(async (tx) => ...)` callback).
+ */
+export type PrismaTransactionClient = Omit<
+  PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+  '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;
+
 @Injectable()
 export class ApplicationService {
   constructor(
@@ -171,15 +180,48 @@ export class ApplicationService {
     }
   }
 
-  async update(id: number, updateApplicationDto: UpdateApplicationDto): Promise<Application> {
-    try {
-      return await this.prisma.application.update({
-        where: {
-          id,
-        },
+  /**
+   * Changes an application's status, refreshes its `updatedAt` timestamp and
+   * writes an audit-log entry (`ApplicationStatusLog`) recording who made the
+   * change and the previous/new status. A log entry is only written when the
+   * status actually changes.
+   *
+   * @param client - a Prisma client or an interactive transaction client
+   * @param application - the current application (must include `id` and `status`)
+   * @param newStatus - the status to set
+   * @param changedById - `authSchId` of the acting user, or `null` for system-initiated changes
+   */
+  private async applyStatusChange(
+    client: PrismaService | PrismaTransactionClient,
+    application: Pick<Application, 'id' | 'status'>,
+    newStatus: ApplicationStatus,
+    changedById: string | null
+  ): Promise<Application> {
+    const updated = await client.application.update({
+      where: { id: application.id },
+      data: {
+        status: newStatus,
+        updatedAt: new Date(),
+      },
+    });
+    if (application.status !== newStatus) {
+      await client.applicationStatusLog.create({
         data: {
-          status: updateApplicationDto.applicationStatus,
+          applicationId: application.id,
+          previousStatus: application.status,
+          newStatus,
+          changedById,
         },
+      });
+    }
+    return updated;
+  }
+
+  async update(id: number, updateApplicationDto: UpdateApplicationDto, user: User): Promise<Application> {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const application = await tx.application.findUniqueOrThrow({ where: { id } });
+        return this.applyStatusChange(tx, application, updateApplicationDto.applicationStatus, user.authSchId);
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -187,18 +229,85 @@ export class ApplicationService {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
+      throw e;
     }
   }
 
-  async bulkUpdate(bulkUpdateApplicationDto: BulkUpdateApplicationDto): Promise<Prisma.BatchPayload> {
+  /**
+   * Returns the whole status-change audit log (every application), newest first,
+   * including the affected application's applicant and who made each change.
+   * Used by the admin audit-log page, which does its own filtering/pagination.
+   */
+  async findAllStatusLogs() {
+    return this.prisma.applicationStatusLog.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        changedBy: { select: { authSchId: true, fullName: true, nickName: true } },
+        application: {
+          select: {
+            id: true,
+            applicationPeriodId: true,
+            user: { select: { authSchId: true, fullName: true, nickName: true } },
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * Returns the audit log of every status change of the given application,
+   * newest first, including who made each change.
+   */
+  async getStatusLogs(id: number) {
+    try {
+      await this.prisma.application.findUniqueOrThrow({ where: { id } });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+        throw new NotFoundException('A keresett jelentkezés nem található');
+      }
+      throw e;
+    }
+    return this.prisma.applicationStatusLog.findMany({
+      where: { applicationId: id },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        changedBy: { select: { authSchId: true, fullName: true, nickName: true } },
+      },
+    });
+  }
+
+  /**
+   * Bulk status change: refreshes `updatedAt` and writes an audit-log entry for
+   * every application whose status actually changes. Runs in three statements
+   * (read current statuses, `updateMany`, `createMany` the log rows) regardless
+   * of how many applications are targeted.
+   */
+  async bulkUpdate(bulkUpdateApplicationDto: BulkUpdateApplicationDto, user: User): Promise<Prisma.BatchPayload> {
     const { ids, applicationStatus } = bulkUpdateApplicationDto;
-    return this.prisma.application.updateMany({
-      where: {
-        id: { in: ids },
-      },
-      data: {
-        status: applicationStatus,
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const applications = await tx.application.findMany({
+        where: { id: { in: ids } },
+        select: { id: true, status: true },
+      });
+
+      const result = await tx.application.updateMany({
+        where: { id: { in: ids } },
+        data: { status: applicationStatus, updatedAt: new Date() },
+      });
+
+      const logs = applications
+        .filter((application) => application.status !== applicationStatus)
+        .map((application) => ({
+          applicationId: application.id,
+          previousStatus: application.status,
+          newStatus: applicationStatus,
+          changedById: user.authSchId,
+        }));
+      if (logs.length > 0) {
+        await tx.applicationStatusLog.createMany({ data: logs });
+      }
+
+      return result;
     });
   }
 
@@ -248,20 +357,13 @@ export class ApplicationService {
   async setActiveApplicationsStatus(
     userId: string,
     status: ApplicationStatus,
-    tx: Omit<
-      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-      '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
-    >
+    tx: PrismaTransactionClient,
+    changedById: string | null
   ) {
     try {
       const activeApplications = await this.getActiveApplications(userId);
       await Promise.all(
-        activeApplications.map((application) =>
-          tx.application.update({
-            where: { id: application.id },
-            data: { status: status },
-          })
-        )
+        activeApplications.map((application) => this.applyStatusChange(tx, application, status, changedById))
       );
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

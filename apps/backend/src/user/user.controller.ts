@@ -57,14 +57,14 @@ export class UserController {
     @UploadedFile(ImageParserPipe)
     file: Express.Multer.File
   ) {
-    await this.userService.saveProfilePicture(user.authSchId, file.buffer, file.mimetype);
+    await this.userService.saveProfilePicture(user.authSchId, file.buffer, file.mimetype, user.authSchId);
   }
 
   @Delete('me/profile-picture')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   async deleteProfilePicture(@CurrentUser() user: User) {
-    await this.userService.deleteProfilePicture(user.authSchId);
+    await this.userService.deleteProfilePicture(user.authSchId, user.authSchId);
   }
 
   @Patch('me')
@@ -131,8 +131,12 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN)
-  async setProfilePictureStatus(@Param('id') id: string, @Param('status') status: ProfilePictureStatus) {
-    return this.userService.setProfilePictureStatus(id, status);
+  async setProfilePictureStatus(
+    @Param('id') id: string,
+    @Param('status') status: ProfilePictureStatus,
+    @CurrentUser() user: User
+  ) {
+    return this.userService.setProfilePictureStatus(id, status, user.authSchId);
   }
 
   @Post(':id/profile-picture')
@@ -143,8 +147,9 @@ export class UserController {
   async updateProfilePictureAdmin(
     @Param('id') id: string,
     @UploadedFile(ImageParserPipe)
-    file: Express.Multer.File
+    file: Express.Multer.File,
+    @CurrentUser() user: User
   ) {
-    await this.userService.saveProfilePicture(id, file.buffer, file.mimetype);
+    await this.userService.saveProfilePicture(id, file.buffer, file.mimetype, user.authSchId);
   }
 }

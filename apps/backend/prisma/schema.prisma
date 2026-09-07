@@ -34,26 +34,27 @@ enum ApplicationStatus {
 }
 
 model User {
-  authSchId          String              @id
-  fullName           String
-  nickName           String
-  role               Role                @default(USER)
-  neptun             String?             @unique
-  email              String?
-  isSchResident      Boolean
-  isActiveVikStudent Boolean
-  roomNumber         Int?
-  canHelpNoobs       Boolean             @default(false)
-  publicDesc         String?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  vikStatusUpdatedAt DateTime            @default(now())
-  profilePicture     ProfilePicture?
-  applicationPeriods ApplicationPeriod[]
-  applications       Application[]
-  posts              Post[]
-  upvotes            Upvote[]
-  idNumber           String?
+  authSchId                String                 @id
+  fullName                 String
+  nickName                 String
+  role                     Role                   @default(USER)
+  neptun                   String?                @unique
+  email                    String?
+  isSchResident            Boolean
+  isActiveVikStudent       Boolean
+  roomNumber               Int?
+  canHelpNoobs             Boolean                @default(false)
+  publicDesc               String?
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  vikStatusUpdatedAt       DateTime               @default(now())
+  profilePicture           ProfilePicture?
+  applicationPeriods       ApplicationPeriod[]
+  applications             Application[]
+  posts                    Post[]
+  upvotes                  Upvote[]
+  idNumber                 String?
+  applicationStatusChanges ApplicationStatusLog[]
 }
 
 model ProfilePicture {
@@ -100,16 +101,33 @@ model ApplicationPeriod {
 }
 
 model Application {
-  id                  Int               @id @default(autoincrement())
-  user                User              @relation(fields: [userId], references: [authSchId])
+  id                  Int                    @id @default(autoincrement())
+  user                User                   @relation(fields: [userId], references: [authSchId])
   userId              String
-  applicationPeriod   ApplicationPeriod @relation(fields: [applicationPeriodId], references: [id], onDelete: Cascade)
+  applicationPeriod   ApplicationPeriod      @relation(fields: [applicationPeriodId], references: [id], onDelete: Cascade)
   applicationPeriodId Int
-  status              ApplicationStatus @default(SUBMITTED)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
+  status              ApplicationStatus      @default(SUBMITTED)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  statusLogs          ApplicationStatusLog[]
 
   @@unique([userId, applicationPeriodId])
+}
+
+/// Audit log: one row per status change of an Application.
+/// Records who made the change, when, and the previous/new status.
+model ApplicationStatusLog {
+  id             Int                @id @default(autoincrement())
+  application    Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId  Int
+  changedBy      User?              @relation(fields: [changedById], references: [authSchId], onDelete: SetNull)
+  changedById    String?
+  previousStatus ApplicationStatus?
+  newStatus      ApplicationStatus
+  createdAt      DateTime           @default(now())
+
+  @@index([applicationId])
+  @@index([changedById])
 }
 
 model Post {

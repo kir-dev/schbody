@@ -59,11 +59,11 @@ export class UserService {
     return this.prisma.user.update({ where: { authSchId: id }, data: updateUserDto });
   }
 
-  async setProfilePictureStatus(id: string, status: any) {
+  async setProfilePictureStatus(id: string, status: any, changedById: string | null) {
     try {
       const transactionResult = await this.prisma.$transaction(async (tx) => {
         if (status !== ProfilePictureStatus.PENDING) {
-          await this.applicationService.setActiveApplicationsStatus(id, status, tx);
+          await this.applicationService.setActiveApplicationsStatus(id, status, tx, changedById);
         }
         return tx.profilePicture.update({
           where: { userId: id },
@@ -211,21 +211,21 @@ export class UserService {
     }
   }
 
-  async saveProfilePicture(authSchId: string, buffer: Buffer, mimetype: string) {
+  async saveProfilePicture(authSchId: string, buffer: Buffer, mimetype: string, changedById: string | null) {
     if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
       throw new BadRequestException('Invalid image format');
     }
     try {
-      return this.createOrUpdateProfilePicture(authSchId, buffer);
+      return this.createOrUpdateProfilePicture(authSchId, buffer, changedById);
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);
     }
   }
 
-  async deleteProfilePicture(authSchId: string) {
+  async deleteProfilePicture(authSchId: string, changedById: string | null) {
     try {
       const transactionResult = await this.prisma.$transaction(async (tx) => {
-        await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx);
+        await this.applicationService.setActiveApplicationsStatus(authSchId, 'REJECTED', tx, changedById);
         return tx.profilePicture.delete({
           where: { userId: authSchId },
         });
@@ -285,14 +285,14 @@ export class UserService {
     }
   }
 
-  private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer) {
+  private async createOrUpdateProfilePicture(userId: string, profileImage: Buffer, changedById: string | null) {
     const { image, mimeType } = await optimizeImage(profileImage, true);
     const imageBytes = new Uint8Array(
       image.buffer.slice(image.byteOffset, image.byteOffset + image.byteLength)
     ) as Uint8Array<ArrayBuffer>;
     try {
       await this.prisma.$transaction(async (tx) => {
-        await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx);
+        await this.applicationService.setActiveApplicationsStatus(userId, 'SUBMITTED', tx, changedById);
         return tx.profilePicture.update({
           where: { userId: userId },
           data: {
