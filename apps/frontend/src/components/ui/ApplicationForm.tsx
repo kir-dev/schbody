@@ -72,19 +72,31 @@ export default function ApplicationForm({ currentPeriod }: { currentPeriod: Appl
         });
       }
     } catch (error: any) {
-      if (error.response.status === 400) {
+      if (error.response?.status === 401) {
         toast({
-          title: 'Már jelentkeztél erre az időszakra!',
+          title: 'Lejárt a bejelentkezésed!',
+          description: 'Jelentkezz be újra, utána tudod leadni a jelentkezésed.',
           variant: 'destructive',
         });
-      } else if (error.response.status === 406) {
+        router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`);
+        return;
+      }
+      if (error.response?.status === 406) {
         router.push('/profile');
         toast({
           title: 'Nem vagy jogosult a jelentkezésre!',
           description: 'Kérlek egészítsd ki a profilodat és töltsd fel a profilképed, hogy jelentkezhess!',
           variant: 'destructive',
         });
+        return;
       }
+      const serverMessage = error.response?.data?.message;
+      const description = Array.isArray(serverMessage) ? serverMessage.join(' ') : serverMessage;
+      toast({
+        title: 'Nem sikerült a jelentkezés!',
+        description: description ?? 'Valami nem stimmel a szerverrel, próbáld újra később!',
+        variant: 'destructive',
+      });
     }
   }
 

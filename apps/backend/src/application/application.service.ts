@@ -1,12 +1,15 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { Application, ApplicationStatus, Prisma, PrismaClient, Role, User } from '@prisma/client';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
 import { PaginationDto } from 'src/dto/pagination.dto';
@@ -14,10 +17,11 @@ import { PaginationDto } from 'src/dto/pagination.dto';
 import { BulkUpdateApplicationDto } from './dto/bulk-update-application.dto';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ApplicationService {
+  private readonly logger = new Logger(ApplicationService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly applicationPeriodService: ApplicationPeriodService
@@ -54,6 +58,10 @@ export class ApplicationService {
         },
       });
     } catch (e) {
+      // Minden sikertelen jelentkezés nyomot hagy, a kezelt 4xx-ek is. Enélkül nehezen debuggolható.
+      const reason = e instanceof Error ? e.message : String(e);
+      const periodId = createApplicationDto.applicationPeriodId;
+      this.logger.warn(`Sikertelen jelentkezés (user: ${user.authSchId}, period: ${periodId}): ${reason}`);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
           throw new BadRequestException('Ez a jelentkezés már létezik');
@@ -61,10 +69,11 @@ export class ApplicationService {
           throw new NotFoundException('Nem található időszak');
         }
       }
-      if (e instanceof BadRequestException || e instanceof NotAcceptableException) {
+      if (e instanceof HttpException) {
         throw e;
       }
-      throw new BadRequestException('Nem sikerült létrehozni');
+      this.logger.error('Váratlan hiba a jelentkezés létrehozásakor', e instanceof Error ? e.stack : String(e));
+      throw new InternalServerErrorException('Nem sikerült létrehozni a jelentkezést');
     }
   }
 
@@ -103,6 +112,7 @@ export class ApplicationService {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
+      throw e;
     }
   }
 
@@ -134,6 +144,7 @@ export class ApplicationService {
           throw new NotFoundException('Nem található jelentkezés');
         }
       }
+      throw e;
     }
   }
 
@@ -168,6 +179,7 @@ export class ApplicationService {
           throw new NotFoundException('Nem található jelentkezés');
         }
       }
+      throw e;
     }
   }
 
@@ -187,6 +199,7 @@ export class ApplicationService {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
+      throw e;
     }
   }
 

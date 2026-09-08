@@ -19,7 +19,7 @@ export default function Page() {
     return redirect('/');
   }
 
-  if (application !== undefined) {
+  if (application) {
     return redirect('/profile');
   }
 

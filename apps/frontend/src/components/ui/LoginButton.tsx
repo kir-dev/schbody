@@ -6,8 +6,10 @@ import useProfile from '@/hooks/useProfile';
 import { LuKeyRound, LuLogIn, LuUser } from 'react-icons/lu';
 
 export default function LoginButton({ version }: { version: number }) {
-  const { data: user } = useProfile();
+  const { data, error } = useProfile();
   const router = useRouter();
+
+  const user = error ? undefined : data;
 
   const handleNavToProfile = () => {
     router.push('/profile');
