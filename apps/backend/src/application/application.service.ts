@@ -9,11 +9,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Application, ApplicationStatus, Prisma, PrismaClient, Role, User } from '@prisma/client';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 import { PrismaService } from 'nestjs-prisma';
 import { ApplicationPeriodService } from 'src/application-period/application-period.service';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
-import { DefaultArgs } from '@prisma/client/runtime/library';
+import { BulkUpdateApplicationDto } from './dto/bulk-update-application.dto';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 
@@ -200,6 +201,18 @@ export class ApplicationService {
       }
       throw e;
     }
+  }
+
+  async bulkUpdate(bulkUpdateApplicationDto: BulkUpdateApplicationDto): Promise<Prisma.BatchPayload> {
+    const { ids, applicationStatus } = bulkUpdateApplicationDto;
+    return this.prisma.application.updateMany({
+      where: {
+        id: { in: ids },
+      },
+      data: {
+        status: applicationStatus,
+      },
+    });
   }
 
   async remove(id: number, user: User): Promise<Application> {

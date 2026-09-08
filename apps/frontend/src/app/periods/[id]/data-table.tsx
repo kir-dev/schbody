@@ -48,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
+  onBulkStatusChange?: (rows: TData[], status: ApplicationStatus) => void;
   onExportPassesClicked: (data: TData[]) => void;
   onExportApplicationsClicked: (data: TData[]) => void;
   onSetToManufactured: (data: TData[]) => void;
@@ -59,6 +60,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   onStatusChange,
+  onBulkStatusChange,
   onExportApplicationsClicked,
   onExportPassesClicked,
   onSetToManufactured,
@@ -105,8 +107,15 @@ export function DataTable<TData, TValue>({
   };
 
   function setSelectedToStatus(value: ApplicationStatus) {
-    if (!onStatusChange) return;
     const selectedRows = table.getSelectedRowModel().rows;
+    if (onBulkStatusChange) {
+      onBulkStatusChange(
+        selectedRows.map((row) => row.original),
+        value
+      );
+      return;
+    }
+    if (!onStatusChange) return;
     selectedRows.map((row) => onStatusChange(row.original, value));
   }
 

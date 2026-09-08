@@ -8,6 +8,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { ApplicationService } from './application.service';
+import { BulkUpdateApplicationDto } from './dto/bulk-update-application.dto';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 
@@ -56,6 +57,14 @@ export class ApplicationController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Application> {
     return this.applicationService.findOne(Number(id));
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Patch('bulk')
+  bulkUpdate(@Body() bulkUpdateApplicationDto: BulkUpdateApplicationDto) {
+    return this.applicationService.bulkUpdate(bulkUpdateApplicationDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

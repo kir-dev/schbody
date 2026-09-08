@@ -78,6 +78,49 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
   };
 
   /**
+   * Handles a bulk status change of applications.
+   *
+   * This function updates the status of the given application entities in a single batched
+   * PATCH request instead of sending one request per application.
+   *
+   * @param {ApplicationEntity[]} selectedApplications - The application entities whose status is to be changed.
+   * @param {ApplicationStatus} status - The new status to be applied to the applications.
+   * @returns {Promise<void>} A promise that resolves when the status change process is complete.
+   */
+  const handleBulkStatusChange = async (selectedApplications: ApplicationEntity[], status: ApplicationStatus) => {
+    let convertedStatus = getStatusKey(status);
+    if (!convertedStatus) convertedStatus = status;
+    const applicationsToUpdate = selectedApplications.filter((a) => a.status !== convertedStatus);
+    if (applicationsToUpdate.length === 0) return;
+    const ids = applicationsToUpdate.map((a) => a.id);
+    try {
+      const r = await api.patch('/application/bulk', { ids, applicationStatus: convertedStatus });
+      if (r.status === 200) {
+        toast({
+          title: 'Sikeres módosítás!',
+          duration: 500,
+        });
+      } else {
+        return;
+      }
+      await mutate((oldData) => {
+        if (!oldData) return [];
+        return oldData.map((a) => {
+          if (ids.includes(a.id)) {
+            return { ...a, status: convertedStatus as ApplicationStatus };
+          }
+          return a;
+        });
+      });
+    } catch {
+      toast({
+        title: 'Hiba történt a módosítás során!',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  /**
    * Handles the export of passes.
    * Exports the passes to a pdf. By default it exports all the selected passes, but
    * if {@link autoChangeStatus} is true,
@@ -278,6 +321,7 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
             columns={columns(quickModeEnabled, handleStatusChange)}
             data={applications}
             onStatusChange={handleStatusChange}
+            onBulkStatusChange={handleBulkStatusChange}
             onExportPassesClicked={onPassExport}
             onExportApplicationsClicked={onApplicationsExport}
             onSetToManufactured={onSetToManufactured}
