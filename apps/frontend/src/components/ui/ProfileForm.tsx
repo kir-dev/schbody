@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { LuBuilding2, LuCrown, LuPencil, LuSave, LuX } from 'react-icons/lu';
@@ -22,6 +23,7 @@ import { Button } from '@/components/ui/button';
 
 export default function ProfileForm() {
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof ProfileFormSchema>>({
     resolver: zodResolver(ProfileFormSchema),
@@ -57,7 +59,16 @@ export default function ProfileForm() {
           variant: 'destructive',
         });
       }
-    } catch {
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        toast({
+          title: 'Lejárt a bejelentkezésed!',
+          description: 'Jelentkezz be újra, utána tudod menteni az adataidat.',
+          variant: 'destructive',
+        });
+        router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`);
+        return;
+      }
       toast({
         title: 'Nem várt hiba történt!',
         variant: 'destructive',

@@ -38,7 +38,7 @@ export const ProfileFormSchema = z
       return true;
     },
     {
-      path: ['room_number'],
+      path: ['roomNumber'],
       message: 'A szobaszám megadása kötelező, ha kolis vagy.',
     }
   );
