@@ -16,13 +16,7 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarMenu,
-  MenubarTrigger,
-} from '@/components/ui/menubar';
+import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar';
 import {
   Pagination,
   PaginationContent,
@@ -84,11 +78,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </MenubarMenu>
         </Menubar>
         <div className='flex gap-2'>
-          <Button
-            variant='outline'
-            disabled={columnFilters.length === 0}
-            onClick={() => setColumnFilters([])}
-          >
+          <Button variant='outline' disabled={columnFilters.length === 0} onClick={() => setColumnFilters([])}>
             Szűrők törlése
           </Button>
           <Input
@@ -107,9 +97,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     <h4 className='text-black'>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </h4>
                   </TableHead>
                 ))}

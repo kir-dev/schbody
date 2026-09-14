@@ -51,10 +51,19 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      const currentUser = await this.prisma.user.findUnique({
-        where: { authSchId: user.authSchId, NOT: { profilePicture: null } },
+      const currentUser = await this.prisma.user.findFirstOrThrow({
+        where: {
+          authSchId: user.authSchId,
+        },
+        include: {
+          profilePicture: {
+            select: {
+              status: true,
+            },
+          },
+        },
       });
-      if (!currentUser) {
+      if (!currentUser || !currentUser.profilePicture) {
         throw new NotAcceptableException('Hiányos profil');
       }
       return await this.prisma.application.create({
@@ -64,6 +73,12 @@ export class ApplicationService {
               authSchId: user.authSchId,
             },
           },
+          status:
+            currentUser.profilePicture.status === 'PENDING'
+              ? 'SUBMITTED'
+              : currentUser.profilePicture.status === 'ACCEPTED'
+                ? 'ACCEPTED'
+                : 'REJECTED',
           applicationPeriod: {
             connect: {
               id: createApplicationDto.applicationPeriodId,
@@ -305,16 +320,20 @@ export class ApplicationService {
   /**
    * Bulk status change: refreshes `updatedAt` and writes an audit-log entry for
    * every application whose status actually changes. Runs in three statements
-   * (read current statuses, `updateMany`, `createMany` the log rows) regardless
-   * of how many applications are targeted.
+   * (lock + read current statuses, `updateMany`, `createMany` the log rows)
+   * regardless of how many applications are targeted.
+   *
+   * The current statuses are read via `SELECT ... FOR UPDATE` (like
+   * `applyStatusChange`) so concurrent writers can't race between the read and
+   * the `updateMany`, which would otherwise let a log entry record a stale
+   * `previousStatus`.
    */
   async bulkUpdate(bulkUpdateApplicationDto: BulkUpdateApplicationDto, user: User): Promise<Prisma.BatchPayload> {
     const { ids, applicationStatus } = bulkUpdateApplicationDto;
     return this.prisma.$transaction(async (tx) => {
-      const applications = await tx.application.findMany({
-        where: { id: { in: ids } },
-        select: { id: true, status: true },
-      });
+      const applications = await tx.$queryRaw<Array<{ id: number; status: ApplicationStatus }>>`
+        SELECT id, status FROM "Application" WHERE id = ANY(${ids}) FOR UPDATE
+      `;
 
       const result = await tx.application.updateMany({
         where: { id: { in: ids } },
@@ -360,12 +379,13 @@ export class ApplicationService {
       if (new Date(applicationPeriod.applicationPeriodEndAt) < new Date()) {
         throw new BadRequestException('A jelentkezési időszak lejárt');
       }
-      return await this.prisma.application.delete({
+      return this.prisma.application.delete({
         where: {
           id,
         },
       });
     }
+
     throw new ForbiddenException('Nem törölheted mások jelentkezését');
   }
 
