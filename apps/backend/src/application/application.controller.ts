@@ -54,6 +54,14 @@ export class ApplicationController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Get('status-logs')
+  findAllStatusLogs() {
+    return this.applicationService.findAllStatusLogs();
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Application> {
     return this.applicationService.findOne(Number(id));
@@ -63,8 +71,16 @@ export class ApplicationController {
   @ApiBearerAuth()
   @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
   @Patch('bulk')
-  bulkUpdate(@Body() bulkUpdateApplicationDto: BulkUpdateApplicationDto) {
-    return this.applicationService.bulkUpdate(bulkUpdateApplicationDto);
+  bulkUpdate(@Body() bulkUpdateApplicationDto: BulkUpdateApplicationDto, @CurrentUser() user: User) {
+    return this.applicationService.bulkUpdate(bulkUpdateApplicationDto, user);
+  }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiBearerAuth()
+  @Roles(Role.BODY_ADMIN, Role.BODY_MEMBER)
+  @Get(':id/status-logs')
+  getStatusLogs(@Param('id', ParseIntPipe) id: number) {
+    return this.applicationService.getStatusLogs(id);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -73,9 +89,10 @@ export class ApplicationController {
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateApplicationDto: UpdateApplicationDto
+    @Body() updateApplicationDto: UpdateApplicationDto,
+    @CurrentUser() user: User
   ): Promise<Application> {
-    return this.applicationService.update(id, updateApplicationDto);
+    return this.applicationService.update(id, updateApplicationDto, user);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

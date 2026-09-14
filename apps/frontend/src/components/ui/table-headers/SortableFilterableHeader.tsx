@@ -5,9 +5,8 @@ import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ApplicationEntity } from '@/types/application-entity';
 
-export function SortableFilterableHeader(column: Column<ApplicationEntity>) {
+export function SortableFilterableHeader<T>(column: Column<T>) {
   return (
     <div className='flex items-center justify-start gap-0'>
       {column.id}

@@ -4,7 +4,7 @@ import React from 'react';
 
 import Th1 from '@/components/typography/typography';
 import { Button } from '@/components/ui/button';
-import { LuClipboardList, LuShield, LuUserCheck } from 'react-icons/lu';
+import { LuClipboardList, LuScrollText, LuShield, LuUserCheck } from 'react-icons/lu';
 
 export default function Page() {
   const router = useRouter();
@@ -23,6 +23,10 @@ export default function Page() {
         <Button onClick={() => router.push('/periods')}>
           <LuClipboardList />
           Időszakok kezelése
+        </Button>
+        <Button onClick={() => router.push('/application-status-logs')}>
+          <LuScrollText />
+          Státusznapló
         </Button>
       </div>
     </>
