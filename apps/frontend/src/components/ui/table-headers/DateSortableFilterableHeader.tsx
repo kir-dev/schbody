@@ -5,9 +5,8 @@ import { MdOutlineFilterAlt, MdOutlineFilterAltOff, MdSortByAlpha } from 'react-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ApplicationEntity } from '@/types/application-entity';
 
-export function DateSortableFilterableHeader(column: Column<ApplicationEntity>) {
+export function DateSortableFilterableHeader<T>(column: Column<T>) {
   // @ts-expect-error
   const [start, setStart] = useState(column.getFilterValue()?.start || '2024-01-01T00:00');
 

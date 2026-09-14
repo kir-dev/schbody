@@ -5,15 +5,11 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { DateSortableFilterableHeader } from '@/components/ui/table-headers/DateSortableFilterableHeader';
 import { SortableFilterableHeader } from '@/components/ui/table-headers/SortableFilterableHeader';
 import { filterByDateRange } from '@/lib/customFilters';
-import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
+import { ApplicationStatus } from '@/types/application-entity';
 import { ApplicationStatusLogEntity } from '@/types/application-status-log-entity';
 
-// The shared table headers are typed against ApplicationEntity, but only use the
-// generic Column API – reuse them here with a cast.
-const textHeader = (column: Column<ApplicationStatusLogEntity>) =>
-  SortableFilterableHeader(column as unknown as Column<ApplicationEntity>);
-const dateHeader = (column: Column<ApplicationStatusLogEntity>) =>
-  DateSortableFilterableHeader(column as unknown as Column<ApplicationEntity>);
+const textHeader = (column: Column<ApplicationStatusLogEntity>) => SortableFilterableHeader(column);
+const dateHeader = (column: Column<ApplicationStatusLogEntity>) => DateSortableFilterableHeader(column);
 
 function formatDate(value: string | Date) {
   return new Date(value).toLocaleDateString('hu-HU', {

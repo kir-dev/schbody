@@ -191,29 +191,37 @@ export class ApplicationService {
    * change and the previous/new status. A log entry is only written when the
    * status actually changes.
    *
-   * @param client - a Prisma client or an interactive transaction client
-   * @param application - the current application (must include `id` and `status`)
+   * The current status is locked (`SELECT ... FOR UPDATE`) and re-read inside
+   * the same transaction right before the update, so the logged
+   * `previousStatus` reflects the row's real state even under concurrent
+   * status changes, rather than a snapshot the caller may have read earlier.
+   *
+   * @param client - an interactive transaction client
+   * @param applicationId - id of the application to update
    * @param newStatus - the status to set
    * @param changedById - `authSchId` of the acting user, or `null` for system-initiated changes
    */
   private async applyStatusChange(
-    client: PrismaService | PrismaTransactionClient,
-    application: Pick<Application, 'id' | 'status'>,
+    client: PrismaTransactionClient,
+    applicationId: number,
     newStatus: ApplicationStatus,
     changedById: string | null
   ): Promise<Application> {
+    const [locked] = await client.$queryRaw<Array<{ status: ApplicationStatus }>>`
+      SELECT status FROM "Application" WHERE id = ${applicationId} FOR UPDATE
+    `;
+    const previousStatus = locked.status;
     const updated = await client.application.update({
-      where: { id: application.id },
+      where: { id: applicationId },
       data: {
         status: newStatus,
-        updatedAt: new Date(),
       },
     });
-    if (application.status !== newStatus) {
+    if (previousStatus !== newStatus) {
       await client.applicationStatusLog.create({
         data: {
-          applicationId: application.id,
-          previousStatus: application.status,
+          applicationId,
+          previousStatus,
           newStatus,
           changedById,
         },
@@ -225,8 +233,8 @@ export class ApplicationService {
   async update(id: number, updateApplicationDto: UpdateApplicationDto, user: User): Promise<Application> {
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const application = await tx.application.findUniqueOrThrow({ where: { id } });
-        return this.applyStatusChange(tx, application, updateApplicationDto.applicationStatus, user.authSchId);
+        await tx.application.findUniqueOrThrow({ where: { id } });
+        return this.applyStatusChange(tx, id, updateApplicationDto.applicationStatus, user.authSchId);
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -298,7 +306,7 @@ export class ApplicationService {
 
       const result = await tx.application.updateMany({
         where: { id: { in: ids } },
-        data: { status: applicationStatus, updatedAt: new Date() },
+        data: { status: applicationStatus },
       });
 
       const logs = applications
@@ -349,8 +357,8 @@ export class ApplicationService {
     throw new ForbiddenException('Nem törölheted mások jelentkezését');
   }
 
-  async getActiveApplications(userId: string) {
-    return this.prisma.application.findMany({
+  async getActiveApplications(userId: string, client: PrismaService | PrismaTransactionClient = this.prisma) {
+    return client.application.findMany({
       where: {
         userId,
         status: {
@@ -367,9 +375,9 @@ export class ApplicationService {
     changedById: string | null
   ) {
     try {
-      const activeApplications = await this.getActiveApplications(userId);
+      const activeApplications = await this.getActiveApplications(userId, tx);
       await Promise.all(
-        activeApplications.map((application) => this.applyStatusChange(tx, application, status, changedById))
+        activeApplications.map((application) => this.applyStatusChange(tx, application.id, status, changedById))
       );
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
