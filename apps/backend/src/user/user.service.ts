@@ -66,7 +66,7 @@ export class UserService {
         if (status === 'PENDING') {
           appStatus = ApplicationStatus.SUBMITTED;
         }
-        await this.applicationService.setActiveApplicationsStatus(id, appStatus, tx);
+        await this.applicationService.setActiveApplicationsStatus(id, appStatus, tx, changedById);
         return tx.profilePicture.update({
           where: { userId: id },
           data: { status: status },
@@ -261,7 +261,11 @@ export class UserService {
       archive.on('error', (err: Error) => reject(err));
 
       for (const picture of pictures) {
-        const imageBuffer = Buffer.from(picture.profileImage.buffer);
+        const imageBuffer = Buffer.from(
+          picture.profileImage.buffer,
+          picture.profileImage.byteOffset,
+          picture.profileImage.byteLength
+        );
         const safeName =
           picture.user.fullName.replace(/[^\w\s\-áéíóöőúüűÁÉÍÓÖŐÚÜŰ]/g, '_').trim() || picture.user.authSchId;
         archive.append(imageBuffer, { name: `${safeName}-${picture.user.authSchId}.jpg` });
@@ -275,7 +279,11 @@ export class UserService {
     try {
       const profilePic = await this.prisma.profilePicture.findUniqueOrThrow({ where: { userId: authSchId } });
 
-      const imageBuffer = Buffer.from(profilePic.profileImage.buffer);
+      const imageBuffer = Buffer.from(
+        profilePic.profileImage.buffer,
+        profilePic.profileImage.byteOffset,
+        profilePic.profileImage.byteLength
+      );
       return imageBuffer;
     } catch (_error) {
       throw new NotFoundException(`User with id ${authSchId} not found`);

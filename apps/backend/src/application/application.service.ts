@@ -15,7 +15,6 @@ import { ApplicationPeriodService } from 'src/application-period/application-per
 import { PaginationDto } from 'src/dto/pagination.dto';
 
 import { BulkUpdateApplicationDto } from './dto/bulk-update-application.dto';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 
@@ -321,16 +320,20 @@ export class ApplicationService {
   /**
    * Bulk status change: refreshes `updatedAt` and writes an audit-log entry for
    * every application whose status actually changes. Runs in three statements
-   * (read current statuses, `updateMany`, `createMany` the log rows) regardless
-   * of how many applications are targeted.
+   * (lock + read current statuses, `updateMany`, `createMany` the log rows)
+   * regardless of how many applications are targeted.
+   *
+   * The current statuses are read via `SELECT ... FOR UPDATE` (like
+   * `applyStatusChange`) so concurrent writers can't race between the read and
+   * the `updateMany`, which would otherwise let a log entry record a stale
+   * `previousStatus`.
    */
   async bulkUpdate(bulkUpdateApplicationDto: BulkUpdateApplicationDto, user: User): Promise<Prisma.BatchPayload> {
     const { ids, applicationStatus } = bulkUpdateApplicationDto;
     return this.prisma.$transaction(async (tx) => {
-      const applications = await tx.application.findMany({
-        where: { id: { in: ids } },
-        select: { id: true, status: true },
-      });
+      const applications = await tx.$queryRaw<Array<{ id: number; status: ApplicationStatus }>>`
+        SELECT id, status FROM "Application" WHERE id = ANY(${ids}) FOR UPDATE
+      `;
 
       const result = await tx.application.updateMany({
         where: { id: { in: ids } },
