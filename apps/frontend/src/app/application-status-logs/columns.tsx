@@ -41,6 +41,12 @@ export const columns: ColumnDef<ApplicationStatusLogEntity>[] = [
     cell: ({ row }) => <span>{row.original.application?.user.fullName ?? '—'}</span>,
   },
   {
+    id: 'Időszak',
+    accessorFn: (row) => row.application?.applicationPeriod.name ?? '—',
+    header: ({ column }) => textHeader(column),
+    cell: ({ row }) => <span>{row.original.application?.applicationPeriod.name ?? '—'}</span>,
+  },
+  {
     id: 'Módosította',
     accessorFn: (row) => row.changedBy?.fullName ?? 'Rendszer',
     header: ({ column }) => textHeader(column),

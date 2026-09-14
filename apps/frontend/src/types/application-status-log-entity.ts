@@ -22,6 +22,10 @@ export type ApplicationStatusLogEntity = {
   application: {
     id: number;
     applicationPeriodId: number;
+    applicationPeriod: {
+      id: number;
+      name: string;
+    };
     user: StatusLogUserRef;
   } | null;
 };

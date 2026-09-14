@@ -25,6 +25,11 @@ export type PrismaTransactionClient = Omit<
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
 >;
 
+/** Prisma error code for "unique constraint violation". */
+const PRISMA_UNIQUE_CONSTRAINT_VIOLATION = 'P2002';
+/** Prisma error code for "record not found". */
+const PRISMA_RECORD_NOT_FOUND = 'P2025';
+
 @Injectable()
 export class ApplicationService {
   constructor(
@@ -64,9 +69,9 @@ export class ApplicationService {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
+        if (e.code === PRISMA_UNIQUE_CONSTRAINT_VIOLATION) {
           throw new BadRequestException('Ez a jelentkezés már létezik');
-        } else if (e.code === 'P2025') {
+        } else if (e.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException('Nem található időszak');
         }
       }
@@ -108,7 +113,7 @@ export class ApplicationService {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
+        if (e.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
@@ -139,7 +144,7 @@ export class ApplicationService {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
+        if (e.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException('Nem található jelentkezés');
         }
       }
@@ -173,7 +178,7 @@ export class ApplicationService {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
+        if (e.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException('Nem található jelentkezés');
         }
       }
@@ -225,7 +230,7 @@ export class ApplicationService {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2025') {
+        if (e.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException('A keresett jelentkezés nem található');
         }
       }
@@ -247,6 +252,7 @@ export class ApplicationService {
           select: {
             id: true,
             applicationPeriodId: true,
+            applicationPeriod: { select: { id: true, name: true } },
             user: { select: { authSchId: true, fullName: true, nickName: true } },
           },
         },
@@ -262,7 +268,7 @@ export class ApplicationService {
     try {
       await this.prisma.application.findUniqueOrThrow({ where: { id } });
     } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === PRISMA_RECORD_NOT_FOUND) {
         throw new NotFoundException('A keresett jelentkezés nem található');
       }
       throw e;
@@ -367,7 +373,7 @@ export class ApplicationService {
       );
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') {
+        if (error.code === PRISMA_RECORD_NOT_FOUND) {
           throw new NotFoundException(`User not found`);
         }
       }
