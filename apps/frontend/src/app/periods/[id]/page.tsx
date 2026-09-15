@@ -200,15 +200,22 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
    * {@link ApplicationStatus.WAITING_FOR_OPS}.
    * This step happens after the applications have been distributed to the members, but has to be
    * exported to given to the operations team for acceptance.
+   * If onlyDistributed is false, every given application is exported and no status is changed.
    */
-  const onApplicationsExport = async (data: ApplicationEntity[]) => {
+  const onApplicationsExport = async (data: ApplicationEntity[], onlyDistributed = true) => {
     if (period?.data) {
-      const autoChangeStatus = await showAutoChangeStatusDialog();
+      const autoChangeStatus = onlyDistributed && (await showAutoChangeStatusDialog());
 
-      const dataToExport = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
+      const dataToExport = onlyDistributed
+        ? data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED))
+        : data;
       await downloadPdf(
-        <ApplicationExport applicationData={dataToExport} periodName={period.data.name} />,
-        `schbody_applications_export_${Date.now()}.pdf`
+        <ApplicationExport
+          applicationData={dataToExport}
+          periodName={period.data.name}
+          title={onlyDistributed ? undefined : 'SCH-body jelentkezők listája (egyedi szűrés)'}
+        />,
+        `schbody_${onlyDistributed ? 'applications' : 'filtered_applications'}_export_${Date.now()}.pdf`
       );
 
       // Set the exported applications to "WAITING_FOR_OPS" status
@@ -241,8 +248,10 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
   const onExportProfilePictures = (data: ApplicationEntity[]) =>
     exportProfilePictures(data.map((a) => a.user.authSchId));
 
-  const onExportToExcel = async (data: ApplicationEntity[]) => {
-    const distributedApplications = data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED));
+  const onExportToExcel = async (data: ApplicationEntity[], onlyDistributed = true) => {
+    const applicationsToExport = onlyDistributed
+      ? data.filter((a) => a.status === getStatusKey(ApplicationStatus.DISTRIBUTED))
+      : data;
 
     type ExcelData = {
       'Teljes név': string;
@@ -250,14 +259,15 @@ export default function Page(props: { params: Promise<{ id: number }> }) {
       'SZIG szám': string;
     };
 
-    const dataToExport: ExcelData[] = distributedApplications.map((a) => ({
+    const dataToExport: ExcelData[] = applicationsToExport.map((a) => ({
       'Teljes név': a.user.fullName,
       'NEPTUN kód': a.user.neptun ?? '-',
       'SZIG szám': a.user.idNumber ?? '-',
     }));
 
-    const excelFile = generateXlsx(dataToExport, 'schbody_applications_export');
-    saveAs(excelFile, 'schbody_applications_export.xlsx');
+    const fileName = onlyDistributed ? 'schbody_applications_export' : 'schbody_filtered_export';
+    const excelFile = generateXlsx(dataToExport, fileName);
+    saveAs(excelFile, `${fileName}.xlsx`);
   };
 
   if (period?.error) return <div>Hiba történt: {period?.error.message}</div>;
