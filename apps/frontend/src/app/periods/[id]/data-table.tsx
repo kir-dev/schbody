@@ -50,9 +50,9 @@ interface DataTableProps<TData, TValue> {
   onStatusChange?: (row: TData, status: ApplicationStatus) => void;
   onBulkStatusChange?: (rows: TData[], status: ApplicationStatus) => void;
   onExportPassesClicked: (data: TData[]) => void;
-  onExportApplicationsClicked: (data: TData[]) => void;
+  onExportApplicationsClicked: (data: TData[], onlyDistributed?: boolean) => void;
   onSetToManufactured: (data: TData[]) => void;
-  onExportToExcelClicked: (data: TData[]) => void;
+  onExportToExcelClicked: (data: TData[], onlyDistributed?: boolean) => void;
   onExportProfilePicturesClicked: (data: TData[]) => void;
 }
 
@@ -105,6 +105,8 @@ export function DataTable<TData, TValue>({
   const invertSelection = () => {
     table.getExpandedRowModel().rows.map((row) => row.toggleSelected(!row.getIsSelected()));
   };
+  // All rows matching the current filters, in the current sort order (ignoring pagination)
+  const getFilteredData = () => table.getPrePaginationRowModel().rows.map((row) => row.original);
 
   function setSelectedToStatus(value: ApplicationStatus) {
     const selectedRows = table.getSelectedRowModel().rows;
@@ -226,6 +228,19 @@ export function DataTable<TData, TValue>({
                 }}
               >
                 Minden kiosztott jelentkezés exportálása Excel file-ba
+              </MenubarItem>
+              <Separator />
+              <MenubarItem
+                disabled={table.getFilteredRowModel().rows.length === 0}
+                onClick={() => onExportApplicationsClicked(getFilteredData(), false)}
+              >
+                Szűrt jelentkezések listájának exportálása
+              </MenubarItem>
+              <MenubarItem
+                disabled={table.getFilteredRowModel().rows.length === 0}
+                onClick={() => onExportToExcelClicked(getFilteredData(), false)}
+              >
+                Szűrt jelentkezések exportálása Excel file-ba
               </MenubarItem>
               <Separator />
               <MenubarItem

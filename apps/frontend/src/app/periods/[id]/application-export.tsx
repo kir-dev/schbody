@@ -5,6 +5,7 @@ import { ApplicationEntity } from '@/types/application-entity';
 type Props = {
   applicationData: ApplicationEntity[];
   periodName: string;
+  title?: string;
 };
 
 Font.register({
@@ -12,7 +13,7 @@ Font.register({
   src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
 });
 
-export const ApplicationExport = ({ applicationData, periodName }: Props) => (
+export const ApplicationExport = ({ applicationData, periodName, title = 'SCH-body belépők listája' }: Props) => (
   <Document>
     <Page
       size='A4'
@@ -23,9 +24,7 @@ export const ApplicationExport = ({ applicationData, periodName }: Props) => (
       }}
     >
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: '1cm' }}>
-        <Text style={{ width: '100%', textAlign: 'center', fontSize: '16pt', marginTop: '1cm' }}>
-          SCH-body belépők listája
-        </Text>
+        <Text style={{ width: '100%', textAlign: 'center', fontSize: '16pt', marginTop: '1cm' }}>{title}</Text>
         <Text style={{ width: '100%', textAlign: 'center', fontSize: '14pt', marginBottom: '5mm' }}>{periodName}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={{ width: '60%', padding: '1mm', border: '2pt solid black', textAlign: 'center' }}>
