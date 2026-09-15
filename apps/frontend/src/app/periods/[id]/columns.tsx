@@ -16,6 +16,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import { DateSortableFilterableHeader } from '@/components/ui/table-headers/DateSortableFilterableHeader';
 import { SortableFilterableHeader } from '@/components/ui/table-headers/SortableFilterableHeader';
 import { filterByDateRange } from '@/lib/customFilters';
+import { getStatusName } from '@/lib/status';
 import { toast } from '@/lib/use-toast';
 import { ApplicationEntity, ApplicationStatus } from '@/types/application-entity';
 import Image from 'next/image';
@@ -249,6 +250,12 @@ export const columns: (
   {
     id: 'Státusz',
     accessorKey: 'status',
+    filterFn: (row, columnId, filterValue: string) => {
+      const status = row.getValue<ApplicationStatus>(columnId);
+      const query = filterValue.toLowerCase();
+
+      return status.toLowerCase().includes(query) || getStatusName(status).toLowerCase().includes(query);
+    },
     header: ({ column }) => {
       return SortableFilterableHeader(column);
     },
