@@ -25,7 +25,7 @@ import { saveAs } from 'file-saver';
 import { ApplicationExport } from './application-export';
 import { PassExport } from './pass-export';
 
-const CHUNK_SIZE = 300;
+const CHUNK_SIZE = 315;
 
 export default function Page(props: { params: Promise<{ id: number }> }) {
   const params = use(props.params);

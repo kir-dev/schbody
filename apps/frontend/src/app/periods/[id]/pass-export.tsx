@@ -17,7 +17,7 @@ Font.register({
 
 //Pass size: 7.5cm x 4.4cm
 export const PassExport = ({ applicationData, periodName, periodId, cacheBuster, mock = false }: Props) => {
-  const width = 7.5 * Math.ceil(applicationData.length / 20) * 28.3464567 + 10;
+  const width = 7.5 * Math.ceil(applicationData.length / 21) * 28.3464567 + 10;
   return (
     <Document>
       <Page
