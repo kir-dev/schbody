@@ -1,5 +1,6 @@
 import { ApplicationEntity } from '@/types/application-entity';
 import { Document, Font, Image, Page, Text, View } from '@react-pdf/renderer';
+import React from 'react';
 
 type Props = {
   applicationData: ApplicationEntity[];
